@@ -1,51 +1,139 @@
-:root {
-  /* Surfaces — Solarized Light base */
-  --surface: #fdf6e3;
-  --surface-container-low: #f5ede2;
-  --surface-container: #eee8d5;
-  --surface-container-high: #e7e0cc;
-  --surface-container-highest: #ddd6c0;
-  --surface-bright: #f8f2e4;
+/* ============================================================
+   IK Design Tokens — TPConsulting
+   Light: Solarized (#fdf6e3 canvas) | Dark: #00161d canvas
+   Accent: Terracotta #b45309 (light) / Amber #f59e0b (dark)
+   ============================================================ */
 
-  /* Content */
-  --on-surface: #073642;
-  --on-surface-variant: #586e75;
+[data-theme="light"] {
+  /* === Backgrounds === */
+  --bg-canvas:        #fdf6e3;   /* Solarized light base */
+  --bg-raised:        #f5ede2;   /* one step up */
+  --bg-inset:         #eee8d5;   /* inset / card interior */
+  --bg-nest-3:        #e7e0cc;   /* deeply nested */
 
-  /* Primary — PLACEHOLDER: Trev choosing between indigo #4338ca and copper #b45309 */
-  --primary: #4338ca;
-  --primary-container: #e0e7ff;
-  --on-primary: #ffffff;
-  --on-primary-container: #1e1b4b;
+  /* === Foregrounds === */
+  --fg-1:             #073642;   /* primary text (solarized base03) */
+  --fg-2:             #586e75;   /* secondary text */
+  --fg-3:             #657b83;   /* tertiary text */
+  --fg-muted:         #93a1a1;   /* muted / placeholder */
+  --fg-on-accent:     #ffffff;   /* text on accent surfaces */
 
-  /* Secondary — Solarized yellow */
-  --secondary: #b58900;
-  --secondary-container: #fef3c7;
-  --on-secondary: #ffffff;
-  --on-secondary-container: #451a03;
+  /* === Accent — Terracotta === */
+  --accent-primary:       #b45309;
+  --accent-primary-hover: #9a4708;
+  --accent-primary-press: #7e3a06;
+  --accent-primary-container: #fef3c7;
 
-  /* Accent — Solarized red */
-  --accent: #c0392b;
-  --accent-container: #fee2e2;
-  --on-accent: #ffffff;
+  /* === Accent Secondary — Amber === */
+  --accent-secondary:       #b58900;
+  --accent-secondary-hover: #9c7600;
+  --accent-secondary-container: #fef9c3;
 
-  /* Outline */
-  --outline: rgba(101, 123, 131, 0.35);
+  /* === Frost (glassmorphism) === */
+  --frost-bg:    rgba(253, 246, 227, 0.85);
+  --frost-blur:  blur(12px);
+  --frost-tint:  rgba(180, 83, 9, 0.04);
+
+  /* === Outline === */
+  --outline:         rgba(101, 123, 131, 0.35);
   --outline-variant: rgba(101, 123, 131, 0.15);
 
+  /* === Shadows === */
+  --shadow-sm: 0 1px 2px rgba(7, 54, 66, 0.06);
+  --shadow-md: 0 4px 6px rgba(7, 54, 66, 0.08), 0 1px 3px rgba(7, 54, 66, 0.06);
+  --shadow-lg: 0 10px 15px rgba(7, 54, 66, 0.08), 0 4px 6px rgba(7, 54, 66, 0.04);
+
+  /* === Legacy aliases (for components still using old names) === */
+  --surface:                  var(--bg-canvas);
+  --surface-container-low:    var(--bg-raised);
+  --surface-container:        var(--bg-inset);
+  --surface-container-high:   var(--bg-nest-3);
+  --surface-container-highest:#ddd6c0;
+  --surface-bright:           #f8f2e4;
+  --on-surface:               var(--fg-1);
+  --on-surface-variant:       var(--fg-2);
+  --primary:                  var(--accent-primary);
+  --primary-container:        var(--accent-primary-container);
+  --on-primary:               var(--fg-on-accent);
+  --secondary:                var(--accent-secondary);
+  --secondary-container:      var(--accent-secondary-container);
+  --on-secondary:             var(--fg-on-accent);
+}
+
+[data-theme="dark"] {
+  /* === Backgrounds === */
+  --bg-canvas:  #00161d;   /* IK dark base */
+  --bg-raised:  #001f28;
+  --bg-inset:   #00232d;
+  --bg-nest-3:  #0d2e39;
+
+  /* === Foregrounds === */
+  --fg-1:        #cad4d7;
+  --fg-2:        #8fa8b0;
+  --fg-3:        #7a9ba3;
+  --fg-muted:    #5b7f89;
+  --fg-on-accent:#0a0500;   /* dark text on bright amber */
+
+  /* === Accent — Warm Amber glow === */
+  --accent-primary:       #f59e0b;
+  --accent-primary-hover: #ffb532;
+  --accent-primary-press: #d98207;
+  --accent-primary-container: #312000;
+
+  /* === Accent Secondary === */
+  --accent-secondary:       #f2bf43;
+  --accent-secondary-hover: #ffd060;
+  --accent-secondary-container: #271800;
+
+  /* === Frost === */
+  --frost-bg:  rgba(0, 22, 29, 0.85);
+  --frost-blur: blur(12px);
+  --frost-tint: rgba(245, 158, 11, 0.04);
+
+  /* === Outline === */
+  --outline:         rgba(143, 168, 176, 0.25);
+  --outline-variant: rgba(65, 72, 75, 0.20);
+
+  /* === Shadows === */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+
+  /* === Legacy aliases === */
+  --surface:                  var(--bg-canvas);
+  --surface-container-low:    var(--bg-raised);
+  --surface-container:        var(--bg-inset);
+  --surface-container-high:   var(--bg-nest-3);
+  --surface-container-highest:#133945;
+  --surface-bright:           #183e49;
+  --on-surface:               var(--fg-1);
+  --on-surface-variant:       var(--fg-2);
+  --primary:                  var(--accent-primary);
+  --primary-container:        var(--accent-primary-container);
+  --on-primary:               var(--fg-on-accent);
+  --secondary:                var(--accent-secondary);
+  --secondary-container:      var(--accent-secondary-container);
+  --on-secondary:             var(--fg-on-accent);
+}
+
+/* ============================================================
+   Shared tokens (theme-independent)
+   ============================================================ */
+:root {
   /* Typography */
   --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Public Sans', sans-serif;
-  --font-ui: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-body:    'Public Sans', sans-serif;
+  --font-ui:      'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 
   /* Spacing scale */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
   --space-10: 2.5rem;
   --space-12: 3rem;
   --space-16: 4rem;
@@ -53,17 +141,12 @@
   --space-24: 6rem;
 
   /* Border radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
+  --radius-sm:   0.25rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
+  --radius-2xl:  1.5rem;
   --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(7, 54, 66, 0.06);
-  --shadow-md: 0 4px 6px rgba(7, 54, 66, 0.08), 0 1px 3px rgba(7, 54, 66, 0.06);
-  --shadow-lg: 0 10px 15px rgba(7, 54, 66, 0.08), 0 4px 6px rgba(7, 54, 66, 0.04);
 
   /* Transitions */
   --transition-fast: 150ms ease;
@@ -71,51 +154,13 @@
   --transition-slow: 400ms ease;
 
   /* Layout */
-  --max-width: 1200px;
+  --max-width:  1200px;
   --nav-height: 64px;
 }
 
-.dark {
-  /* Surfaces — Solarized Dark base */
-  --surface: #00161d;
-  --surface-container-low: #001f28;
-  --surface-container: #00232d;
-  --surface-container-high: #0d2e39;
-  --surface-container-highest: #133945;
-  --surface-bright: #183e49;
-
-  /* Content */
-  --on-surface: #cad4d7;
-  --on-surface-variant: #8fa8b0;
-
-  /* Primary — dark mode variant */
-  --primary: #818cf8;
-  --primary-container: #312e81;
-  --on-primary: #1e1b4b;
-  --on-primary-container: #c7d2fe;
-
-  /* Secondary — brightened yellow for dark */
-  --secondary: #f2bf43;
-  --secondary-container: #451a03;
-  --on-secondary: #1a1200;
-  --on-secondary-container: #fef3c7;
-
-  /* Accent — warmer red for dark */
-  --accent: #e87058;
-  --accent-container: #7f1d1d;
-  --on-accent: #1a0000;
-
-  /* Outline */
-  --outline: rgba(143, 168, 176, 0.25);
-  --outline-variant: rgba(65, 72, 75, 0.20);
-
-  /* Shadows adjusted for dark */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
-}
-
-/* Reset */
+/* ============================================================
+   Reset
+   ============================================================ */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -129,8 +174,8 @@ html {
 }
 
 body {
-  background-color: var(--surface);
-  color: var(--on-surface);
+  background-color: var(--bg-canvas);
+  color: var(--fg-1);
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.6;
@@ -139,15 +184,14 @@ body {
   transition: background-color var(--transition-base), color var(--transition-base);
 }
 
-/* Typography defaults */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   line-height: 1.2;
-  color: var(--on-surface);
+  color: var(--fg-1);
 }
 
 a {
-  color: var(--primary);
+  color: var(--accent-primary);
   text-decoration: none;
 }
 
@@ -164,9 +208,8 @@ img, video {
   height: auto;
 }
 
-/* Focus visible */
 :focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--accent-primary);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }

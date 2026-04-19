@@ -40,6 +40,7 @@ export const metadata: Metadata = {
       "Diseñamos e implementamos sistemas de automatización de nivel enterprise para PyMEs en México. Diagnóstico técnico desde $1,000 MXN.",
     type: "website",
     locale: "es_MX",
+    siteName: "TPConsulting",
   },
   twitter: {
     card: "summary_large_image",
@@ -47,14 +48,19 @@ export const metadata: Metadata = {
     description:
       "Diseñamos e implementamos sistemas de automatización de nivel enterprise para PyMEs en México.",
   },
+  metadataBase: new URL("https://tpconsulting.mx"),
+  alternates: { canonical: "/" },
 };
 
+/* Anti-flash: runs inline before paint, sets data-theme on <html> */
 const themeScript = `
 try {
-  const t = localStorage.getItem('theme');
-  const d = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  if (d) document.documentElement.classList.add('dark');
-} catch(e) {}
+  var t = localStorage.getItem('theme');
+  var dark = t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+} catch(e) {
+  document.documentElement.setAttribute('data-theme', 'light');
+}
 `;
 
 export default function RootLayout({

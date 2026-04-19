@@ -1,23 +1,41 @@
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
   padding: var(--space-8);
-  background-color: var(--surface-container);
+  background-color: var(--bg-raised, var(--surface-container));
   border: 1px solid var(--outline-variant);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition-base);
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .highlighted {
-  background-color: var(--primary-container);
-  border-color: var(--primary);
-  box-shadow: var(--shadow-md);
+  border-color: var(--accent-primary);
+  background-color: var(--bg-raised, var(--surface-container));
+  box-shadow: 0 0 0 1px var(--accent-primary), var(--shadow-md);
+}
+
+.badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-on-accent, #ffffff);
+  background-color: var(--accent-primary);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 
 .header {
@@ -29,37 +47,39 @@
 .name {
   font-family: var(--font-display);
   font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--on-surface);
+  font-weight: 700;
+  color: var(--fg-1, var(--on-surface));
 }
 
-.priceRow {
+.pricing {
   display: flex;
   align-items: baseline;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .price {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
-  color: var(--on-surface);
+  color: var(--fg-1, var(--on-surface));
+  line-height: 1;
 }
 
-.currency {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--on-surface-variant);
+.period {
+  font-size: 0.9375rem;
+  color: var(--fg-2, var(--on-surface-variant));
 }
 
 .description {
-  font-size: 0.9rem;
-  color: var(--on-surface-variant);
+  font-size: 0.9375rem;
+  color: var(--fg-2, var(--on-surface-variant));
   line-height: 1.5;
 }
 
 .features {
   list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -67,35 +87,63 @@
 }
 
 .feature {
-  font-size: 0.9rem;
-  color: var(--on-surface);
-  padding-left: var(--space-5);
-  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: 0.9375rem;
+  line-height: 1.4;
 }
 
-.feature::before {
-  content: "✓";
-  position: absolute;
-  left: 0;
-  color: var(--primary);
-  font-weight: 600;
+.included {
+  color: var(--fg-1, var(--on-surface));
+}
+
+.excluded {
+  color: var(--fg-muted, var(--on-surface-variant));
+  opacity: 0.5;
+}
+
+.featureIcon {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.included .featureIcon {
+  color: var(--accent-primary);
 }
 
 .cta {
-  display: block;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--font-ui);
   font-size: 0.9375rem;
   font-weight: 600;
-  color: var(--on-primary);
-  background-color: var(--primary);
+  text-decoration: none;
   padding: var(--space-3) var(--space-6);
   border-radius: var(--radius-md);
-  text-decoration: none;
-  transition: opacity var(--transition-fast);
+  border: 1px solid var(--outline);
+  color: var(--fg-1, var(--on-surface));
+  background-color: transparent;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  text-align: center;
 }
 
 .cta:hover {
-  opacity: 0.9;
+  background-color: var(--bg-inset, var(--surface-container-high));
   text-decoration: none;
+}
+
+.ctaHighlighted {
+  color: var(--fg-on-accent, #ffffff);
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.ctaHighlighted:hover {
+  background-color: var(--accent-primary-hover);
+  border-color: var(--accent-primary-hover);
+  color: var(--fg-on-accent, #ffffff);
 }
