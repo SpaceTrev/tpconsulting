@@ -1,279 +1,244 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import styles from "./servicios.module.css";
+import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Servicios — TPConsulting",
-  description:
-    "Automatización de procesos, integración de sistemas y consultoría tecnológica para PyMEs mexicanas.",
+  description: "Catálogo completo de servicios de automatización e integración para PyMEs mexicanas. Diagnóstico desde $1,000 MXN.",
   openGraph: {
     title: "Servicios — TPConsulting",
-    description:
-      "Automatización de procesos, integración de sistemas y consultoría tecnológica para PyMEs mexicanas.",
+    description: "Catálogo completo de servicios de automatización e integración para PyMEs mexicanas.",
     locale: "es_MX",
     type: "website",
   },
 };
 
-const categories = [
+function IconScan() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect width="8" height="8" x="8" y="8" rx="1"/></svg>;
+}
+function IconGear() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>;
+}
+function IconLink() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>;
+}
+function IconBot() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect width="18" height="10" x="3" y="11" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 15v.01M16 15v.01"/></svg>;
+}
+function IconCode() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>;
+}
+function IconBriefcase() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>;
+}
+function IconSupport() {
+  return <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>;
+}
+
+const services = [
   {
-    id: "comunicacion",
-    label: "Comunicación y Ventas",
-    bg: "raised",
-    services: [
-      {
-        id: "leads",
-        name: "Captación de Leads con IA",
-        desc: "Diseñamos un sistema completo que atrae prospectos calificados, los califica automáticamente con IA y agenda reuniones — sin que tu equipo tenga que hacer seguimiento manual.",
-        deliverable:
-          "Incluye: integración CRM + WhatsApp + formulario de calificación + dashboard",
-        price: "desde $8,500 MXN",
-        tags: ["IA", "WhatsApp", "CRM", "Make"],
-        icon: "lightning",
-      },
-      {
-        id: "whatsapp",
-        name: "Atención al Cliente por WhatsApp",
-        desc: "Chatbot con IA entrenado con la información de tu negocio. Responde preguntas, toma pedidos, agenda citas y escala casos complejos a tu equipo humano automáticamente.",
-        deliverable:
-          "Incluye: WhatsApp Business API + IA + flujos de escalación + métricas",
-        price: "desde $5,000 MXN",
-        tags: ["WhatsApp", "IA", "24/7", "Chatbot"],
-        icon: "chat",
-      },
-      {
-        id: "agenda",
-        name: "Agendamiento Automatizado",
-        desc: "Los clientes agendan en tu calendario disponible desde WhatsApp o tu sitio web. Reciben confirmación, recordatorios automáticos y reagendamiento sin intervención humana.",
-        deliverable:
-          "Incluye: integración Calendly/Cal.com + WhatsApp + recordatorios automáticos",
-        price: "desde $8,000 MXN",
-        tags: ["Calendly", "Make", "WhatsApp", "Recordatorios"],
-        icon: "calendar",
-      },
+    id: "diagnostico-express",
+    number: "01",
+    icon: <IconScan />,
+    name: "Diagnóstico Express",
+    price: "desde $1,000 MXN",
+    desc: "Escaneo completo de tus procesos en 48 horas. Detectamos exactamente dónde estás perdiendo tiempo y dinero con un reporte ejecutivo accionable.",
+    deliverable: "Reporte PDF + Mapa de Oportunidades",
+    features: [
+      "Análisis de hasta 10 procesos operativos clave",
+      "Identificación de los 3 puntos de mayor impacto",
+      "Estimación de horas y costos recuperables",
+      "Recomendación de herramientas según tu presupuesto",
+      "Sesión de revisión de 30 minutos incluida",
     ],
   },
   {
-    id: "operaciones",
-    label: "Operaciones Internas",
-    bg: "canvas",
-    services: [
-      {
-        id: "dashboards",
-        name: "Dashboards de Operación",
-        desc: "Centraliza todos tus datos — ventas, inventario, métricas de equipo y satisfacción de clientes — en un tablero visual que se actualiza en tiempo real sin trabajo manual.",
-        deliverable:
-          "Incluye: dashboard personalizado + integración de fuentes + acceso para el equipo",
-        price: "desde $10,000 MXN",
-        tags: ["Analytics", "Google Looker", "Sheets", "API"],
-        icon: "chart",
-      },
-      {
-        id: "facturacion",
-        name: "Automatización de Facturación",
-        desc: "Las facturas se generan solas al momento del pago. Integrado con el SAT mediante FACTURAPI o Bind ERP. Elimina errores manuales y el tiempo perdido en facturación.",
-        deliverable:
-          "Incluye: integración SAT + timbre automático + envío al cliente + reportes",
-        price: "desde $5,000 MXN",
-        tags: ["SAT", "CFDI", "FACTURAPI", "Bind ERP"],
-        icon: "document",
-      },
-      {
-        id: "integraciones",
-        name: "Integraciones entre Sistemas",
-        desc: "Conectamos tu CRM, tienda en línea, WhatsApp, punto de venta y contabilidad para que la información fluya automáticamente — sin copiar datos a mano entre sistemas.",
-        deliverable:
-          "Incluye: mapeo de flujos + desarrollo de conexiones + documentación técnica",
-        price: "desde $5,000 MXN",
-        tags: ["API", "Make", "Zapier", "n8n"],
-        icon: "link",
-      },
+    id: "diagnostico-profundo",
+    number: "02",
+    icon: <IconScan />,
+    name: "Diagnóstico Profundo",
+    price: "desde $5,000 MXN",
+    desc: "Análisis exhaustivo de toda la operación con entrevistas a tu equipo, benchmarks de industria y una hoja de ruta tecnológica a 12 meses.",
+    deliverable: "Reporte Ejecutivo + Roadmap 12 meses",
+    features: [
+      "Diagnóstico completo de todos los departamentos",
+      "Entrevistas con hasta 5 personas clave de tu equipo",
+      "Hoja de ruta priorizada de automatizaciones",
+      "Benchmarks contra empresas similares de tu industria",
+      "2 sesiones de revisión y Q&A incluidas",
+      "Plan de implementación con estimados de costo y ROI",
     ],
   },
   {
-    id: "marketing",
-    label: "Marketing y Crecimiento",
-    bg: "raised",
-    services: [
-      {
-        id: "marketing",
-        name: "Marketing y Email Flows",
-        desc: "Secuencias de comunicación automatizada que nutren prospectos fríos, recuperan clientes que no han comprado en meses y aumentan la frecuencia de compra de los actuales.",
-        deliverable:
-          "Incluye: flujos de email + SMS + segmentación + pruebas A/B + reportes",
-        price: "desde $15,000 MXN",
-        tags: ["Email", "SMS", "Klaviyo", "ActiveCampaign"],
-        icon: "envelope",
-      },
-      {
-        id: "medida",
-        name: "Desarrollo a Medida",
-        desc: "Para procesos únicos que requieren soluciones únicas. Aplicaciones web, APIs internas, herramientas de equipo o sistemas que no existen en el mercado — construidos con arquitectura enterprise.",
-        deliverable: "Cotización personalizada según alcance y complejidad",
-        price: "Cotización",
-        tags: ["Personalizado", "API", "Next.js", "Node.js"],
-        icon: "code",
-      },
+    id: "automatizacion",
+    number: "03",
+    icon: <IconGear />,
+    name: "Automatización de Procesos",
+    price: "desde $15,000 MXN",
+    desc: "Implementación de flujos automatizados conectados a tus herramientas actuales. Usamos Make.com, n8n, Zapier y desarrollo custom según lo que más conviene.",
+    deliverable: "Sistema automatizado en producción",
+    features: [
+      "Diseño y documentación del flujo automatizado",
+      "Implementación y pruebas en ambiente controlado",
+      "Integración con tus herramientas existentes",
+      "Capacitación de tu equipo (hasta 3 sesiones)",
+      "Soporte técnico 30 días post-entrega",
+      "Manual de operación y contingencia",
+    ],
+  },
+  {
+    id: "integracion",
+    number: "04",
+    icon: <IconLink />,
+    name: "Integración de Sistemas",
+    price: "desde $20,000 MXN",
+    desc: "Conecta tu CRM, ERP, contabilidad, logística y canales de venta en un ecosistema unificado. Sin duplicados, sin captura manual.",
+    deliverable: "APIs funcionando + Documentación técnica",
+    features: [
+      "Análisis de sistemas y APIs disponibles",
+      "Desarrollo de conectores y middlewares",
+      "Sincronización bidireccional de datos",
+      "Manejo de errores y alertas automáticas",
+      "Pruebas de carga y estabilidad",
+      "Documentación técnica completa",
+    ],
+  },
+  {
+    id: "agentes-ia",
+    number: "05",
+    icon: <IconBot />,
+    name: "Agentes de IA",
+    price: "desde $30,000 MXN",
+    desc: "Asistentes inteligentes entrenados con el conocimiento de tu empresa. Atienden clientes, califican leads, generan cotizaciones y escalan casos complejos.",
+    deliverable: "Agente IA desplegado y operando",
+    features: [
+      "Diseño de la personalidad y alcance del agente",
+      "Entrenamiento con datos y documentos de tu empresa",
+      "Integración con WhatsApp, web, email o Slack",
+      "Flujos de escalación a agentes humanos",
+      "Panel de monitoreo de conversaciones",
+      "Optimización continua por 60 días",
+    ],
+  },
+  {
+    id: "desarrollo",
+    number: "06",
+    icon: <IconCode />,
+    name: "Desarrollo a Medida",
+    price: "desde $50,000 MXN",
+    desc: "Software personalizado para procesos únicos de tu empresa que no encuentras en el mercado. Desde portales internos hasta sistemas de gestión complejos.",
+    deliverable: "Aplicación completa + código fuente",
+    features: [
+      "Levantamiento de requerimientos y prototipo",
+      "Desarrollo con tecnologías modernas (Next.js, Python, etc.)",
+      "Base de datos diseñada para tu operación",
+      "Panel de administración incluido",
+      "Pruebas de calidad (QA) y seguridad",
+      "Despliegue en la nube + soporte 90 días",
+    ],
+  },
+  {
+    id: "consultoria",
+    number: "07",
+    icon: <IconBriefcase />,
+    name: "Consultoría Estratégica",
+    price: "$3,000 MXN / hora",
+    desc: "Sesiones de estrategia con nuestros especialistas para resolver dudas, validar decisiones tecnológicas o planificar tu próxima fase de crecimiento.",
+    deliverable: "Plan de acción documentado",
+    features: [
+      "Análisis de tu situación tecnológica actual",
+      "Recomendaciones específicas y accionables",
+      "Evaluación de proveedores y herramientas",
+      "Revisión de propuestas de terceros",
+      "Preparación para auditorías o inversión",
+      "Grabación de sesiones incluida",
+    ],
+  },
+  {
+    id: "soporte",
+    number: "08",
+    icon: <IconSupport />,
+    name: "Soporte y Mantenimiento",
+    price: "desde $5,000 MXN / mes",
+    desc: "Mantenimiento preventivo y reactivo de todas tus automatizaciones. Monitoreo continuo, actualizaciones y respuesta garantizada en menos de 24 horas.",
+    deliverable: "SLA garantizado 24hrs",
+    features: [
+      "Monitoreo proactivo de todos tus flujos",
+      "Corrección de errores en menos de 24 horas",
+      "Actualizaciones por cambios en APIs externas",
+      "Reporte mensual de métricas de rendimiento",
+      "1 mejora o ajuste mensual incluido",
+      "Acceso directo a ingenieros via WhatsApp",
     ],
   },
 ];
 
-function LightningIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-    </svg>
-  );
-}
-
-function ChatIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-      <line x1="16" y1="2" x2="16" y2="6" />
-      <line x1="8" y1="2" x2="8" y2="6" />
-      <line x1="3" y1="10" x2="21" y2="10" />
-    </svg>
-  );
-}
-
-function ChartIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <line x1="18" y1="20" x2="18" y2="10" />
-      <line x1="12" y1="20" x2="12" y2="4" />
-      <line x1="6" y1="20" x2="6" y2="14" />
-    </svg>
-  );
-}
-
-function DocumentIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
-      <polyline points="10 9 9 9 8 9" />
-    </svg>
-  );
-}
-
-function LinkIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-    </svg>
-  );
-}
-
-function EnvelopeIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-      <polyline points="22,6 12,13 2,6" />
-    </svg>
-  );
-}
-
-function CodeIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <polyline points="16 18 22 12 16 6" />
-      <polyline points="8 6 2 12 8 18" />
-    </svg>
-  );
-}
-
-function ServiceIcon({ type }: { type: string }) {
-  switch (type) {
-    case "lightning": return <LightningIcon />;
-    case "chat": return <ChatIcon />;
-    case "calendar": return <CalendarIcon />;
-    case "chart": return <ChartIcon />;
-    case "document": return <DocumentIcon />;
-    case "link": return <LinkIcon />;
-    case "envelope": return <EnvelopeIcon />;
-    case "code": return <CodeIcon />;
-    default: return null;
-  }
-}
-
 export default function ServiciosPage() {
   return (
-    <main>
-      <section className={styles.pageHeader}>
-        <div className={styles.headerInner}>
-          <p className={styles.eyebrow}>Qué hacemos</p>
-          <h1 className={styles.pageTitle}>Nuestros Servicios</h1>
-          <p className={styles.pageSubtitle}>
-            Desde una automatización puntual hasta un sistema completo de
-            operación. Todo se construye sobre tu stack actual.
+    <main className={styles.main}>
+      <div className={styles.header}>
+        <div className={styles.container}>
+          <span className={styles.eyebrow}>Catálogo de servicios</span>
+          <h1 className={styles.title}>Todo lo que necesitas para automatizar tu negocio</h1>
+          <p className={styles.subtitle}>
+            Desde un diagnóstico rápido hasta el desarrollo completo de software a medida. Cada servicio entrega un resultado tangible y medible.
           </p>
         </div>
-      </section>
+      </div>
 
-      {categories.map((cat) => (
-        <section
-          key={cat.id}
-          className={cat.bg === "raised" ? styles.categoryRaised : styles.categoryCanvas}
-        >
-          <div className={styles.categoryInner}>
-            <div className={styles.categoryHeader}>
-              <p className={styles.categoryLabel}>{cat.label}</p>
-            </div>
-            <div className={styles.servicesGrid}>
-              {cat.services.map((service) => (
-                <article
-                  key={service.id}
-                  id={service.id}
-                  className={cat.bg === "raised" ? styles.serviceCardInset : styles.serviceCardRaised}
-                >
-                  <div className={styles.serviceIcon}>
-                    <ServiceIcon type={service.icon} />
+      <div className={styles.catalog}>
+        {services.map((s, i) => (
+          <section
+            key={s.id}
+            id={s.id}
+            className={styles.serviceSection}
+            style={{ backgroundColor: i % 2 === 0 ? "var(--bg-canvas)" : "var(--bg-raised)" }}
+          >
+            <div className={styles.container}>
+              <div className={styles.serviceSectionInner}>
+                <div className={styles.serviceMeta}>
+                  <span className={styles.serviceId}>{s.number} / 08</span>
+                  <div className={styles.serviceIconWrap}>{s.icon}</div>
+                  <h2 className={styles.serviceName}>{s.name}</h2>
+                  <p className={styles.serviceDesc}>{s.desc}</p>
+                  <span className={styles.servicePrice}>{s.price}</span>
+                  <div className={styles.serviceCtaRow}>
+                    <Link href={`/diagnostico`} className={styles.ctaPrimary}>
+                      Solicitar este servicio
+                    </Link>
+                    <Link href="/contacto" className={styles.ctaSecondary}>
+                      Hacer una pregunta →
+                    </Link>
                   </div>
-                  <h3 className={styles.serviceName}>{service.name}</h3>
-                  <p className={styles.serviceDesc}>{service.desc}</p>
-                  <p className={styles.serviceDeliverable}>{service.deliverable}</p>
-                  <ul className={styles.serviceTags} aria-label="Tecnologías">
-                    {service.tags.map((tag) => (
-                      <li key={tag} className={styles.serviceTag}>
-                        {tag}
-                      </li>
+                </div>
+                <div className={styles.serviceDetails}>
+                  <p className={styles.serviceDetailsTitle}>¿Qué incluye?</p>
+                  <ul className={styles.featureList}>
+                    {s.features.map((f) => (
+                      <li key={f} className={styles.featureItem}>{f}</li>
                     ))}
                   </ul>
-                  <p className={styles.servicePrice}>{service.price}</p>
-                  <Link href="/diagnostico" className={styles.serviceBtn}>
-                    Solicitar servicio
-                  </Link>
-                </article>
-              ))}
+                  <span className={styles.deliverableTag}>
+                    📦 Entregable: {s.deliverable}
+                  </span>
+                </div>
+              </div>
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        ))}
+      </div>
 
-      <section className={styles.ctaSection}>
-        <div className={styles.ctaInner}>
-          <h2 className={styles.ctaTitle}>¿No sabes qué servicio necesitas?</h2>
-          <p className={styles.ctaDesc}>
-            Empieza con un diagnóstico de $1,000 MXN y te decimos exactamente
-            qué automatizar primero.
+      <div className={styles.ctaBanner}>
+        <div className={styles.container}>
+          <h2 className={styles.ctaBannerTitle}>¿No sabes por dónde empezar?</h2>
+          <p className={styles.ctaBannerText}>
+            El Diagnóstico Express por $1,000 MXN te da un mapa claro de qué automatizar primero.
           </p>
-          <Link href="/diagnostico" className={styles.ctaBtn}>
-            Solicitar diagnóstico →
+          <Link href="/diagnostico?tier=explorador" className={styles.ctaPrimary}>
+            Comenzar con Diagnóstico Express
           </Link>
         </div>
-      </section>
+      </div>
     </main>
   );
 }

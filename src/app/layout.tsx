@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Public_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import styles from "./layout.module.css";
 import Nav from "@/components/Nav/Nav";
 import Footer from "@/components/Footer/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton/WhatsAppButton";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -54,7 +56,6 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-/* Anti-flash: runs inline before paint, sets data-theme on <html> */
 const themeScript = `
 try {
   var t = localStorage.getItem('theme');
@@ -78,9 +79,12 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${publicSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       >
-        <Nav />
-        {children}
-        <Footer />
+        <div className={styles.root}>
+          <Nav />
+          <div className={styles.content}>{children}</div>
+          <Footer />
+        </div>
+        <WhatsAppButton phoneNumber="5215512345678" />
       </body>
     </html>
   );

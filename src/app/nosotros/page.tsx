@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import styles from "./nosotros.module.css";
+import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Nosotros — TPConsulting",
-  description:
-    "Dos personas con experiencia en Fortune 500 construyendo automatización enterprise para PyMEs mexicanas desde Guadalajara.",
+  description: "Conoce al equipo detrás de TPConsulting: 9+ años de experiencia en automatización Fortune 500, ahora al servicio de PyMEs mexicanas.",
   openGraph: {
     title: "Nosotros — TPConsulting",
-    description:
-      "Dos personas con experiencia en Fortune 500 construyendo automatización enterprise para PyMEs mexicanas desde Guadalajara.",
+    description: "Equipo con experiencia Fortune 500 y Starbucks, dedicado a transformar PyMEs mexicanas con automatización.",
     locale: "es_MX",
     type: "website",
   },
@@ -48,105 +46,149 @@ const valueCards = [
 
 export default function NosotrosPage() {
   return (
-    <main>
-      <section className={styles.pageHeader}>
-        <div className={styles.headerInner}>
-          <p className={styles.eyebrow}>El equipo</p>
-          <h1 className={styles.pageTitle}>
-            Dos personas. Décadas de experiencia. Potenciados por IA.
+    <main className={styles.main}>
+
+      {/* ── Header ── */}
+      <section className={styles.header}>
+        <div className={styles.container}>
+          <span className={styles.eyebrow}>Quiénes somos</span>
+          <h1 className={styles.title}>
+            Veteranos de Fortune 500 con una misión clara
           </h1>
-          <p className={styles.pageSubtitle}>
-            Somos un equipo pequeño por diseño — lo que nos permite operar con
-            la agilidad de una startup y la profundidad de una firma enterprise.
+          <p className={styles.subtitle}>
+            Pasamos años implementando sistemas de automatización para algunas de las empresas más grandes del mundo. Luego nos preguntamos: ¿por qué las PyMEs mexicanas no pueden tener acceso a lo mismo? TPConsulting nació para responder esa pregunta.
           </p>
         </div>
       </section>
 
+      {/* ── Mission ── */}
+      <section className={styles.missionSection}>
+        <div className={styles.container}>
+          <div className={styles.missionGrid}>
+            <div className={styles.missionCard}>
+              <span className={styles.missionIcon} aria-hidden="true">🎯</span>
+              <h2 className={styles.missionTitle}>Nuestra misión</h2>
+              <p className={styles.missionText}>
+                Hacer accesible la automatización de nivel enterprise para PyMEs mexicanas, a una fracción del costo y con resultados medibles desde la primera semana.
+              </p>
+            </div>
+            <div className={styles.missionCard}>
+              <span className={styles.missionIcon} aria-hidden="true">🔭</span>
+              <h2 className={styles.missionTitle}>Nuestra visión</h2>
+              <p className={styles.missionText}>
+                Un México donde el 80% de las PyMEs opera con procesos automatizados, no con horas extras. Donde el dueño de un negocio puede enfocarse en crecer, no en apagar incendios.
+              </p>
+            </div>
+            <div className={styles.missionCard}>
+              <span className={styles.missionIcon} aria-hidden="true">💡</span>
+              <h2 className={styles.missionTitle}>Nuestro enfoque</h2>
+              <p className={styles.missionText}>
+                No vendemos software ni suscripciones. Entregamos resultados: procesos que funcionan, tiempo recuperado y dinero que antes se perdía en ineficiencia.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Team ── */}
       <section className={styles.teamSection}>
-        <div className={styles.teamInner}>
+        <div className={styles.container}>
           <div className={styles.teamGrid}>
-            <article className={styles.teamCard}>
-              <div className={styles.avatar} aria-hidden="true">TP</div>
-              <h3 className={styles.teamName}>Trevor</h3>
-              <p className={styles.teamRole}>Fundador · Arquitectura de sistemas</p>
-              <p className={styles.teamBio}>
-                Nueve años construyendo sistemas de software de nivel enterprise
-                en compañías Fortune 500, incluyendo Starbucks. Especialista en
-                arquitectura de integración, automatización de procesos y
-                sistemas distribuidos. Nació en Estados Unidos y eligió
-                Guadalajara como base de operaciones para construir tecnología
-                de clase mundial para el mercado mexicano.
-              </p>
-              <ul className={styles.teamTags} aria-label="Áreas de expertise">
-                {trevorTags.map((tag) => (
-                  <li key={tag} className={styles.teamTag}>
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-            </article>
 
-            <article className={styles.teamCard}>
-              <div className={styles.avatar} aria-hidden="true">PO</div>
-              <h3 className={styles.teamName}>Pablo</h3>
-              <p className={styles.teamRole}>Fundador · Operaciones y crecimiento</p>
-              <p className={styles.teamBio}>
-                Especialista en operaciones de negocio y el mercado mexicano. Ha
-                trabajado con decenas de PyMEs en México optimizando sus procesos
-                operativos, sistemas de ventas y estructura organizacional.
-                Entiende los retos únicos de operar un negocio en México — desde
-                la facturación electrónica hasta las dinámicas del cliente local.
+            <div className={styles.bioCard}>
+              <div className={styles.bioHeader}>
+                <div className={styles.bioAvatar} aria-hidden="true">TP</div>
+                <div>
+                  <p className={styles.bioName}>Trevor Patterson</p>
+                  <p className={styles.bioRole}>Co-fundador · Director Técnico</p>
+                </div>
+              </div>
+              <p className={styles.bioText}>
+                Trevor lleva más de 9 años diseñando e implementando sistemas de automatización para empresas Fortune 500. Como líder técnico en proyectos de transformación digital para cadenas como Starbucks y CBRE, aprendió de primera mano los estándares de calidad, seguridad y escalabilidad que definen la operación de las empresas más grandes del mundo.
               </p>
-              <ul className={styles.teamTags} aria-label="Áreas de expertise">
-                {pabloTags.map((tag) => (
-                  <li key={tag} className={styles.teamTag}>
-                    {tag}
-                  </li>
-                ))}
-              </ul>
-            </article>
+              <p className={styles.bioText}>
+                Hoy aplica ese mismo rigor enterprise para construir sistemas de automatización que PyMEs mexicanas pueden activar, entender y mantener. Su filosofía: si un proceso tiene que explicarse en una reunión cada semana, está mal diseñado.
+              </p>
+              <div className={styles.bioCredentials}>
+                <span className={styles.credential}>9+ años en automatización enterprise</span>
+                <span className={styles.credential}>Proyectos en Starbucks, CBRE y Fortune 500</span>
+                <span className={styles.credential}>Especialidad: arquitectura de sistemas, IA aplicada, integración de plataformas</span>
+                <span className={styles.credential}>152+ automatizaciones implementadas</span>
+              </div>
+            </div>
+
+            <div className={styles.bioCard}>
+              <div className={styles.bioHeader}>
+                <div className={styles.bioAvatar} aria-hidden="true">PM</div>
+                <div>
+                  <p className={styles.bioName}>Pablo Morales</p>
+                  <p className={styles.bioRole}>Co-fundador · Director de Estrategia</p>
+                </div>
+              </div>
+              <p className={styles.bioText}>
+                Pablo aporta una perspectiva única: entiende los negocios mexicanos desde adentro. Con experiencia en gestión operativa y escalamiento de empresas en el mercado latinoamericano, Pablo es quien traduce los procesos del cliente en arquitecturas de automatización que realmente se implementan y se usan.
+              </p>
+              <p className={styles.bioText}>
+                Es el puente entre la visión técnica y la realidad operativa del negocio. Su rol es garantizar que cada automatización que entregamos genere valor desde el primer día, no que se convierta en otro sistema que nadie usa.
+              </p>
+              <div className={styles.bioCredentials}>
+                <span className={styles.credential}>Experiencia en gestión operativa de PyMEs</span>
+                <span className={styles.credential}>Especialidad: estrategia de transformación, gestión del cambio</span>
+                <span className={styles.credential}>Foco en implementación efectiva y adopción del equipo</span>
+                <span className={styles.credential}>Relaciones con proveedores y socios en LATAM</span>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      <section className={styles.modelSection}>
-        <div className={styles.modelInner}>
-          <p className={styles.sectionLabel}>Nuestro modelo</p>
-          <h2 className={styles.modelTitle}>2 personas × IA = resultados enterprise</h2>
-          <p className={styles.modelDesc}>
-            No somos una agencia de cientos de empleados. Somos dos personas con
-            herramientas de IA que amplifican nuestra capacidad de trabajo. Lo
-            que antes requería equipos de 20 personas, hoy lo hacemos dos — con
-            mejor calidad, más rápido y a una fracción del costo.
-          </p>
-          <div className={styles.valueGrid}>
-            {valueCards.map((card) => (
-              <article key={card.title} className={styles.valueCard}>
-                <h3 className={styles.valueTitle}>{card.title}</h3>
-                <p className={styles.valueDesc}>{card.desc}</p>
-              </article>
-            ))}
+      {/* ── Values ── */}
+      <section className={styles.valuesSection}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Cómo trabajamos</h2>
+          <div className={styles.valuesGrid}>
+            <div className={styles.valueCard}>
+              <h3 className={styles.valueTitle}>Resultados primero</h3>
+              <p className={styles.valueText}>
+                Cada proyecto define métricas de éxito antes de empezar. Si no hay un número que mejorar, no hay proyecto.
+              </p>
+            </div>
+            <div className={styles.valueCard}>
+              <h3 className={styles.valueTitle}>Sin curva de aprendizaje</h3>
+              <p className={styles.valueText}>
+                Entregamos sistemas que tu equipo puede operar desde el día uno. La documentación y capacitación son parte del entregable, no un extra.
+              </p>
+            </div>
+            <div className={styles.valueCard}>
+              <h3 className={styles.valueTitle}>Tecnología que ya tienes</h3>
+              <p className={styles.valueText}>
+                No obligamos a cambiar de plataforma. Construimos sobre lo que ya usas y te recomendamos cambios solo cuando el beneficio es claro.
+              </p>
+            </div>
+            <div className={styles.valueCard}>
+              <h3 className={styles.valueTitle}>Transparencia total</h3>
+              <p className={styles.valueText}>
+                Precios fijos, alcance definido, entregables claros. Sin contratos confusos ni costos ocultos.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className={styles.storySection}>
-        <div className={styles.storyInner}>
-          <p className={styles.sectionLabel}>La historia</p>
-          <h2 className={styles.storyTitle}>Por qué TPConsulting</h2>
-          <p className={styles.storyDesc}>
-            Después de años construyendo sistemas para grandes corporativos,
-            vimos que las herramientas que usaban las empresas Fortune 500 eran
-            perfectamente aplicables a PyMEs mexicanas — pero nadie las estaba
-            ofreciendo de forma accesible. Fundamos TPConsulting en Guadalajara
-            para cerrar esa brecha: llevar automatización de nivel enterprise a
-            negocios de cualquier tamaño.
+      {/* ── CTA ── */}
+      <section className={styles.ctaSection}>
+        <div className={styles.container}>
+          <h2 className={styles.ctaTitle}>¿Quieres trabajar con nosotros?</h2>
+          <p className={styles.ctaText}>
+            Agenda una llamada exploratoria o comienza directamente con un diagnóstico.
           </p>
-          <Link href="/contacto" className={styles.storyLink}>
-            Habla con el equipo →
+          <Link href="/contacto" className={styles.ctaLink}>
+            Hablar con el equipo
           </Link>
         </div>
       </section>
+
     </main>
   );
 }

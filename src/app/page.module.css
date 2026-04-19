@@ -1,242 +1,180 @@
 /* ============================================================
-   page.module.css — TPConsulting Home Page
-   Mobile-first, CSS Modules, zero inline styles
+   Landing Page — TPConsulting
+   Rules: tonal nesting (no hard borders), no drop shadows,
+   8px max radius, 44px touch targets, mobile-first
    ============================================================ */
 
-/* ── Shared Utilities ─────────────────────────────────────── */
-
-.inner {
+/* ── Shared ─────────────────────────────────────────────── */
+.container {
+  width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--space-6);
 }
 
-/* ── Shared Section Header ────────────────────────────────── */
-
-.sectionHeader {
-  margin-bottom: var(--space-12);
-}
-
-.sectionLabel {
-  font-family: var(--font-ui);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--accent-primary);
-  margin: 0;
+  margin-bottom: var(--space-4);
+}
+
+.sectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-10);
 }
 
 .sectionTitle {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 700;
   color: var(--fg-1);
-  margin: var(--space-2) 0 0 0;
-  line-height: 1.15;
+  line-height: 1.2;
 }
 
-.sectionSub {
-  font-family: var(--font-body);
-  font-size: 1.0625rem;
+.sectionSubtitle {
+  font-size: 1rem;
   color: var(--fg-2);
-  margin: var(--space-3) 0 0 0;
-  line-height: 1.65;
+  line-height: 1.6;
+  max-width: 56ch;
 }
 
-/* ── Section 1: Hero ──────────────────────────────────────── */
-
+/* ── Hero ────────────────────────────────────────────────── */
 .hero {
   background-color: var(--bg-canvas);
-  padding-top: calc(var(--nav-height) + var(--space-20));
-  padding-bottom: var(--space-20);
-  padding-left: var(--space-6);
-  padding-right: var(--space-6);
+  padding: var(--space-16) 0 var(--space-20);
 }
 
 .heroInner {
-  max-width: 900px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: 680px;
 }
 
-.heroEyebrow {
-  font-family: var(--font-ui);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent-primary);
-  margin: 0;
-}
-
-.heroHeadline {
+.heroTitle {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.75rem);
+  font-size: clamp(2rem, 5vw, 3.5rem);
   font-weight: 700;
-  color: var(--fg-1);
   line-height: 1.1;
-  margin: var(--space-4) 0 0 0;
+  color: var(--fg-1);
+  letter-spacing: -0.02em;
 }
 
-.heroSub {
-  font-family: var(--font-body);
-  font-size: 1.1875rem;
+.heroTitle em {
+  font-style: normal;
+  color: var(--accent-primary);
+}
+
+.heroSubtitle {
+  font-size: clamp(1rem, 2vw, 1.125rem);
   color: var(--fg-2);
-  max-width: 580px;
-  margin: var(--space-5) 0 0 0;
-  line-height: 1.65;
+  line-height: 1.7;
+  max-width: 52ch;
 }
 
 .heroCtas {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   gap: var(--space-4);
-  margin-top: var(--space-8);
+  align-items: center;
 }
 
 .ctaPrimary {
-  background-color: var(--accent-primary);
-  color: var(--fg-on-accent);
-  font-family: var(--font-ui);
-  font-size: 1rem;
-  font-weight: 600;
-  padding: var(--space-4) var(--space-8);
-  border-radius: var(--radius-md);
-  min-height: 52px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
+  border-radius: var(--radius-md);
   text-decoration: none;
   transition: background-color var(--transition-fast);
-  border: none;
-  cursor: pointer;
 }
 
 .ctaPrimary:hover {
   background-color: var(--accent-primary-hover);
-}
-
-.ctaPrimary:active {
-  background-color: var(--accent-primary-press);
+  text-decoration: none;
 }
 
 .ctaSecondary {
-  background-color: var(--bg-raised);
-  color: var(--fg-1);
-  font-family: var(--font-ui);
-  font-size: 1rem;
-  font-weight: 500;
-  padding: var(--space-4) var(--space-8);
-  border-radius: var(--radius-md);
-  min-height: 52px;
   display: inline-flex;
   align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--fg-1);
   text-decoration: none;
-  transition: background-color var(--transition-fast);
-  border: none;
-  cursor: pointer;
+  transition: color var(--transition-fast);
 }
 
 .ctaSecondary:hover {
-  background-color: var(--bg-inset);
-}
-
-.heroCred {
-  font-family: var(--font-ui);
-  font-size: 0.875rem;
-  color: var(--fg-muted);
-  margin: var(--space-8) 0 0 0;
-}
-
-/* ── Section 2: Stats Bar ─────────────────────────────────── */
-
-.stats {
-  background-color: var(--bg-raised);
-  padding: var(--space-16) var(--space-6);
-}
-
-.statsInner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-8);
-}
-
-.statItem {
-  text-align: center;
-}
-
-.statValue {
-  font-family: var(--font-display);
-  font-size: 3.5rem;
-  font-weight: 700;
   color: var(--accent-primary);
-  line-height: 1;
-  margin: 0;
+  text-decoration: none;
 }
 
-.statLabel {
-  font-family: var(--font-ui);
-  font-size: 0.9375rem;
-  color: var(--fg-2);
-  margin: var(--space-2) 0 0 0;
+/* ── Stats Bar ───────────────────────────────────────────── */
+.statsBar {
+  background-color: var(--bg-raised);
+  padding: var(--space-8) 0;
 }
 
-@media (min-width: 480px) {
-  .statsInner {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
 }
 
-@media (min-width: 768px) {
-  .statsInner {
+@media (min-width: 640px) {
+  .statsGrid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* ── Section 3: How It Works ──────────────────────────────── */
+.statItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
 
+.statNumber {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+.statLabel {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  color: var(--fg-2);
+  line-height: 1.4;
+}
+
+/* ── How it Works ────────────────────────────────────────── */
 .howItWorks {
   background-color: var(--bg-canvas);
-  padding: var(--space-24) var(--space-6);
+  padding: var(--space-20) 0;
 }
 
 .stepsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-6);
-}
-
-.step {
-  background-color: var(--bg-raised);
-  padding: var(--space-8);
-  border-radius: var(--radius-lg);
-}
-
-.stepNum {
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--accent-primary);
-  opacity: 0.7;
-  margin: 0 0 var(--space-4) 0;
-}
-
-.stepTitle {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--fg-1);
-  margin: 0 0 var(--space-3) 0;
-}
-
-.stepDesc {
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  color: var(--fg-2);
-  line-height: 1.65;
-  margin: 0;
+  gap: var(--space-4);
 }
 
 @media (min-width: 768px) {
@@ -245,17 +183,51 @@
   }
 }
 
-/* ── Section 4: Services Grid ─────────────────────────────── */
-
-.services {
+.stepCard {
+  padding: var(--space-8);
   background-color: var(--bg-raised);
-  padding: var(--space-24) var(--space-6);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.stepNumber {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent-primary);
+  letter-spacing: 0.1em;
+}
+
+.stepIcon {
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.stepDesc {
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  line-height: 1.6;
+}
+
+/* ── Services Grid ───────────────────────────────────────── */
+.servicesSection {
+  background-color: var(--bg-inset);
+  padding: var(--space-20) 0;
 }
 
 .servicesGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 @media (min-width: 640px) {
@@ -270,57 +242,102 @@
   }
 }
 
-/* ── Section 5: Marketplace ───────────────────────────────── */
-
-.marketplace {
-  background-color: var(--bg-canvas);
-  padding: var(--space-24) var(--space-6);
+/* Service mini-card (inline, no border) */
+.serviceItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
 }
 
-.sectionLink {
-  display: inline-block;
+.serviceIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background-color: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+  border-radius: var(--radius-md);
+  color: var(--accent-primary);
+  flex-shrink: 0;
+}
+
+.serviceTitle {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.3;
+}
+
+.serviceDesc {
+  font-size: 0.875rem;
+  color: var(--fg-2);
+  line-height: 1.5;
+  flex: 1;
+}
+
+.servicePrice {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--accent-primary);
+}
+
+.serviceLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   font-family: var(--font-ui);
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--accent-primary);
   text-decoration: none;
-  margin-bottom: var(--space-8);
-  transition: color var(--transition-fast);
+  min-height: 44px;
+  transition: opacity var(--transition-fast);
 }
 
-.sectionLink:hover {
-  color: var(--accent-primary-hover);
+.serviceLink:hover {
+  opacity: 0.8;
+  text-decoration: none;
 }
 
-.marketplaceGrid {
+/* ── Marketplace Preview ─────────────────────────────────── */
+.marketplaceSection {
+  background-color: var(--bg-canvas);
+  padding: var(--space-20) 0;
+}
+
+.solutionsGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 @media (min-width: 640px) {
-  .marketplaceGrid {
+  .solutionsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (min-width: 1024px) {
-  .marketplaceGrid {
+  .solutionsGrid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* ── Section 6: Pricing ───────────────────────────────────── */
-
-.pricing {
+/* ── Pricing ─────────────────────────────────────────────── */
+.pricingSection {
   background-color: var(--bg-raised);
-  padding: var(--space-24) var(--space-6);
+  padding: var(--space-20) 0;
 }
 
 .pricingGrid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 @media (min-width: 640px) {
@@ -335,188 +352,134 @@
   }
 }
 
-/* ── Section 7: Case Study ────────────────────────────────── */
-
-.caseStudy {
-  background-color: var(--bg-canvas);
-  padding: var(--space-24) var(--space-6);
+/* ── Case Study ──────────────────────────────────────────── */
+.caseStudySection {
+  background-color: var(--bg-inset);
+  padding: var(--space-20) 0;
 }
 
 .caseStudyInner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-}
-
-.caseCard {
-  background-color: var(--bg-raised);
-  padding: var(--space-10);
-  border-radius: var(--radius-lg);
-  margin-top: var(--space-8);
-}
-
-.caseBadge {
-  display: inline-block;
-  background-color: var(--bg-inset);
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--accent-primary);
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.caseProblem {
-  margin-top: 0;
-}
-
-.caseProblem p:last-child {
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  color: var(--fg-2);
-  line-height: 1.65;
-  margin: 0;
-}
-
-.caseSubLabel {
-  font-family: var(--font-ui);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  margin: 0 0 var(--space-2) 0;
-}
-
-.casePipeline {
-  margin-top: var(--space-6);
-}
-
-.pipelineStages {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-
-.pipelineStage {
-  background-color: var(--bg-inset);
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-4);
-  font-family: var(--font-ui);
-  font-size: 0.875rem;
-  color: var(--fg-1);
-  white-space: nowrap;
-}
-
-.pipelineArrow {
-  font-family: var(--font-ui);
-  font-size: 0.875rem;
-  color: var(--fg-muted);
-  flex-shrink: 0;
-}
-
-.caseResults {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-top: var(--space-6);
-}
-
-.resultChip {
-  background-color: var(--bg-inset);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-5);
-  flex: 1 1 auto;
-  min-width: 120px;
-}
-
-.resultValue {
-  font-family: var(--font-mono);
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent-primary);
-  margin: 0;
-  line-height: 1.2;
-}
-
-.resultLabel {
-  font-family: var(--font-ui);
-  font-size: 0.875rem;
-  color: var(--fg-2);
-  margin: var(--space-1) 0 0 0;
-}
-
-.caseLink {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  font-family: var(--font-ui);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--accent-primary);
-  text-decoration: none;
-  margin-top: var(--space-6);
-  transition: color var(--transition-fast);
-}
-
-.caseLink:hover {
-  color: var(--accent-primary-hover);
-}
-
-/* ── Section 8: CTA ───────────────────────────────────────── */
-
-.ctaSection {
-  background-color: var(--bg-inset);
-  padding: var(--space-24) var(--space-6);
-  text-align: center;
-}
-
-.ctaInner {
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.ctaHeadline {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 700;
-  color: var(--fg-1);
-  margin: 0;
-  line-height: 1.15;
-}
-
-.ctaBody {
-  font-family: var(--font-body);
-  font-size: 1.125rem;
-  color: var(--fg-2);
-  margin: var(--space-4) 0 0 0;
-  line-height: 1.65;
-}
-
-.ctaButtons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-  margin-top: var(--space-8);
-}
-
-/* ── Responsive Adjustments ───────────────────────────────── */
-
-@media (min-width: 640px) {
-  .heroCtas {
-    flex-wrap: nowrap;
-  }
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
 }
 
 @media (min-width: 768px) {
-  .caseResults {
-    flex-wrap: nowrap;
+  .caseStudyInner {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
   }
+}
 
-  .resultChip {
-    flex: 1 1 0;
-  }
+.caseStudyLabel {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin-bottom: var(--space-3);
+}
+
+.caseStudyTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.2;
+  margin-bottom: var(--space-4);
+}
+
+.caseStudyText {
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  line-height: 1.7;
+  margin-bottom: var(--space-6);
+}
+
+.caseStudyLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.caseStudyLink:hover {
+  background-color: var(--accent-primary-hover);
+  text-decoration: none;
+}
+
+.caseStudyResults {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.resultCard {
+  padding: var(--space-6);
+  background-color: var(--bg-nest-3);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.resultNumber {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+.resultLabel {
+  font-size: 0.8125rem;
+  color: var(--fg-2);
+  line-height: 1.4;
+}
+
+/* ── CTA Section ─────────────────────────────────────────── */
+.ctaSection {
+  background-color: var(--bg-canvas);
+  padding: var(--space-20) 0;
+  text-align: center;
+}
+
+.ctaSectionInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ctaSectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.2;
+}
+
+.ctaSectionText {
+  font-size: 1rem;
+  color: var(--fg-2);
+  line-height: 1.6;
+}
+
+.ctaSectionBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: center;
 }

@@ -1,7 +1,88 @@
-/* ─────────────────────────────────────────────
-   DiagnosticForm.module.css
-───────────────────────────────────────────── */
+.wrapper {
+  width: 100%;
+}
 
+/* ── Progress ──────────────────────────────────────────────── */
+.progress {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-10);
+  padding-bottom: var(--space-8);
+}
+
+.progressBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--bg-inset);
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--accent-primary);
+  transition: width var(--transition-slow);
+}
+
+.progressStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  opacity: 0.45;
+  transition: opacity var(--transition-base);
+}
+
+.progressActive,
+.progressDone {
+  opacity: 1;
+}
+
+.progressDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: var(--bg-inset);
+  color: var(--fg-2);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.progressActive .progressDot {
+  background-color: var(--accent-primary);
+  color: var(--fg-on-accent);
+}
+
+.progressDone .progressDot {
+  background-color: color-mix(in srgb, var(--accent-primary) 20%, transparent);
+  color: var(--accent-primary);
+}
+
+.progressLabel {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  text-align: center;
+  color: var(--fg-3);
+  white-space: nowrap;
+}
+
+.progressActive .progressLabel {
+  color: var(--fg-1);
+  font-weight: 600;
+}
+
+/* ── Form ──────────────────────────────────────────────────── */
 .form {
   max-width: 720px;
   margin: 0 auto;
@@ -104,6 +185,34 @@
   gap: var(--space-5);
 }
 
+.fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.legend {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fg-1);
+  margin-bottom: var(--space-3);
+  padding: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 560px) {
+  .row { grid-template-columns: 1fr; }
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -115,6 +224,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--fg-1);
+  line-height: 1.4;
 }
 
 .required {
@@ -135,20 +245,22 @@
   font-family: var(--font-ui);
   font-size: 0.9375rem;
   color: var(--fg-1);
-  background-color: var(--bg-inset);
+  background-color: var(--bg-raised);
+  border: 1px solid var(--outline);
   border-radius: var(--radius-md);
   padding: var(--space-3) var(--space-4);
+  min-height: 44px;
   width: 100%;
-  transition: background-color var(--transition-fast);
-  outline: none;
-  border: none;
+  transition: border-color var(--transition-fast);
   appearance: none;
 }
 
-.input:focus,
-.select:focus,
-.textarea:focus {
-  background-color: var(--bg-nest-3);
+.select {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23657b83' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--space-3) center;
+  padding-right: var(--space-10);
 }
 
 .input::placeholder,
@@ -156,27 +268,258 @@
   color: var(--fg-muted);
 }
 
-.textarea {
-  resize: vertical;
-  min-height: 96px;
-  line-height: 1.5;
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
 }
 
-.select {
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* ── Checkbox grid ─────────────────────────────────────────── */
+.checkGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+@media (min-width: 640px) {
+  .checkGrid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  color: var(--fg-2);
+  cursor: pointer;
+  min-height: 44px;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.checkLabel:hover {
+  background-color: var(--bg-nest-3);
+  color: var(--fg-1);
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  accent-color: var(--accent-primary);
   cursor: pointer;
 }
 
-/* ── Two-column row ── */
-.row {
+/* ── Tier selection ────────────────────────────────────────── */
+.tierGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
 }
 
-@media (max-width: 640px) {
-  .row {
-    grid-template-columns: 1fr;
-  }
+@media (min-width: 640px) {
+  .tierGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .tierGrid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.tierCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  min-height: 100px;
+  text-align: left;
+  border: 2px solid transparent;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.tierCard:hover {
+  background-color: var(--bg-inset);
+}
+
+.tierSelected {
+  background-color: color-mix(in srgb, var(--accent-primary) 8%, var(--bg-raised));
+  border-color: var(--accent-primary);
+}
+
+.tierBadge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+}
+
+.tierName {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.tierPrice {
+  font-family: var(--font-mono);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: var(--accent-primary);
+}
+
+.tierDesc {
+  font-size: 0.8125rem;
+  color: var(--fg-2);
+  line-height: 1.4;
+}
+
+/* ── Nav buttons ───────────────────────────────────────────── */
+.navBtns {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+}
+
+.btnBack {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--fg-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  transition: color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.btnBack:hover {
+  color: var(--fg-1);
+  background-color: var(--bg-inset);
+}
+
+.btnNext {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-8);
+  min-height: 44px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.btnNext:hover:not(:disabled) {
+  background-color: var(--accent-primary-hover);
+}
+
+.btnNext:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btnSubmit {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-8);
+  min-height: 44px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.btnSubmit:hover:not(:disabled) {
+  background-color: var(--accent-primary-hover);
+}
+
+.btnSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Error ─────────────────────────────────────────────────── */
+.errorMsg {
+  font-size: 0.875rem;
+  color: #dc2626;
+  padding: var(--space-3);
+  background-color: rgba(220, 38, 38, 0.08);
+  border-radius: var(--radius-md);
+}
+
+/* ── Success ───────────────────────────────────────────────── */
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-12) var(--space-8);
+  text-align: center;
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
+}
+
+.successIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background-color: color-mix(in srgb, var(--accent-primary) 15%, transparent);
+  color: var(--accent-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+}
+
+.successTitle {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.successBody {
+  font-size: 1rem;
+  color: var(--fg-2);
+  line-height: 1.6;
+  max-width: 44ch;
+}
+
+.successTier {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--accent-primary);
 }
 
 /* ── Hidden native input ── */

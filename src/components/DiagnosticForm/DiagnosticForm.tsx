@@ -1,140 +1,99 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
 import styles from "./DiagnosticForm.module.css";
 
-type FormData = {
+/* ── Types ─────────────────────────────────────────────────── */
+interface FormData {
   // Stage 1
-  businessName: string;
+  business_name: string;
   industry: string;
   city: string;
   employees: string;
-  businessAge: string;
+  business_age: string;
   // Stage 2
-  customerChannels: string[];
-  firstContact: string;
-  responseTime: string;
-  dataManagement: string;
-  cfdi: string;
-  googleBusiness: string;
+  customer_channels: string[];
+  first_contact_process: string;
+  response_time: string;
+  client_data_mgmt: string;
+  cfdi_status: string;
+  google_business: string;
+  current_tools: string[];
+  current_tech_spend: string;
   // Stage 3
-  biggestWaste: string;
-  oneToAutomate: string;
-  pastAttempts: string;
-  pastAttemptsDetail: string;
-  losingCustomers: string[];
-  currentTools: string[];
-  // Stage 4
-  techSpend: string;
-  automationBudget: string;
-  monthlyRevenue: string;
+  biggest_time_waste: string;
+  one_thing_to_automate: string;
+  past_automation: string;
+  past_automation_detail: string;
+  losing_customers_how: string[];
   urgency: string;
-  anythingElse: string;
-  // Contact
-  name: string;
-  whatsapp: string;
-  email: string;
-  contactPref: string;
-  // Tier
+  additional_notes: string;
+  // Stage 4
+  automation_budget: string;
+  monthly_revenue: string;
   tier: string;
+  contact_name: string;
+  contact_whatsapp: string;
+  contact_email: string;
+  contact_preference: string;
+}
+
+const initial: FormData = {
+  business_name: "", industry: "", city: "", employees: "", business_age: "",
+  customer_channels: [], first_contact_process: "", response_time: "",
+  client_data_mgmt: "", cfdi_status: "", google_business: "",
+  current_tools: [], current_tech_spend: "",
+  biggest_time_waste: "", one_thing_to_automate: "", past_automation: "",
+  past_automation_detail: "", losing_customers_how: [], urgency: "",
+  additional_notes: "", automation_budget: "", monthly_revenue: "",
+  tier: "", contact_name: "", contact_whatsapp: "", contact_email: "",
+  contact_preference: "",
 };
 
-const initialForm: FormData = {
-  businessName: "",
-  industry: "",
-  city: "",
-  employees: "",
-  businessAge: "",
-  customerChannels: [],
-  firstContact: "",
-  responseTime: "",
-  dataManagement: "",
-  cfdi: "",
-  googleBusiness: "",
-  biggestWaste: "",
-  oneToAutomate: "",
-  pastAttempts: "",
-  pastAttemptsDetail: "",
-  losingCustomers: [],
-  currentTools: [],
-  techSpend: "",
-  automationBudget: "",
-  monthlyRevenue: "",
-  urgency: "",
-  anythingElse: "",
-  name: "",
-  whatsapp: "+52 ",
-  email: "",
-  contactPref: "",
-  tier: "",
-};
+const STAGES = ["Tu Negocio", "Tu Operación", "Tu Mayor Dolor", "Inversión"];
 
-const stageLabels = [
-  "Tu Negocio",
-  "Tu Operación",
-  "Tu Mayor Dolor",
-  "Tu Inversión",
-  "Tu Contacto",
-  "Confirmar",
+const TIER_OPTIONS = [
+  { value: "explorador", label: "Explorador", price: "$1,000 MXN", desc: "Diagnóstico Express 48hrs" },
+  { value: "estudio", label: "Estudio", price: "$5,000 MXN", desc: "Diagnóstico Profundo + Roadmap" },
+  { value: "transformacion", label: "Transformación", price: "$10,000 MXN", desc: "Diagnóstico + 1 Automatización implementada", popular: true },
+  { value: "empresa", label: "Empresa", price: "$15,000 MXN", desc: "Diagnóstico + 3 Automatizaciones integradas" },
 ];
 
-const tiers = [
-  {
-    id: "basico",
-    title: "Escaneo Básico",
-    price: "$1,000 MXN",
-    desc: "Cuestionario + informe PDF en 48 horas",
-    recommended: false,
-  },
-  {
-    id: "estandar",
-    title: "Diagnóstico Estándar",
-    price: "$5,000 MXN",
-    desc: "Videollamada 90 min + plan priorizado",
-    recommended: true,
-  },
-  {
-    id: "profundo",
-    title: "Análisis Profundo",
-    price: "$10,000 MXN",
-    desc: "Todo el Estándar + visita presencial GDL",
-    recommended: false,
-  },
-  {
-    id: "enterprise",
-    title: "Consultoría Enterprise",
-    price: "$15,000 MXN",
-    desc: "Todo el Análisis + taller directivo + 30 días CTO",
-    recommended: false,
-  },
-];
+/* ── Helpers ───────────────────────────────────────────────── */
+function toggleArray(arr: string[], val: string): string[] {
+  return arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
+}
 
-export default function DiagnosticForm() {
-  const [stage, setStage] = useState(1);
-  const [form, setForm] = useState<FormData>(initialForm);
-  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+/* ── Component ─────────────────────────────────────────────── */
+export default function DiagnosticForm({ initialTier = "" }: { initialTier?: string }) {
+  const [stage, setStage] = useState(0);
+  const [form, setForm] = useState<FormData>({ ...initial, tier: initialTier });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleChange = (field: keyof FormData, value: string) => {
+  function set(field: keyof FormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
-  };
+  }
+  function setArr(field: keyof FormData, value: string) {
+    setForm((prev) => ({ ...prev, [field]: toggleArray(prev[field] as string[], value) }));
+  }
+  function checked(field: keyof FormData, value: string) {
+    return (form[field] as string[]).includes(value);
+  }
 
-  const handleMultiCheck = (
-    field: "customerChannels" | "losingCustomers" | "currentTools",
-    value: string
-  ) => {
-    setForm((prev) => {
-      const arr = prev[field] as string[];
-      const exists = arr.includes(value);
-      return {
-        ...prev,
-        [field]: exists ? arr.filter((v) => v !== value) : [...arr, value],
-      };
-    });
-    setErrors((prev) => ({ ...prev, [field]: undefined }));
-  };
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    setErrorMsg("");
+    const { error } = await supabase.from("diagnostic_submissions").insert([form]);
+    if (error) {
+      setStatus("error");
+      setErrorMsg("Hubo un error al enviar tu solicitud. Intenta de nuevo.");
+    } else {
+      setStatus("success");
+    }
+  }
 
   const validateStage = (s: number): boolean => {
     const newErrors: Partial<Record<keyof FormData, string>> = {};
@@ -193,1120 +152,369 @@ export default function DiagnosticForm() {
   if (submitted) {
     return (
       <div className={styles.success}>
-        <svg
-          className={styles.successIcon}
-          width="48"
-          height="48"
-          viewBox="0 0 48 48"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <circle cx="24" cy="24" r="24" fill="currentColor" fillOpacity="0.12" />
-          <path
-            d="M14 24L21 31L34 17"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <h3 className={styles.successTitle}>¡Solicitud enviada!</h3>
+        <span className={styles.successIcon} aria-hidden="true">✓</span>
+        <h2 className={styles.successTitle}>¡Solicitud recibida!</h2>
         <p className={styles.successBody}>
-          Te contactamos en menos de 24 horas para confirmar tu diagnóstico. Revisa tu WhatsApp y
-          correo.
+          Nos pondremos en contacto contigo en menos de 24 horas para agendar tu diagnóstico.
+          Revisa tu WhatsApp y correo.
         </p>
+        <p className={styles.successTier}>Plan seleccionado: <strong>{form.tier}</strong></p>
       </div>
     );
   }
 
   return (
-    <div className={styles.form}>
-      {/* Progress Indicator */}
-      <nav className={styles.progress} aria-label="Progreso del formulario">
-        {stageLabels.map((label, i) => {
-          const stepNum = i + 1;
-          const isDone = stage > stepNum;
-          const isActive = stage === stepNum;
-          return (
-            <div key={stepNum} className={styles.progressStep}>
-              {i > 0 && <div className={styles.progressLine} />}
-              <div
-                className={[
-                  styles.progressDot,
-                  isActive ? styles.progressDotActive : "",
-                  isDone ? styles.progressDotDone : "",
-                  !isActive && !isDone ? styles.progressDotPending : "",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-                aria-current={isActive ? "step" : undefined}
-              >
-                {stepNum}
-              </div>
-              <span className={styles.progressLabel}>{label}</span>
-            </div>
-          );
-        })}
-      </nav>
-
-      {/* Stage 1 */}
-      {stage === 1 && (
-        <>
-          <h2 className={styles.stageTitle}>Tu negocio</h2>
-          <p className={styles.stageSub}>Cuéntanos los datos básicos de tu empresa.</p>
-          <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="businessName">
-                Nombre de tu empresa o negocio <span className={styles.required}>*</span>
-              </label>
-              <input
-                id="businessName"
-                type="text"
-                className={styles.input}
-                value={form.businessName}
-                onChange={(e) => handleChange("businessName", e.target.value)}
-                autoComplete="organization"
-              />
-              {errors.businessName && (
-                <span className={styles.errorMsg}>{errors.businessName}</span>
-              )}
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="industry">
-                Industria o giro <span className={styles.required}>*</span>
-              </label>
-              <select
-                id="industry"
-                className={styles.select}
-                value={form.industry}
-                onChange={(e) => handleChange("industry", e.target.value)}
-              >
-                <option value="" disabled>
-                  Selecciona tu industria
-                </option>
-                <option value="Restaurante">Restaurante</option>
-                <option value="Cafetería">Cafetería</option>
-                <option value="Clínica / Consultorio">Clínica / Consultorio</option>
-                <option value="Inmobiliaria">Inmobiliaria</option>
-                <option value="Hospedaje / Airbnb">Hospedaje / Airbnb</option>
-                <option value="Tienda / Comercio al menudeo">Tienda / Comercio al menudeo</option>
-                <option value="Agencia de marketing">Agencia de marketing</option>
-                <option value="Consultoría / Servicios profesionales">
-                  Consultoría / Servicios profesionales
-                </option>
-                <option value="Educación / Academia">Educación / Academia</option>
-                <option value="Construcción">Construcción</option>
-                <option value="Manufactura">Manufactura</option>
-                <option value="Transporte / Logística">Transporte / Logística</option>
-                <option value="Otro">Otro</option>
-              </select>
-              {errors.industry && <span className={styles.errorMsg}>{errors.industry}</span>}
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="city">
-                ¿En qué ciudad operas? <span className={styles.required}>*</span>
-              </label>
-              <input
-                id="city"
-                type="text"
-                className={styles.input}
-                value={form.city}
-                onChange={(e) => handleChange("city", e.target.value)}
-                placeholder="Guadalajara"
-              />
-              {errors.city && <span className={styles.errorMsg}>{errors.city}</span>}
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>¿Cuántas personas trabajan contigo?</legend>
-                <div className={styles.radioGroup}>
-                  {["Solo yo", "2–5 personas", "6–15 personas", "16–50 personas", "Más de 50"].map(
-                    (opt) => (
-                      <label
-                        key={opt}
-                        className={styles.radioOption}
-                        data-selected={form.employees === opt ? "true" : "false"}
-                      >
-                        <input
-                          type="radio"
-                          name="employees"
-                          value={opt}
-                          checked={form.employees === opt}
-                          onChange={() => handleChange("employees", opt)}
-                          className={styles.hiddenInput}
-                        />
-                        <span
-                          className={[
-                            styles.radioCircle,
-                            form.employees === opt ? styles.radioCircleSelected : "",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        />
-                        {opt}
-                      </label>
-                    )
-                  )}
-                </div>
-              </fieldset>
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>¿Cuánto tiempo lleva tu negocio?</legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Menos de 1 año",
-                    "1 a 3 años",
-                    "3 a 10 años",
-                    "Más de 10 años",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.businessAge === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="businessAge"
-                        value={opt}
-                        checked={form.businessAge === opt}
-                        onChange={() => handleChange("businessAge", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.businessAge === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
+    <div className={styles.wrapper}>
+      {/* Progress bar */}
+      <div className={styles.progress} role="navigation" aria-label="Etapas del formulario">
+        {STAGES.map((label, i) => (
+          <div
+            key={label}
+            className={`${styles.progressStep} ${i === stage ? styles.progressActive : ""} ${i < stage ? styles.progressDone : ""}`}
+          >
+            <span className={styles.progressDot} aria-hidden="true">{i < stage ? "✓" : i + 1}</span>
+            <span className={styles.progressLabel}>{label}</span>
           </div>
-        </>
-      )}
+        ))}
+        <div className={styles.progressBar}>
+          <div className={styles.progressFill} style={{ width: `${((stage) / (STAGES.length - 1)) * 100}%` }} />
+        </div>
+      </div>
 
-      {/* Stage 2 */}
-      {stage === 2 && (
-        <>
-          <h2 className={styles.stageTitle}>Tu operación</h2>
-          <p className={styles.stageSub}>Entendemos cómo funciona tu negocio día a día.</p>
-          <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cómo te encuentran tus clientes? (todas las que apliquen){" "}
-                  <span className={styles.required}>*</span>
-                </legend>
-                <div className={styles.checkboxGroup}>
-                  {[
-                    "Recomendaciones / boca a boca",
-                    "Redes sociales (Instagram, Facebook)",
-                    "Google / búsqueda orgánica",
-                    "WhatsApp directo",
-                    "Plataforma o marketplace",
-                    "Publicidad pagada",
-                    "Otra forma",
-                  ].map((opt) => {
-                    const checked = form.customerChannels.includes(opt);
-                    return (
-                      <label
-                        key={opt}
-                        className={styles.checkboxOption}
-                        data-selected={checked ? "true" : "false"}
-                      >
-                        <input
-                          type="checkbox"
-                          value={opt}
-                          checked={checked}
-                          onChange={() => handleMultiCheck("customerChannels", opt)}
-                          className={styles.hiddenInput}
-                        />
-                        <span
-                          className={[
-                            styles.checkboxBox,
-                            checked ? styles.checkboxBoxChecked : "",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        >
-                          {checked && (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                              <path
-                                d="M2 6L5 9L10 3"
-                                stroke="currentColor"
-                                strokeWidth="1.8"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
-                        </span>
-                        {opt}
-                      </label>
-                    );
-                  })}
-                </div>
-                {errors.customerChannels && (
-                  <span className={styles.errorMsg}>{errors.customerChannels}</span>
-                )}
-              </fieldset>
-            </div>
+      <form className={styles.form} onSubmit={handleSubmit} noValidate>
 
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cómo es el primer contacto con un prospecto?{" "}
-                  <span className={styles.required}>*</span>
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Llamada telefónica",
-                    "WhatsApp",
-                    "Formulario en mi sitio web",
-                    "Correo electrónico",
-                    "En persona",
-                    "A través de una plataforma",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.firstContact === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="firstContact"
-                        value={opt}
-                        checked={form.firstContact === opt}
-                        onChange={() => handleChange("firstContact", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.firstContact === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-                {errors.firstContact && (
-                  <span className={styles.errorMsg}>{errors.firstContact}</span>
-                )}
-              </fieldset>
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cuánto tardas en responder a un prospecto?{" "}
-                  <span className={styles.required}>*</span>
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Menos de 5 minutos",
-                    "Entre 5 y 60 minutos",
-                    "Entre 1 y 4 horas",
-                    "El mismo día",
-                    "Al día siguiente o después",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.responseTime === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="responseTime"
-                        value={opt}
-                        checked={form.responseTime === opt}
-                        onChange={() => handleChange("responseTime", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.responseTime === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-                {errors.responseTime && (
-                  <span className={styles.errorMsg}>{errors.responseTime}</span>
-                )}
-              </fieldset>
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cómo llevas la información de tus clientes?{" "}
-                  <span className={styles.required}>*</span>
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Papel o agenda física",
-                    "Hojas de cálculo (Google/Excel)",
-                    "Un CRM o software específico",
-                    "App o sistema propio",
-                    "No tengo un sistema definido",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.dataManagement === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="dataManagement"
-                        value={opt}
-                        checked={form.dataManagement === opt}
-                        onChange={() => handleChange("dataManagement", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.dataManagement === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-                {errors.dataManagement && (
-                  <span className={styles.errorMsg}>{errors.dataManagement}</span>
-                )}
-              </fieldset>
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Tus clientes te piden factura (CFDI)?
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Sí, con frecuencia",
-                    "A veces, muy pocos",
-                    "No, no manejamos facturas",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.cfdi === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="cfdi"
-                        value={opt}
-                        checked={form.cfdi === opt}
-                        onChange={() => handleChange("cfdi", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.cfdi === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Tienes perfil en Google Business (Google Maps)?
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Sí, está actualizado y activo",
-                    "Tengo pero no lo actualizo",
-                    "No tengo perfil",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.googleBusiness === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="googleBusiness"
-                        value={opt}
-                        checked={form.googleBusiness === opt}
-                        onChange={() => handleChange("googleBusiness", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.googleBusiness === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Stage 3 */}
-      {stage === 3 && (
-        <>
-          <h2 className={styles.stageTitle}>Tu mayor dolor</h2>
-          <p className={styles.stageSub}>
-            Identificamos dónde estás perdiendo tiempo y dinero.
-          </p>
-          <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="biggestWaste">
-                ¿Qué actividad repetitiva te roba más tiempo cada semana?{" "}
-                <span className={styles.required}>*</span>
-              </label>
-              <textarea
-                id="biggestWaste"
-                className={styles.textarea}
-                rows={4}
-                value={form.biggestWaste}
-                onChange={(e) => handleChange("biggestWaste", e.target.value)}
-                placeholder="Ej: Responder WhatsApps todo el día, agendar citas manualmente, llenar hojas de cálculo..."
-              />
-              {errors.biggestWaste && (
-                <span className={styles.errorMsg}>{errors.biggestWaste}</span>
-              )}
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="oneToAutomate">
-                Si pudieras automatizar UNA sola cosa, ¿qué sería?{" "}
-                <span className={styles.required}>*</span>
-              </label>
-              <textarea
-                id="oneToAutomate"
-                className={styles.textarea}
-                rows={4}
-                value={form.oneToAutomate}
-                onChange={(e) => handleChange("oneToAutomate", e.target.value)}
-                placeholder="Ej: El seguimiento de prospectos, la confirmación de citas, la generación de facturas..."
-              />
-              {errors.oneToAutomate && (
-                <span className={styles.errorMsg}>{errors.oneToAutomate}</span>
-              )}
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Has intentado automatizar procesos antes?{" "}
-                  <span className={styles.required}>*</span>
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Sí, y funcionó bien",
-                    "Sí, pero no dio resultado",
-                    "Lo intentamos pero lo abandonamos",
-                    "No hemos intentado nada",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.pastAttempts === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="pastAttempts"
-                        value={opt}
-                        checked={form.pastAttempts === opt}
-                        onChange={() => handleChange("pastAttempts", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.pastAttempts === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-                {errors.pastAttempts && (
-                  <span className={styles.errorMsg}>{errors.pastAttempts}</span>
-                )}
-              </fieldset>
-            </div>
-
-            {(form.pastAttempts === "Sí, pero no dio resultado" ||
-              form.pastAttempts === "Lo intentamos pero lo abandonamos") && (
+        {/* ── Stage 1: Tu Negocio ── */}
+        {stage === 0 && (
+          <fieldset className={styles.fieldset}>
+            <legend className={styles.legend}>Cuéntanos sobre tu negocio</legend>
+            <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label} htmlFor="pastAttemptsDetail">
-                  ¿Qué salió mal o por qué lo abandonaron?
-                </label>
-                <textarea
-                  id="pastAttemptsDetail"
-                  className={styles.textarea}
-                  rows={3}
-                  value={form.pastAttemptsDetail}
-                  onChange={(e) => handleChange("pastAttemptsDetail", e.target.value)}
-                  placeholder="Cuéntanos qué pasó..."
-                />
+                <label className={styles.label}>Nombre de tu empresa <span aria-hidden="true">*</span></label>
+                <input className={styles.input} type="text" value={form.business_name} onChange={(e) => set("business_name", e.target.value)} placeholder="Ej: Distribuidora López S.A." required />
               </div>
-            )}
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cómo sabes que estás perdiendo clientes o ventas? (todas las que apliquen)
-                </legend>
-                <div className={styles.checkboxGroup}>
-                  {[
-                    "Clientes que no vuelven a comprar",
-                    "Seguimiento lento a prospectos",
-                    "Errores en pedidos o información",
-                    "Mala atención en horas de alta demanda",
-                    "No lo sé — no tengo métricas",
-                    "Otra razón",
-                  ].map((opt) => {
-                    const checked = form.losingCustomers.includes(opt);
-                    return (
-                      <label
-                        key={opt}
-                        className={styles.checkboxOption}
-                        data-selected={checked ? "true" : "false"}
-                      >
-                        <input
-                          type="checkbox"
-                          value={opt}
-                          checked={checked}
-                          onChange={() => handleMultiCheck("losingCustomers", opt)}
-                          className={styles.hiddenInput}
-                        />
-                        <span
-                          className={[
-                            styles.checkboxBox,
-                            checked ? styles.checkboxBoxChecked : "",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        >
-                          {checked && (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                              <path
-                                d="M2 6L5 9L10 3"
-                                stroke="currentColor"
-                                strokeWidth="1.8"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
-                        </span>
-                        {opt}
-                      </label>
-                    );
-                  })}
-                </div>
-              </fieldset>
+              <div className={styles.field}>
+                <label className={styles.label}>Ciudad <span aria-hidden="true">*</span></label>
+                <input className={styles.input} type="text" value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ej: Guadalajara, CDMX" required />
+              </div>
             </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Qué herramientas usas actualmente? (todas las que apliquen)
-                </legend>
-                <div className={styles.checkboxGroup}>
-                  {[
-                    "WhatsApp Business",
-                    "Hojas de cálculo (Google Sheets / Excel)",
-                    "Facebook / Instagram",
-                    "Google Workspace (Gmail + Drive)",
-                    "CONTPAQi / Aspel",
-                    "Facturapi / Bind ERP",
-                    "HubSpot / Pipedrive / otro CRM",
-                    "Otro ERP o sistema",
-                    "Ninguna de las anteriores",
-                  ].map((opt) => {
-                    const checked = form.currentTools.includes(opt);
-                    return (
-                      <label
-                        key={opt}
-                        className={styles.checkboxOption}
-                        data-selected={checked ? "true" : "false"}
-                      >
-                        <input
-                          type="checkbox"
-                          value={opt}
-                          checked={checked}
-                          onChange={() => handleMultiCheck("currentTools", opt)}
-                          className={styles.hiddenInput}
-                        />
-                        <span
-                          className={[
-                            styles.checkboxBox,
-                            checked ? styles.checkboxBoxChecked : "",
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
-                        >
-                          {checked && (
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-                              <path
-                                d="M2 6L5 9L10 3"
-                                stroke="currentColor"
-                                strokeWidth="1.8"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
-                        </span>
-                        {opt}
-                      </label>
-                    );
-                  })}
-                </div>
-              </fieldset>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Stage 4 */}
-      {stage === 4 && (
-        <>
-          <h2 className={styles.stageTitle}>Tu inversión</h2>
-          <p className={styles.stageSub}>
-            Nos ayuda a proponer soluciones adecuadas para tu presupuesto.
-          </p>
-          <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cuánto gastas actualmente en software y herramientas al mes?
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "$0 — no pago nada",
-                    "$500 a $2,000 MXN/mes",
-                    "$2,000 a $5,000 MXN/mes",
-                    "$5,000 a $15,000 MXN/mes",
-                    "Más de $15,000 MXN/mes",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.techSpend === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="techSpend"
-                        value={opt}
-                        checked={form.techSpend === opt}
-                        onChange={() => handleChange("techSpend", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.techSpend === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>Industria <span aria-hidden="true">*</span></label>
+                <select className={styles.select} value={form.industry} onChange={(e) => set("industry", e.target.value)} required>
+                  <option value="">Selecciona tu industria</option>
+                  {["Manufactura","Retail / Comercio","Logística y distribución","Servicios profesionales","Construcción","Alimentos y bebidas","Salud","Educación","Inmobiliario","E-commerce","Otro"].map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
                   ))}
-                </div>
-              </fieldset>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Cuántos empleados tiene tu empresa?</label>
+                <select className={styles.select} value={form.employees} onChange={(e) => set("employees", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="1-5">1 – 5 personas</option>
+                  <option value="6-20">6 – 20 personas</option>
+                  <option value="21-50">21 – 50 personas</option>
+                  <option value="51-200">51 – 200 personas</option>
+                  <option value="200+">Más de 200 personas</option>
+                </select>
+              </div>
             </div>
-
             <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cuánto estarías dispuesto a invertir en automatizar tu negocio?{" "}
-                  <span className={styles.required}>*</span>
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "$5,000 a $10,000 MXN",
-                    "$10,000 a $25,000 MXN",
-                    "$25,000 a $50,000 MXN",
-                    "Más de $50,000 MXN",
-                    "Depende del retorno de inversión",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.automationBudget === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="automationBudget"
-                        value={opt}
-                        checked={form.automationBudget === opt}
-                        onChange={() => handleChange("automationBudget", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.automationBudget === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-                {errors.automationBudget && (
-                  <span className={styles.errorMsg}>{errors.automationBudget}</span>
-                )}
-              </fieldset>
+              <label className={styles.label}>¿Cuántos años lleva operando tu empresa?</label>
+              <select className={styles.select} value={form.business_age} onChange={(e) => set("business_age", e.target.value)}>
+                <option value="">Selecciona</option>
+                <option value="menos-1">Menos de 1 año</option>
+                <option value="1-3">1 – 3 años</option>
+                <option value="4-10">4 – 10 años</option>
+                <option value="11-20">11 – 20 años</option>
+                <option value="20+">Más de 20 años</option>
+              </select>
             </div>
+          </fieldset>
+        )}
 
+        {/* ── Stage 2: Tu Operación ── */}
+        {stage === 1 && (
+          <fieldset className={styles.fieldset}>
+            <legend className={styles.legend}>Cuéntanos cómo opera tu negocio</legend>
             <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Cuál es el rango de ingresos mensuales de tu negocio?
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Menos de $50,000 MXN",
-                    "$50,000 a $200,000 MXN",
-                    "$200,000 a $500,000 MXN",
-                    "$500,000 a $2,000,000 MXN",
-                    "Más de $2,000,000 MXN",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.monthlyRevenue === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="monthlyRevenue"
-                        value={opt}
-                        checked={form.monthlyRevenue === opt}
-                        onChange={() => handleChange("monthlyRevenue", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.monthlyRevenue === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>
-                  ¿Qué tan urgente es esto para ti?{" "}
-                  <span className={styles.required}>*</span>
-                </legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "Urgente — necesito resultados en 30 días",
-                    "Moderada — puedo esperar 1 a 3 meses",
-                    "Sin prisa — planeo para 3 a 6 meses",
-                    "Solo estoy explorando opciones",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.urgency === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="urgency"
-                        value={opt}
-                        checked={form.urgency === opt}
-                        onChange={() => handleChange("urgency", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.urgency === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-                {errors.urgency && <span className={styles.errorMsg}>{errors.urgency}</span>}
-              </fieldset>
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="anythingElse">
-                ¿Algo más que quieras que sepamos antes de hablar?
-              </label>
-              <span className={styles.hintText}>Opcional</span>
-              <textarea
-                id="anythingElse"
-                className={styles.textarea}
-                rows={3}
-                value={form.anythingElse}
-                onChange={(e) => handleChange("anythingElse", e.target.value)}
-                placeholder="Cualquier contexto adicional que nos ayude a preparar mejor la llamada..."
-              />
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Stage 5 */}
-      {stage === 5 && (
-        <>
-          <h2 className={styles.stageTitle}>Tu contacto</h2>
-          <p className={styles.stageSub}>
-            ¿Cómo te avisamos cuando tu diagnóstico esté listo?
-          </p>
-          <div className={styles.fieldGroup}>
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="name">
-                Tu nombre completo <span className={styles.required}>*</span>
-              </label>
-              <input
-                id="name"
-                type="text"
-                className={styles.input}
-                value={form.name}
-                onChange={(e) => handleChange("name", e.target.value)}
-                autoComplete="name"
-              />
-              {errors.name && <span className={styles.errorMsg}>{errors.name}</span>}
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="whatsapp">
-                WhatsApp <span className={styles.required}>*</span>
-              </label>
-              <input
-                id="whatsapp"
-                type="tel"
-                className={styles.input}
-                value={form.whatsapp}
-                onChange={(e) => handleChange("whatsapp", e.target.value)}
-                autoComplete="tel"
-              />
-              {errors.whatsapp && <span className={styles.errorMsg}>{errors.whatsapp}</span>}
-            </div>
-
-            <div className={styles.field}>
-              <label className={styles.label} htmlFor="email">
-                Correo electrónico <span className={styles.required}>*</span>
-              </label>
-              <input
-                id="email"
-                type="email"
-                className={styles.input}
-                value={form.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                autoComplete="email"
-              />
-              {errors.email && <span className={styles.errorMsg}>{errors.email}</span>}
-            </div>
-
-            <div className={styles.field}>
-              <fieldset>
-                <legend className={styles.label}>¿Cómo prefieres que te contactemos?</legend>
-                <div className={styles.radioGroup}>
-                  {[
-                    "WhatsApp (más rápido)",
-                    "Llamada telefónica",
-                    "Correo electrónico",
-                    "Videollamada (Google Meet / Zoom)",
-                  ].map((opt) => (
-                    <label
-                      key={opt}
-                      className={styles.radioOption}
-                      data-selected={form.contactPref === opt ? "true" : "false"}
-                    >
-                      <input
-                        type="radio"
-                        name="contactPref"
-                        value={opt}
-                        checked={form.contactPref === opt}
-                        onChange={() => handleChange("contactPref", opt)}
-                        className={styles.hiddenInput}
-                      />
-                      <span
-                        className={[
-                          styles.radioCircle,
-                          form.contactPref === opt ? styles.radioCircleSelected : "",
-                        ]
-                          .filter(Boolean)
-                          .join(" ")}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </div>
-
-            {/* Tier Selection */}
-            <div className={styles.field}>
-              <p className={styles.label}>
-                Elige tu tipo de diagnóstico <span className={styles.required}>*</span>
-              </p>
-              <div className={styles.tierGrid}>
-                {tiers.map((tier) => (
-                  <div
-                    key={tier.id}
-                    className={[
-                      styles.tierCard,
-                      form.tier === tier.id ? styles.tierCardSelected : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    onClick={() => handleChange("tier", tier.id)}
-                    role="button"
-                    tabIndex={0}
-                    aria-pressed={form.tier === tier.id}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleChange("tier", tier.id);
-                      }
-                    }}
-                  >
-                    {tier.recommended && (
-                      <span className={styles.tierBadge}>Más popular</span>
-                    )}
-                    <p className={styles.tierName}>{tier.title}</p>
-                    <p className={styles.tierPrice}>{tier.price}</p>
-                    <p className={styles.tierDesc}>{tier.desc}</p>
-                  </div>
+              <label className={styles.label}>¿Por dónde llegan tus clientes? (selecciona todos)</label>
+              <div className={styles.checkGrid}>
+                {["WhatsApp","Redes sociales (Instagram/Facebook)","Google","Referidos / boca a boca","Mercado Libre / Amazon","Shopify / Tienda online","Llamada telefónica","Físico / tienda"].map((opt) => (
+                  <label key={opt} className={styles.checkLabel}>
+                    <input type="checkbox" checked={checked("customer_channels", opt)} onChange={() => setArr("customer_channels", opt)} className={styles.checkbox} />
+                    {opt}
+                  </label>
                 ))}
               </div>
-              {errors.tier && <span className={styles.errorMsg}>{errors.tier}</span>}
             </div>
-          </div>
-        </>
-      )}
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Cómo es tu primer contacto con un cliente nuevo?</label>
+                <select className={styles.select} value={form.first_contact_process} onChange={(e) => set("first_contact_process", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="manual-whatsapp">Manual por WhatsApp</option>
+                  <option value="manual-llamada">Manual por llamada</option>
+                  <option value="formulario-web">Formulario en web</option>
+                  <option value="semi-automatizado">Semi-automatizado</option>
+                  <option value="completamente-automatizado">Completamente automatizado</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>¿En cuánto tiempo respondes a prospectos?</label>
+                <select className={styles.select} value={form.response_time} onChange={(e) => set("response_time", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="menos-1hr">Menos de 1 hora</option>
+                  <option value="1-4hrs">1 – 4 horas</option>
+                  <option value="4-24hrs">4 – 24 horas</option>
+                  <option value="mas-24hrs">Más de 24 horas</option>
+                  <option value="no-respondo">A veces no respondo</option>
+                </select>
+              </div>
+            </div>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Cómo manejas los datos de tus clientes?</label>
+                <select className={styles.select} value={form.client_data_mgmt} onChange={(e) => set("client_data_mgmt", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="excel-sheets">Excel o Google Sheets</option>
+                  <option value="crm">CRM (HubSpot, Salesforce, etc.)</option>
+                  <option value="whatsapp">Solo en WhatsApp</option>
+                  <option value="papel">En papel / agenda</option>
+                  <option value="ninguno">No tengo un sistema</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Cómo emites facturas (CFDI)?</label>
+                <select className={styles.select} value={form.cfdi_status} onChange={(e) => set("cfdi_status", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="no-facturo">No facturo</option>
+                  <option value="manual-contador">Manual con contador</option>
+                  <option value="software">Software (CONTPAQi, Facturapi, etc.)</option>
+                  <option value="automatizado">Automatizado con mi sistema</option>
+                </select>
+              </div>
+            </div>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Tu Google My Business está actualizado?</label>
+                <select className={styles.select} value={form.google_business} onChange={(e) => set("google_business", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="no-tengo">No tengo</option>
+                  <option value="desactualizado">Tengo pero está desactualizado</option>
+                  <option value="actualizado">Sí, está actualizado</option>
+                  <option value="optimizado">Optimizado con fotos y reseñas</option>
+                </select>
+              </div>
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>¿Qué herramientas digitales usas actualmente? (selecciona todos)</label>
+              <div className={styles.checkGrid}>
+                {["Excel / Google Sheets","WhatsApp Business","QuickBooks","CONTPAQi","Shopify","Mercado Libre","WordPress","HubSpot","Notion","Slack","Ninguna"].map((opt) => (
+                  <label key={opt} className={styles.checkLabel}>
+                    <input type="checkbox" checked={checked("current_tools", opt)} onChange={() => setArr("current_tools", opt)} className={styles.checkbox} />
+                    {opt}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>¿Cuánto gastas mensualmente en software/tecnología?</label>
+              <select className={styles.select} value={form.current_tech_spend} onChange={(e) => set("current_tech_spend", e.target.value)}>
+                <option value="">Selecciona</option>
+                <option value="0">$0 (nada)</option>
+                <option value="menos-500">Menos de $500 MXN</option>
+                <option value="500-2000">$500 – $2,000 MXN</option>
+                <option value="2000-5000">$2,000 – $5,000 MXN</option>
+                <option value="5000+">Más de $5,000 MXN</option>
+              </select>
+            </div>
+          </fieldset>
+        )}
 
-      {/* Stage 6 */}
-      {stage === 6 && (
-        <>
-          <h2 className={styles.stageTitle}>Confirmar</h2>
-          <p className={styles.stageSub}>
-            Revisa tu información antes de enviar.
-          </p>
-          <div className={styles.summaryGrid}>
-            <div className={styles.summaryRow}>
-              <p className={styles.summaryLabel}>Empresa</p>
-              <p className={styles.summaryValue}>
-                {form.businessName} — {form.industry}
-                {form.city ? `, ${form.city}` : ""}
-              </p>
+        {/* ── Stage 3: Tu Mayor Dolor ── */}
+        {stage === 2 && (
+          <fieldset className={styles.fieldset}>
+            <legend className={styles.legend}>¿Qué te está costando más tiempo y dinero?</legend>
+            <div className={styles.field}>
+              <label className={styles.label}>¿Cuál es tu mayor pérdida de tiempo operativa? <span aria-hidden="true">*</span></label>
+              <textarea
+                className={styles.textarea}
+                value={form.biggest_time_waste}
+                onChange={(e) => set("biggest_time_waste", e.target.value)}
+                rows={3}
+                placeholder="Ej: Responder los mismos mensajes de WhatsApp 20 veces al día..."
+                required
+              />
             </div>
-            <div className={styles.summaryRow}>
-              <p className={styles.summaryLabel}>Mayor dolor</p>
-              <p className={styles.summaryValue}>
-                {form.biggestWaste.length > 100
-                  ? `${form.biggestWaste.slice(0, 100)}…`
-                  : form.biggestWaste || "—"}
-              </p>
+            <div className={styles.field}>
+              <label className={styles.label}>Si pudieras automatizar UNA sola cosa en tu negocio, ¿qué sería? <span aria-hidden="true">*</span></label>
+              <textarea
+                className={styles.textarea}
+                value={form.one_thing_to_automate}
+                onChange={(e) => set("one_thing_to_automate", e.target.value)}
+                rows={3}
+                placeholder="Ej: El seguimiento de cotizaciones que se quedan sin respuesta..."
+                required
+              />
             </div>
-            <div className={styles.summaryRow}>
-              <p className={styles.summaryLabel}>Presupuesto de automatización</p>
-              <p className={styles.summaryValue}>{form.automationBudget || "—"}</p>
+            <div className={styles.field}>
+              <label className={styles.label}>¿Cómo estás perdiendo clientes hoy? (selecciona todos)</label>
+              <div className={styles.checkGrid}>
+                {["Respondo muy tarde","No doy seguimiento a prospectos","Mi proceso de cotización es lento","No tengo presencia en redes","Errores en pedidos/entregas","Clientes sin soporte post-venta","No pido reseñas o referidos"].map((opt) => (
+                  <label key={opt} className={styles.checkLabel}>
+                    <input type="checkbox" checked={checked("losing_customers_how", opt)} onChange={() => setArr("losing_customers_how", opt)} className={styles.checkbox} />
+                    {opt}
+                  </label>
+                ))}
+              </div>
             </div>
-            <div className={styles.summaryRow}>
-              <p className={styles.summaryLabel}>Tipo de diagnóstico</p>
-              <p className={styles.summaryValue}>
-                {tiers.find((t) => t.id === form.tier)
-                  ? `${tiers.find((t) => t.id === form.tier)!.title} — ${tiers.find((t) => t.id === form.tier)!.price}`
-                  : "—"}
-              </p>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Has intentado automatizar algo antes?</label>
+                <select className={styles.select} value={form.past_automation} onChange={(e) => set("past_automation", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="no">No, es la primera vez</option>
+                  <option value="si-funciona">Sí, y funciona bien</option>
+                  <option value="si-fallo">Sí, pero no funcionó</option>
+                  <option value="si-parcial">Sí, pero solo a medias</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Con qué urgencia necesitas resolver esto?</label>
+                <select className={styles.select} value={form.urgency} onChange={(e) => set("urgency", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="urgente">Urgente – lo necesito ya</option>
+                  <option value="1-mes">En el próximo mes</option>
+                  <option value="3-meses">En los próximos 3 meses</option>
+                  <option value="6-meses">Estoy explorando opciones</option>
+                </select>
+              </div>
             </div>
-            <div className={styles.summaryRow}>
-              <p className={styles.summaryLabel}>Contacto</p>
-              <p className={styles.summaryValue}>
-                {form.name}
-                {form.whatsapp ? ` · ${form.whatsapp}` : ""}
-                {form.email ? ` · ${form.email}` : ""}
-              </p>
+            {form.past_automation && form.past_automation !== "no" && (
+              <div className={styles.field}>
+                <label className={styles.label}>¿Qué herramienta o método usaste?</label>
+                <input className={styles.input} type="text" value={form.past_automation_detail} onChange={(e) => set("past_automation_detail", e.target.value)} placeholder="Ej: Zapier, un freelancer, una agencia..." />
+              </div>
+            )}
+            <div className={styles.field}>
+              <label className={styles.label}>¿Algo más que debamos saber? (opcional)</label>
+              <textarea className={styles.textarea} value={form.additional_notes} onChange={(e) => set("additional_notes", e.target.value)} rows={3} placeholder="Cualquier contexto adicional que consideres relevante..." />
             </div>
-          </div>
+          </fieldset>
+        )}
 
-          <div className={styles.nav}>
-            <button type="button" className={styles.backBtn} onClick={handleBack}>
-              Regresar
-            </button>
-            <button
-              type="button"
-              className={styles.submitBtn}
-              onClick={handleSubmit}
-              disabled={submitting}
-            >
-              {submitting ? "Enviando…" : "Pagar y Enviar"}
-            </button>
-          </div>
-          <p className={styles.note}>
-            Serás redirigido a Stripe para completar el pago de tu diagnóstico de forma segura.
-          </p>
-        </>
-      )}
+        {/* ── Stage 4: Inversión ── */}
+        {stage === 3 && (
+          <fieldset className={styles.fieldset}>
+            <legend className={styles.legend}>Elige tu plan y datos de contacto</legend>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>Facturación mensual aproximada</label>
+                <select className={styles.select} value={form.monthly_revenue} onChange={(e) => set("monthly_revenue", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="menos-100k">Menos de $100,000 MXN</option>
+                  <option value="100k-500k">$100,000 – $500,000 MXN</option>
+                  <option value="500k-1m">$500,000 – $1M MXN</option>
+                  <option value="1m-5m">$1M – $5M MXN</option>
+                  <option value="5m+">Más de $5M MXN</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Presupuesto disponible para automatización</label>
+                <select className={styles.select} value={form.automation_budget} onChange={(e) => set("automation_budget", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="hasta-5k">Hasta $5,000 MXN</option>
+                  <option value="5k-15k">$5,000 – $15,000 MXN</option>
+                  <option value="15k-50k">$15,000 – $50,000 MXN</option>
+                  <option value="50k+">Más de $50,000 MXN</option>
+                </select>
+              </div>
+            </div>
 
-      {/* Navigation */}
-      {stage < 6 && (
-        <div className={styles.nav}>
-          {stage > 1 && (
-            <button type="button" className={styles.backBtn} onClick={handleBack}>
-              Regresar
+            <div className={styles.field}>
+              <label className={styles.label}>Selecciona tu plan <span aria-hidden="true">*</span></label>
+              <div className={styles.tierGrid}>
+                {TIER_OPTIONS.map((t) => (
+                  <button
+                    type="button"
+                    key={t.value}
+                    className={`${styles.tierCard} ${form.tier === t.value ? styles.tierSelected : ""}`}
+                    onClick={() => set("tier", t.value)}
+                    aria-pressed={form.tier === t.value}
+                  >
+                    {t.popular && <span className={styles.tierBadge}>Más popular</span>}
+                    <span className={styles.tierName}>{t.label}</span>
+                    <span className={styles.tierPrice}>{t.price}</span>
+                    <span className={styles.tierDesc}>{t.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>Nombre completo <span aria-hidden="true">*</span></label>
+                <input className={styles.input} type="text" value={form.contact_name} onChange={(e) => set("contact_name", e.target.value)} placeholder="Ana García" required />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>WhatsApp <span aria-hidden="true">*</span></label>
+                <input className={styles.input} type="tel" value={form.contact_whatsapp} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+52 33 1234 5678" required />
+              </div>
+            </div>
+            <div className={styles.row}>
+              <div className={styles.field}>
+                <label className={styles.label}>Correo electrónico <span aria-hidden="true">*</span></label>
+                <input className={styles.input} type="email" value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} placeholder="ana@miempresa.com" required />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>¿Cómo prefieres que te contactemos?</label>
+                <select className={styles.select} value={form.contact_preference} onChange={(e) => set("contact_preference", e.target.value)}>
+                  <option value="">Selecciona</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="email">Correo electrónico</option>
+                  <option value="llamada">Llamada telefónica</option>
+                  <option value="videollamada">Videollamada (Zoom/Meet)</option>
+                </select>
+              </div>
+            </div>
+
+            {status === "error" && (
+              <p className={styles.errorMsg} role="alert">{errorMsg}</p>
+            )}
+          </fieldset>
+        )}
+
+        {/* ── Navigation ── */}
+        <div className={styles.navBtns}>
+          {stage > 0 && (
+            <button type="button" className={styles.btnBack} onClick={() => setStage((s) => s - 1)}>
+              ← Anterior
             </button>
           )}
-          <button type="button" className={styles.nextBtn} onClick={handleNext}>
-            {stage === 5 ? "Revisar resumen" : "Continuar"}
-          </button>
+          {stage < STAGES.length - 1 ? (
+            <button
+              type="button"
+              className={styles.btnNext}
+              onClick={() => setStage((s) => s + 1)}
+              disabled={
+                (stage === 0 && (!form.business_name || !form.industry || !form.city)) ||
+                (stage === 2 && (!form.biggest_time_waste || !form.one_thing_to_automate))
+              }
+            >
+              Siguiente →
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className={styles.btnSubmit}
+              disabled={status === "loading" || !form.tier || !form.contact_name || !form.contact_whatsapp || !form.contact_email}
+            >
+              {status === "loading" ? "Enviando..." : "Enviar solicitud de diagnóstico"}
+            </button>
+          )}
         </div>
-      )}
+      </form>
     </div>
   );
 }

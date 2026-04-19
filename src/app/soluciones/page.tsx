@@ -1,22 +1,16 @@
-// TODO: wrap in server component for metadata when needed
-"use client";
-
-import { useState } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
-import styles from "./soluciones.module.css";
+import styles from "./page.module.css";
+import SolutionFilter from "./SolutionFilter";
 
-type Complexity = "Baja" | "Media" | "Alta";
-
-type Solution = {
-  id: string;
-  category: string;
-  industry: string;
-  complexity: Complexity;
-  title: string;
-  description: string;
-  outcomes: string[];
-  price: string;
-  href: string;
+export const metadata: Metadata = {
+  title: "Soluciones — TPConsulting",
+  description: "12 soluciones de automatización preconfiguradas para tu industria. Actívala en días, no meses.",
+  openGraph: {
+    title: "Soluciones — TPConsulting",
+    description: "Soluciones de automatización probadas para manufactura, retail, logística, servicios y más.",
+    locale: "es_MX",
+  },
 };
 
 const solutions: Solution[] = [
@@ -185,72 +179,30 @@ export default function SolucionesPage() {
       : solutions.filter((s) => s.category === activeFilter);
 
   return (
-    <main>
-      <section className={styles.pageHeader}>
-        <div className={styles.headerInner}>
-          <p className={styles.eyebrow}>Por industria</p>
-          <h1 className={styles.pageTitle}>Soluciones</h1>
-          <p className={styles.pageSubtitle}>
-            Automatizaciones construidas específicamente para tu tipo de
-            negocio. Sin soluciones genéricas.
+    <main className={styles.main}>
+      <div className={styles.header}>
+        <div className={styles.container}>
+          <span className={styles.eyebrow}>Marketplace de soluciones</span>
+          <h1 className={styles.title}>Automatizaciones listas para activar en tu negocio</h1>
+          <p className={styles.subtitle}>
+            12 soluciones preconfiguradas y probadas en empresas reales. Filtra por tu industria y encuentra exactamente lo que necesitas.
           </p>
         </div>
-      </section>
+      </div>
 
-      <section className={styles.gridSection}>
-        <div className={styles.gridInner}>
-          <div className={styles.filterTabs} role="tablist" aria-label="Filtrar por industria">
-            {filterTabs.map((tab) => (
-              <button
-                key={tab}
-                role="tab"
-                aria-selected={activeFilter === tab}
-                className={`${styles.filterTab} ${activeFilter === tab ? styles.filterTabActive : ""}`}
-                onClick={() => setActiveFilter(tab)}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
+      <SolutionFilter />
 
-          <div className={styles.solutionsGrid}>
-            {filtered.map((solution) => (
-              <article key={solution.id} className={styles.solutionCard}>
-                <div className={styles.cardHeader}>
-                  <span className={styles.industryBadge}>{solution.industry}</span>
-                  <span className={`${styles.complexityChip} ${complexityClass(solution.complexity)}`}>
-                    {solution.complexity}
-                  </span>
-                </div>
-                <h3 className={styles.cardTitle}>{solution.title}</h3>
-                <p className={styles.cardDesc}>{solution.description}</p>
-                <ul className={styles.outcomes} aria-label="Resultados">
-                  {solution.outcomes.map((outcome) => (
-                    <li key={outcome}>{outcome}</li>
-                  ))}
-                </ul>
-                <p className={styles.cardPrice}>{solution.price}</p>
-                <Link href={solution.href} className={styles.cardBtn}>
-                  Solicitar esta solución
-                </Link>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.ctaSection}>
-        <div className={styles.ctaInner}>
-          <h2 className={styles.ctaTitle}>¿Tu industria no está en la lista?</h2>
-          <p className={styles.ctaDesc}>
-            Diseñamos soluciones para cualquier tipo de negocio. Cuéntanos tu
-            proceso y te decimos cómo automatizarlo.
+      <div className={styles.cta}>
+        <div className={styles.container}>
+          <h2 className={styles.ctaTitle}>¿No encuentras tu solución?</h2>
+          <p className={styles.ctaText}>
+            Cada negocio es único. Agenda un diagnóstico y construimos la automatización perfecta para tu operación.
           </p>
-          <Link href="/diagnostico" className={styles.ctaBtn}>
-            Solicitar diagnóstico →
+          <Link href="/diagnostico" className={styles.ctaLink}>
+            Pedir diagnóstico personalizado
           </Link>
         </div>
-      </section>
+      </div>
     </main>
   );
 }
