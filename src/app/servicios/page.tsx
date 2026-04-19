@@ -3,11 +3,11 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Servicios — TPConsulting",
-  description: "Catálogo completo de servicios de automatización e integración para PyMEs mexicanas. Diagnóstico desde $1,000 MXN.",
+  title: "Servicios — FAM Consulting",
+  description: "Catálogo completo de servicios de automatización e integración para cualquier empresa. Diagnóstico desde $1,000 MXN.",
   openGraph: {
-    title: "Servicios — TPConsulting",
-    description: "Catálogo completo de servicios de automatización e integración para PyMEs mexicanas.",
+    title: "Servicios — FAM Consulting",
+    description: "Catálogo completo de servicios de automatización e integración para cualquier empresa.",
     locale: "es_MX",
     type: "website",
   },

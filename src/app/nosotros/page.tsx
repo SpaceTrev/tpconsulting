@@ -3,11 +3,11 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Nosotros — TPConsulting",
-  description: "El equipo detrás de TPConsulting opera al nivel más alto de ingeniería de software enterprise — y ahora lo hace accesible para negocios en México.",
+  title: "Nosotros — FAM Consulting",
+  description: "El equipo detrás de FAM Consulting opera al nivel más alto de ingeniería de software enterprise — y ahora lo hace accesible para cualquier negocio.",
   openGraph: {
-    title: "Nosotros — TPConsulting",
-    description: "8+ años de consultoría Fortune 500 (Starbucks, Discover) aplicados a PyMEs mexicanas.",
+    title: "Nosotros — FAM Consulting",
+    description: "8+ años de consultoría Fortune 500 (Starbucks, Discover) aplicados a empresas de todos tamaños.",
     locale: "es_MX",
     type: "website",
   },
@@ -55,7 +55,7 @@ export default function NosotrosPage() {
             Ingeniería de nivel Fortune 500, ahora accesible para tu negocio
           </h1>
           <p className={styles.subtitle}>
-            Pasamos años construyendo sistemas para algunas de las empresas más grandes del mundo. Luego nos preguntamos: ¿por qué las PyMEs mexicanas no pueden tener acceso a lo mismo? TPConsulting nació para responder esa pregunta.
+            Pasamos años construyendo sistemas para algunas de las empresas más grandes del mundo. Luego nos preguntamos: ¿por qué los negocios más pequeños no pueden tener acceso a lo mismo? FAM nació para responder esa pregunta.
           </p>
         </div>
       </section>
@@ -68,14 +68,14 @@ export default function NosotrosPage() {
               <span className={styles.missionIcon} aria-hidden="true">🎯</span>
               <h2 className={styles.missionTitle}>Nuestra misión</h2>
               <p className={styles.missionText}>
-                Hacer accesible la automatización de nivel enterprise para PyMEs mexicanas, a una fracción del costo y con resultados medibles desde la primera semana.
+                Hacer accesible la automatización de nivel enterprise para empresas de todos tamaños, a una fracción del costo y con resultados medibles desde la primera semana.
               </p>
             </div>
             <div className={styles.missionCard}>
               <span className={styles.missionIcon} aria-hidden="true">🔭</span>
               <h2 className={styles.missionTitle}>Nuestra visión</h2>
               <p className={styles.missionText}>
-                Un México donde el 80% de las PyMEs opera con procesos automatizados, no con horas extras. Donde el dueño de un negocio puede enfocarse en crecer, no en apagar incendios.
+                Un mundo donde el 80% de las empresas opera con procesos automatizados, no con horas extras. Donde el dueño de un negocio puede enfocarse en crecer, no en apagar incendios.
               </p>
             </div>
             <div className={styles.missionCard}>
@@ -106,7 +106,7 @@ export default function NosotrosPage() {
                 Trevor diseña e implementa sistemas de automatización y arquitectura de software para algunas de las empresas más grandes del mundo. Con más de 8 años como consultor enterprise para compañías Fortune 500 — incluyendo Starbucks y Discover — opera en el nivel más alto de ingeniería de software: plataformas que sirven millones de usuarios, pipelines de CI/CD que automatizan entregas completas, y sistemas de IA que orquestan múltiples modelos de forma autónoma.
               </p>
               <p className={styles.bioText}>
-                Ahora aplica esa misma mentalidad enterprise a negocios de todos tamaños en México. Lo que las grandes empresas pagan millones en construir, Trevor lo adapta a tu escala — con la misma calidad técnica, pero a un precio accesible.
+                Ahora aplica esa misma mentalidad enterprise a negocios de todos tamaños. Lo que las grandes empresas pagan millones en construir, Trevor lo adapta a tu escala — con la misma calidad técnica, pero a un precio accesible.
               </p>
               <div className={styles.bioCredentials}>
                 <span className={styles.credential}>8+ años de consultoría Fortune 500</span>
@@ -128,7 +128,7 @@ export default function NosotrosPage() {
                 Pablo conoce el mercado mexicano desde adentro. Su experiencia en estrategia de negocio y operaciones es lo que garantiza que cada proyecto que entregamos genere valor real desde el primer día — no soluciones técnicas que nadie en tu equipo termina usando.
               </p>
               <p className={styles.bioText}>
-                Es el puente entre la visión técnica y la realidad de operar un negocio en México. Próximamente compartiremos más sobre su trayectoria.
+                Es el puente entre la visión técnica y la realidad de operar un negocio. Próximamente compartiremos más sobre su trayectoria.
               </p>
               <div className={styles.bioCredentials}>
                 <span className={styles.credential}>Estrategia de negocio · Mercado mexicano</span>

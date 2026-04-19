@@ -35,24 +35,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TPConsulting — Automatización inteligente para negocios mexicanos",
+  title: "FAM Consulting — Automatización inteligente para negocios mexicanos",
   description:
-    "Diseñamos e implementamos sistemas de automatización de nivel enterprise para PyMEs en México. Diagnóstico técnico desde $1,000 MXN.",
+    "Diseñamos e implementamos sistemas de automatización de nivel enterprise para empresas de todos tamaños. Diagnóstico técnico desde $1,000 MXN.",
   openGraph: {
-    title: "TPConsulting — Automatización inteligente para negocios mexicanos",
+    title: "FAM Consulting — Automatización inteligente para negocios mexicanos",
     description:
-      "Diseñamos e implementamos sistemas de automatización de nivel enterprise para PyMEs en México. Diagnóstico técnico desde $1,000 MXN.",
+      "Diseñamos e implementamos sistemas de automatización de nivel enterprise para empresas de todos tamaños. Diagnóstico técnico desde $1,000 MXN.",
     type: "website",
     locale: "es_MX",
-    siteName: "TPConsulting",
+    siteName: "FAM Consulting",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TPConsulting — Automatización inteligente para negocios mexicanos",
+    title: "FAM Consulting — Automatización inteligente para negocios mexicanos",
     description:
-      "Diseñamos e implementamos sistemas de automatización de nivel enterprise para PyMEs en México.",
+      "Diseñamos e implementamos sistemas de automatización de nivel enterprise para empresas de todos tamaños.",
   },
-  metadataBase: new URL("https://tpconsulting.mx"),
+  metadataBase: new URL("https://famconsulting.mx"),
   alternates: { canonical: "/" },
 };
 

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Blog — TPConsulting",
-  description: "Artículos sobre automatización, IA y tecnología para empresas mexicanas.",
+  title: "Blog — FAM Consulting",
+  description: "Artículos sobre automatización, IA y tecnología para cualquier empresa.",
   openGraph: {
-    title: "Blog — TPConsulting",
-    description: "Artículos sobre automatización, IA y tecnología para empresas mexicanas.",
+    title: "Blog — FAM Consulting",
+    description: "Artículos sobre automatización, IA y tecnología para cualquier empresa.",
     locale: "es_MX",
   },
 };

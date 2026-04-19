@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin — TPConsulting",
+  title: "Admin — FAM Consulting",
   robots: "noindex, nofollow",
 };
 
@@ -83,7 +83,7 @@ export default async function AdminPage() {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>Panel de Administración</h1>
-          <span className={styles.badge}>TPConsulting CRM</span>
+          <span className={styles.badge}>FAM Consulting CRM</span>
         </div>
 
         {/* Stats */}
