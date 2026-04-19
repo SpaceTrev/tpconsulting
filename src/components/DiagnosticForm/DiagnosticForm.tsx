@@ -95,45 +95,9 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
     }
   }
 
-  const validateStage = (s: number): boolean => {
-    const newErrors: Partial<Record<keyof FormData, string>> = {};
-    if (s === 1) {
-      if (!form.businessName.trim()) newErrors.businessName = "Este campo es obligatorio.";
-      if (!form.industry) newErrors.industry = "Selecciona una industria.";
-      if (!form.city.trim()) newErrors.city = "Este campo es obligatorio.";
-    }
-    if (s === 2) {
-      if (form.customerChannels.length === 0)
-        newErrors.customerChannels = "Selecciona al menos una opción.";
-      if (!form.firstContact) newErrors.firstContact = "Selecciona una opción.";
-      if (!form.responseTime) newErrors.responseTime = "Selecciona una opción.";
-      if (!form.dataManagement) newErrors.dataManagement = "Selecciona una opción.";
-    }
-    if (s === 3) {
-      if (!form.biggestWaste.trim()) newErrors.biggestWaste = "Este campo es obligatorio.";
-      if (!form.oneToAutomate.trim()) newErrors.oneToAutomate = "Este campo es obligatorio.";
-      if (!form.pastAttempts) newErrors.pastAttempts = "Selecciona una opción.";
-    }
-    if (s === 4) {
-      if (!form.automationBudget) newErrors.automationBudget = "Selecciona una opción.";
-      if (!form.urgency) newErrors.urgency = "Selecciona una opción.";
-    }
-    if (s === 5) {
-      if (!form.name.trim()) newErrors.name = "Este campo es obligatorio.";
-      if (!form.email.trim()) newErrors.email = "Este campo es obligatorio.";
-      if (!form.whatsapp.trim() || form.whatsapp === "+52 ")
-        newErrors.whatsapp = "Ingresa tu número de WhatsApp.";
-      if (!form.tier) newErrors.tier = "Selecciona un tipo de diagnóstico.";
-    }
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleNext = () => {
-    if (validateStage(stage)) {
-      setStage((prev) => prev + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    setStage((prev) => prev + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleBack = () => {
@@ -141,15 +105,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSubmit = () => {
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setSubmitted(true);
-    }, 1500);
-  };
-
-  if (submitted) {
+  if (status === "success") {
     return (
       <div className={styles.success}>
         <span className={styles.successIcon} aria-hidden="true">✓</span>

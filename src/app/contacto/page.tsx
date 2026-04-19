@@ -13,26 +13,6 @@ export const metadata: Metadata = {
 };
 
 export default function ContactoPage() {
-  const [submitted, setSubmitted] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    company: "",
-    email: "",
-    whatsapp: "",
-    message: "",
-  });
-
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
-
   return (
     <main className={styles.main}>
       <div className={styles.header}>
