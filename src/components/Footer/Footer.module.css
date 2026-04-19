@@ -1,97 +1,170 @@
+/* ============================================================
+   Footer — 4-col grid
+   ============================================================ */
+
 .footer {
-  background-color: var(--surface-container-low);
-  border-top: 1px solid var(--outline-variant);
+  background-color: var(--bg-raised);
   margin-top: auto;
 }
 
 .inner {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: var(--space-8);
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: var(--space-12) var(--space-6);
+  padding: var(--space-16) var(--space-6);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
 }
 
-.brand {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+@media (min-width: 640px) {
+  .inner {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
+
+@media (min-width: 1024px) {
+  .inner {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ============================================================
+   Brand column
+   ============================================================ */
 
 .logo {
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 700;
-  color: var(--on-surface);
+  color: var(--fg-1);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.logo:hover {
+  color: var(--fg-1);
   text-decoration: none;
 }
 
 .tagline {
+  font-family: var(--font-body);
   font-size: 0.9375rem;
-  color: var(--on-surface-variant);
-  line-height: 1.5;
+  color: var(--fg-2);
+  margin-top: var(--space-3);
+  line-height: 1.6;
 }
 
-.section {
+.location {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+  margin-top: var(--space-2);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  color: var(--fg-muted);
+  margin-top: var(--space-4);
+  transition: color var(--transition-fast);
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.socialLink:hover {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+/* ============================================================
+   Column links
+   ============================================================ */
+
+.col {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
 }
 
-.sectionLabel {
+.colLabel {
   font-family: var(--font-ui);
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--on-surface-variant);
+  color: var(--fg-muted);
+  margin-bottom: var(--space-4);
 }
 
-.sectionLinks {
+.colLinks {
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
-.link {
+.colLink {
+  font-family: var(--font-ui);
   font-size: 0.9375rem;
-  color: var(--on-surface-variant);
+  color: var(--fg-2);
   text-decoration: none;
   transition: color var(--transition-fast);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
-.link:hover {
-  color: var(--on-surface);
+.colLink:hover {
+  color: var(--fg-1);
   text-decoration: none;
 }
 
+.colLinkAccent {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.colLinkAccent:hover {
+  color: var(--accent-primary-hover);
+  text-decoration: none;
+}
+
+.colLinkMono {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  color: var(--fg-2);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.colLinkMono:hover {
+  color: var(--fg-1);
+  text-decoration: none;
+}
+
+/* ============================================================
+   Bottom bar
+   ============================================================ */
+
 .bottom {
-  border-top: 1px solid var(--outline-variant);
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-5) var(--space-6);
   max-width: var(--max-width);
   margin: 0 auto;
 }
 
-.copy {
+.bottomText {
+  font-family: var(--font-ui);
   font-size: 0.875rem;
-  color: var(--on-surface-variant);
-}
-
-@media (max-width: 768px) {
-  .inner {
-    grid-template-columns: 1fr 1fr;
-  }
-  .brand {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 480px) {
-  .inner {
-    grid-template-columns: 1fr;
-  }
+  color: var(--fg-muted);
 }

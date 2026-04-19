@@ -1,0 +1,351 @@
+/* ============================================================
+   Casos Page
+   ============================================================ */
+
+.pageHeader {
+  background-color: var(--bg-canvas);
+  padding-top: calc(var(--nav-height) + var(--space-16));
+  padding-bottom: var(--space-12);
+}
+
+.headerInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pageTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  margin-top: var(--space-3);
+  line-height: 1.15;
+}
+
+.pageSubtitle {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  max-width: 560px;
+  margin-top: var(--space-4);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   Featured case
+   ============================================================ */
+
+.featuredSection {
+  background-color: var(--bg-raised);
+  padding: var(--space-16) var(--space-6);
+}
+
+.featuredInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.featuredCard {
+  background-color: var(--bg-canvas);
+  border-radius: var(--radius-md);
+  padding: var(--space-10);
+}
+
+.caseBadge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.caseLabel {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  margin-bottom: var(--space-2);
+}
+
+.caseContext {
+  /* block */
+}
+
+.caseTitle {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--fg-1);
+  margin-top: var(--space-2);
+  line-height: 1.2;
+}
+
+.caseContextDesc {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  line-height: 1.7;
+  max-width: 640px;
+  margin-top: var(--space-4);
+}
+
+.caseProblem {
+  margin-top: var(--space-8);
+}
+
+.caseProblemDesc {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  line-height: 1.65;
+  margin-top: var(--space-3);
+}
+
+/* ============================================================
+   Pipeline
+   ============================================================ */
+
+.caseSolution {
+  margin-top: var(--space-8);
+}
+
+.pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.pipelineRow {
+  display: contents;
+}
+
+.pipelineStage {
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  min-width: 130px;
+}
+
+.stageNum {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.stageTitle {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--fg-1);
+  margin-top: var(--space-1);
+  line-height: 1.3;
+}
+
+.stageSub {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--fg-muted);
+  margin-top: var(--space-1);
+}
+
+.pipelineArrow {
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Stack
+   ============================================================ */
+
+.caseStack {
+  margin-top: var(--space-8);
+}
+
+.stackChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.stackChip {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--fg-2);
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-3);
+}
+
+.timeline {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+  margin-top: var(--space-4);
+}
+
+/* ============================================================
+   Results
+   ============================================================ */
+
+.caseResults {
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+  margin-top: var(--space-8);
+}
+
+.resultsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+  margin-top: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .resultsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.resultItem {
+  text-align: center;
+}
+
+.resultNum {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+  line-height: 1;
+}
+
+.resultLabel {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  margin-top: var(--space-2);
+  line-height: 1.4;
+}
+
+.testimonialNote {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+  font-style: italic;
+  margin-top: var(--space-4);
+}
+
+/* ============================================================
+   Placeholder cases
+   ============================================================ */
+
+.placeholderSection {
+  background-color: var(--bg-canvas);
+  padding: var(--space-16) var(--space-6);
+}
+
+.placeholderInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.placeholderTitle {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fg-1);
+  margin-bottom: var(--space-8);
+}
+
+.placeholderGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .placeholderGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.placeholderCard {
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  opacity: 0.7;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.placeholderBadge {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--fg-muted);
+}
+
+.placeholderDesc {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--fg-2);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   CTA section
+   ============================================================ */
+
+.ctaSection {
+  background-color: var(--bg-raised);
+  padding: var(--space-16) var(--space-6);
+  text-align: center;
+}
+
+.ctaInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: var(--space-4) var(--space-10);
+  background-color: var(--accent-primary);
+  color: var(--fg-on-accent);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.ctaBtn:hover {
+  background-color: var(--accent-primary-hover);
+  text-decoration: none;
+}

@@ -1,0 +1,299 @@
+/* ============================================================
+   Contacto Page
+   ============================================================ */
+
+.pageHeader {
+  background-color: var(--bg-canvas);
+  padding-top: calc(var(--nav-height) + var(--space-16));
+  padding-bottom: var(--space-12);
+  text-align: center;
+}
+
+.headerInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pageTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  margin-top: var(--space-3);
+  line-height: 1.15;
+}
+
+.pageSubtitle {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  max-width: 520px;
+  margin-top: var(--space-4);
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.65;
+}
+
+.location {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  color: var(--fg-muted);
+  margin-top: var(--space-4);
+}
+
+/* ============================================================
+   Contact options section
+   ============================================================ */
+
+.optionsSection {
+  background-color: var(--bg-raised);
+  padding: var(--space-16) var(--space-6);
+}
+
+.optionsInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.contactOptions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .contactOptions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .contactOptions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.optionCard {
+  background-color: var(--bg-canvas);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.optionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  background-color: var(--bg-inset);
+  color: var(--accent-primary);
+  border-radius: var(--radius-md);
+}
+
+.optionTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.optionDesc {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.optionActionPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--accent-primary);
+  color: var(--fg-on-accent);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.optionActionPrimary:hover {
+  background-color: var(--accent-primary-hover);
+  text-decoration: none;
+}
+
+.optionActionSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--bg-inset);
+  color: var(--fg-1);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  margin-top: auto;
+  align-self: flex-start;
+}
+
+.optionActionSecondary:hover {
+  background-color: var(--bg-nest-3);
+  text-decoration: none;
+}
+
+.optionActionEmail {
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  color: var(--fg-1);
+  text-decoration: none;
+  margin-top: auto;
+  transition: color var(--transition-fast);
+  padding: var(--space-3) 0;
+  display: inline-block;
+}
+
+.optionActionEmail:hover {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+/* ============================================================
+   Contact form section
+   ============================================================ */
+
+.formSection {
+  background-color: var(--bg-canvas);
+  padding: var(--space-20) var(--space-6);
+}
+
+.formInner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.formTitle {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.formSubtitle {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  margin-top: var(--space-2);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-top: var(--space-8);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--fg-2);
+}
+
+.input,
+.textarea {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  color: var(--fg-1);
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  min-height: 48px;
+  width: 100%;
+  transition: background-color var(--transition-fast);
+  border: none;
+  outline: none;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--fg-muted);
+}
+
+.input:focus,
+.textarea:focus {
+  background-color: var(--bg-nest-3);
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 0;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 52px;
+  padding: var(--space-4);
+  background-color: var(--accent-primary);
+  color: var(--fg-on-accent);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.submitBtn:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+.successMessage {
+  font-family: var(--font-ui);
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--fg-1);
+  background-color: var(--accent-primary-container);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  margin-top: var(--space-8);
+  text-align: center;
+}

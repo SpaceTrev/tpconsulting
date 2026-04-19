@@ -1,0 +1,255 @@
+/* ============================================================
+   Nosotros Page
+   ============================================================ */
+
+.pageHeader {
+  background-color: var(--bg-canvas);
+  padding-top: calc(var(--nav-height) + var(--space-16));
+  padding-bottom: var(--space-12);
+}
+
+.headerInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pageTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  margin-top: var(--space-3);
+  line-height: 1.15;
+  max-width: 740px;
+}
+
+.pageSubtitle {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  max-width: 560px;
+  margin-top: var(--space-4);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   Team section
+   ============================================================ */
+
+.teamSection {
+  background-color: var(--bg-raised);
+  padding: var(--space-20) var(--space-6);
+}
+
+.teamInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+}
+
+@media (min-width: 768px) {
+  .teamGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.teamCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fg-1);
+  flex-shrink: 0;
+}
+
+.teamName {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.teamRole {
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--accent-primary);
+  margin-top: calc(var(--space-1) * -1);
+}
+
+.teamBio {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  line-height: 1.7;
+}
+
+.teamTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.teamTag {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  color: var(--fg-3);
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+}
+
+/* ============================================================
+   Model section
+   ============================================================ */
+
+.modelSection {
+  background-color: var(--bg-canvas);
+  padding: var(--space-20) var(--space-6);
+}
+
+.modelInner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.sectionLabel {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--fg-muted);
+  margin-bottom: var(--space-3);
+}
+
+.modelTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  max-width: 760px;
+  line-height: 1.2;
+}
+
+.modelDesc {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  line-height: 1.7;
+  max-width: 760px;
+  margin-top: var(--space-6);
+}
+
+.valueGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-10);
+}
+
+@media (min-width: 768px) {
+  .valueGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.valueCard {
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.valueTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.valueDesc {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  line-height: 1.65;
+}
+
+/* ============================================================
+   Story section
+   ============================================================ */
+
+.storySection {
+  background-color: var(--bg-raised);
+  padding: var(--space-20) var(--space-6);
+}
+
+.storyInner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.storyTitle {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.2;
+}
+
+.storyDesc {
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  line-height: 1.7;
+  margin-top: var(--space-6);
+}
+
+.storyLink {
+  display: inline-flex;
+  align-items: center;
+  margin-top: var(--space-8);
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.storyLink:hover {
+  color: var(--accent-primary-hover);
+  text-decoration: none;
+}

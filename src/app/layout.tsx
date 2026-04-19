@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Public_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Nav from "@/components/Nav/Nav";
+import Footer from "@/components/Footer/Footer";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -76,7 +78,9 @@ export default function RootLayout({
       <body
         className={`${spaceGrotesk.variable} ${publicSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       >
+        <Nav />
         {children}
+        <Footer />
       </body>
     </html>
   );

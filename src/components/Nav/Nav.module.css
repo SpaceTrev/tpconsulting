@@ -1,12 +1,18 @@
+/* ============================================================
+   Nav — frost glass, fixed, no border, no shadow
+   ============================================================ */
+
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  width: 100%;
   height: var(--nav-height);
-  background-color: var(--surface);
-  border-bottom: 1px solid var(--outline-variant);
-  backdrop-filter: blur(8px);
-  transition: background-color var(--transition-base);
+  background: var(--frost-bg);
+  backdrop-filter: var(--frost-blur);
+  z-index: 100;
+  transition: background var(--transition-base);
 }
 
 .nav {
@@ -21,11 +27,17 @@
 
 .logo {
   font-family: var(--font-display);
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 700;
-  color: var(--on-surface);
+  color: var(--fg-1);
   text-decoration: none;
   flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.logo:hover {
+  color: var(--fg-1);
+  text-decoration: none;
 }
 
 .links {
@@ -42,16 +54,17 @@
   font-family: var(--font-ui);
   font-size: 0.9375rem;
   font-weight: 500;
-  color: var(--on-surface-variant);
+  color: var(--fg-2);
   text-decoration: none;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   transition: color var(--transition-fast), background-color var(--transition-fast);
+  display: inline-block;
 }
 
 .link:hover {
-  color: var(--on-surface);
-  background-color: var(--surface-container);
+  color: var(--fg-1);
+  background-color: var(--bg-raised);
   text-decoration: none;
 }
 
@@ -66,41 +79,112 @@
   font-family: var(--font-ui);
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--on-primary);
-  background-color: var(--primary);
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
   text-decoration: none;
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-5);
   border-radius: var(--radius-md);
-  transition: opacity var(--transition-fast);
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color var(--transition-fast);
 }
 
 .cta:hover {
-  opacity: 0.9;
+  background-color: var(--accent-primary-hover);
   text-decoration: none;
 }
 
-.ctaSecondary {
+.hamburger {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-1);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.hamburger:hover {
+  background-color: var(--bg-raised);
+}
+
+/* ============================================================
+   Mobile menu
+   ============================================================ */
+
+.mobileMenu {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  background: var(--frost-bg);
+  backdrop-filter: var(--frost-blur);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 99;
+}
+
+.mobileLink {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--fg-1);
+  text-decoration: none;
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  display: block;
+  transition: background-color var(--transition-fast);
+}
+
+.mobileLink:hover {
+  background-color: var(--bg-raised);
+  text-decoration: none;
+}
+
+.mobileCta {
   font-family: var(--font-ui);
   font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--on-surface);
+  font-weight: 600;
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
   text-decoration: none;
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-4);
   border-radius: var(--radius-md);
-  border: 1px solid var(--outline);
-  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--space-4);
+  transition: background-color var(--transition-fast);
 }
 
-.ctaSecondary:hover {
-  background-color: var(--surface-container);
+.mobileCta:hover {
+  background-color: var(--accent-primary-hover);
   text-decoration: none;
 }
 
-@media (max-width: 768px) {
+/* ============================================================
+   Responsive
+   ============================================================ */
+
+@media (max-width: 767px) {
   .links {
     display: none;
   }
-  .ctaSecondary {
+
+  .cta {
     display: none;
+  }
+
+  .hamburger {
+    display: flex;
   }
 }

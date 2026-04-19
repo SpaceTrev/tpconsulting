@@ -1,3 +1,7 @@
+/* ============================================================
+   WhatsApp Button — fixed floating, accent-primary, no shadow
+   ============================================================ */
+
 .button {
   position: fixed;
   bottom: var(--space-6);
@@ -6,37 +10,41 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  background-color: #25d366;
-  color: #ffffff;
-  border-radius: var(--radius-full);
-  text-decoration: none;
-  box-shadow: var(--shadow-lg);
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--accent-primary);
+  color: var(--fg-on-accent);
+  border-radius: var(--radius-md);
   font-family: var(--font-ui);
   font-size: 0.9375rem;
   font-weight: 600;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  text-decoration: none;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
 }
 
 .button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 20px rgba(37, 211, 102, 0.35);
+  transform: translateY(-1px);
+  background-color: var(--accent-primary-hover);
   text-decoration: none;
-  color: #ffffff;
+}
+
+.icon {
+  flex-shrink: 0;
 }
 
 .label {
-  white-space: nowrap;
+  /* visible on md+ */
 }
 
-@media (max-width: 480px) {
-  .label {
-    display: none;
-  }
+@media (max-width: 479px) {
   .button {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     padding: 0;
     justify-content: center;
+    border-radius: var(--radius-md);
+  }
+
+  .label {
+    display: none;
   }
 }
