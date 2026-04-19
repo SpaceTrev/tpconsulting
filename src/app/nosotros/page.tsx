@@ -96,7 +96,7 @@ export default function NosotrosPage() {
 
             <div className={styles.bioCard}>
               <div className={styles.bioHeader}>
-                <div className={styles.bioAvatar} aria-hidden="true">TP</div>
+                <div className={styles.bioAvatar} aria-hidden="true">TB</div>
                 <div>
                   <p className={styles.bioName}>Trevor Benavides</p>
                   <p className={styles.bioRole}>Co-fundador · Arquitecto de Software & Automatización</p>
