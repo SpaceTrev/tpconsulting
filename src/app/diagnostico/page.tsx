@@ -61,15 +61,13 @@ export default async function DiagnosticoPage({
               </ul>
             </div>
             <div className={styles.asideCard}>
-              <h3 className={styles.asideTitle}>Lo que nuestros clientes dicen</h3>
-              <blockquote className={styles.testimonial}>
-                <p className={styles.testimonialText}>
-                  "El diagnóstico nos mostró que estábamos perdiendo 22 horas semanales en tareas que se podían automatizar. En 6 semanas recuperamos ese tiempo y lo invertimos en ventas."
-                </p>
-                <footer className={styles.testimonialAuthor}>
-                  — Carlos M., Director de Operaciones, empresa de logística en Guadalajara
-                </footer>
-              </blockquote>
+              <h3 className={styles.asideTitle}>¿Por qué vale la pena saberlo?</h3>
+              <ul className={styles.asideList}>
+                <li>El 72% de las PyMEs operan con procesos 100% manuales — y no saben cuánto les cuesta</li>
+                <li>Los negocios que automatizan su primer contacto responden 100× más rápido que los que lo hacen manual (Harvard Business Review)</li>
+                <li>Un sistema de recordatorios por WhatsApp reduce las citas perdidas entre un 40–60%</li>
+                <li>El diagnóstico te muestra exactamente cuánto tiempo y dinero estás dejando sobre la mesa</li>
+              </ul>
             </div>
           </aside>
         </div>

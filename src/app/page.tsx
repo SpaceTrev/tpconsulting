@@ -390,20 +390,20 @@ export default function HomePage() {
         <div className={styles.container}>
           <div className={styles.statsGrid}>
             <div className={styles.statItem}>
-              <span className={styles.statNumber}>152+</span>
-              <span className={styles.statLabel}>Automatizaciones implementadas</span>
-            </div>
-            <div className={styles.statItem}>
-              <span className={styles.statNumber}>9+</span>
-              <span className={styles.statLabel}>Años de experiencia enterprise</span>
-            </div>
-            <div className={styles.statItem}>
               <span className={styles.statNumber}>72%</span>
-              <span className={styles.statLabel}>De PyMEs aún operan con procesos 100% manuales</span>
+              <span className={styles.statLabel}>De las PyMEs operan con procesos 100% manuales</span>
             </div>
             <div className={styles.statItem}>
-              <span className={styles.statNumber}>48hrs</span>
-              <span className={styles.statLabel}>Para completar tu escaneo diagnóstico</span>
+              <span className={styles.statNumber}>100×</span>
+              <span className={styles.statLabel}>Más rápido responde un negocio que automatiza su primer contacto</span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>40–60%</span>
+              <span className={styles.statLabel}>Reducción en citas perdidas con recordatorios automáticos por WhatsApp</span>
+            </div>
+            <div className={styles.statItem}>
+              <span className={styles.statNumber}>3–5×</span>
+              <span className={styles.statLabel}>Crecimiento compuesto en 12 meses combinando outbound + inbound digital</span>
             </div>
           </div>
         </div>
@@ -535,39 +535,32 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Case Study ── */}
+      {/* ── Automation potential ── */}
       <section className={styles.caseStudySection}>
         <div className={styles.container}>
-          <div className={styles.caseStudyInner}>
-            <div>
-              <p className={styles.caseStudyLabel}>Caso de éxito destacado</p>
-              <h2 className={styles.caseStudyTitle}>
-                De 45 propiedades caóticas a una operación que corre sola
-              </h2>
-              <p className={styles.caseStudyText}>
-                Una empresa de renta vacacional en CDMX gestionaba 45 propiedades con 3 empleados. Los check-ins eran manuales, los mensajes llegaban por 4 canales distintos y la contabilidad se hacía en hojas de cálculo. En 6 semanas, automatizamos toda la operación.
-              </p>
-              <Link href="/casos" className={styles.caseStudyLink}>
-                Ver caso completo <IconArrow />
-              </Link>
+          <div className={styles.sectionHeader}>
+            <span className={styles.eyebrow}>¿Por qué automatizar?</span>
+            <h2 className={styles.sectionTitle}>El potencial de la automatización</h2>
+            <p className={styles.sectionSubtitle}>
+              Datos reales sobre lo que la automatización hace en negocios como el tuyo.
+            </p>
+          </div>
+          <div className={styles.caseStudyResults}>
+            <div className={styles.resultCard}>
+              <span className={styles.resultNumber}>72%</span>
+              <span className={styles.resultLabel}>De las PyMEs en México siguen operando de forma 100% manual</span>
             </div>
-            <div className={styles.caseStudyResults}>
-              <div className={styles.resultCard}>
-                <span className={styles.resultNumber}>−85%</span>
-                <span className={styles.resultLabel}>Reducción en trabajo administrativo manual</span>
-              </div>
-              <div className={styles.resultCard}>
-                <span className={styles.resultNumber}>$12K</span>
-                <span className={styles.resultLabel}>MXN de ahorro mensual en personal</span>
-              </div>
-              <div className={styles.resultCard}>
-                <span className={styles.resultNumber}>0</span>
-                <span className={styles.resultLabel}>Dobles reservas desde la implementación</span>
-              </div>
-              <div className={styles.resultCard}>
-                <span className={styles.resultNumber}>4.9★</span>
-                <span className={styles.resultLabel}>Calificación promedio mantenida en plataformas</span>
-              </div>
+            <div className={styles.resultCard}>
+              <span className={styles.resultNumber}>100×</span>
+              <span className={styles.resultLabel}>Más rápido responde un negocio que automatiza su primer contacto vs. uno manual — Harvard Business Review</span>
+            </div>
+            <div className={styles.resultCard}>
+              <span className={styles.resultNumber}>40–60%</span>
+              <span className={styles.resultLabel}>Reducción en citas perdidas con un sistema de recordatorios por WhatsApp</span>
+            </div>
+            <div className={styles.resultCard}>
+              <span className={styles.resultNumber}>3–5×</span>
+              <span className={styles.resultLabel}>Crecimiento compuesto en 12 meses para empresas que combinan outbound + inbound digital</span>
             </div>
           </div>
         </div>
