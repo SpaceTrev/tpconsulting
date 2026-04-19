@@ -4,29 +4,28 @@ import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Nosotros — TPConsulting",
-  description: "Conoce al equipo detrás de TPConsulting: 9+ años de experiencia en automatización Fortune 500, ahora al servicio de PyMEs mexicanas.",
+  description: "El equipo detrás de TPConsulting opera al nivel más alto de ingeniería de software enterprise — y ahora lo hace accesible para negocios en México.",
   openGraph: {
     title: "Nosotros — TPConsulting",
-    description: "Equipo con experiencia Fortune 500 y Starbucks, dedicado a transformar PyMEs mexicanas con automatización.",
+    description: "8+ años de consultoría Fortune 500 (Starbucks, Discover) aplicados a PyMEs mexicanas.",
     locale: "es_MX",
     type: "website",
   },
 };
 
 const trevorTags = [
-  "Valtech / Kin + Carta",
-  "Starbucks · Discover Card",
-  "React · Next.js · TypeScript",
-  "GenAI · Agentes IA · MCP Servers",
   "8+ años Fortune 500",
+  "Starbucks · Discover",
+  "Arquitectura de plataformas",
+  "Agentes IA · MCP · Multi-modelo",
+  "Bilingüe inglés/español",
 ];
 
 const pabloTags = [
-  "Operaciones",
+  "Estrategia de negocio",
   "Mercado mexicano",
+  "Operaciones",
   "PyMEs",
-  "Crecimiento",
-  "Ventas",
 ];
 
 const valueCards = [
@@ -53,10 +52,10 @@ export default function NosotrosPage() {
         <div className={styles.container}>
           <span className={styles.eyebrow}>Quiénes somos</span>
           <h1 className={styles.title}>
-            Veteranos de Fortune 500 con una misión clara
+            Ingeniería de nivel Fortune 500, ahora accesible para tu negocio
           </h1>
           <p className={styles.subtitle}>
-            Pasamos años implementando sistemas de automatización para algunas de las empresas más grandes del mundo. Luego nos preguntamos: ¿por qué las PyMEs mexicanas no pueden tener acceso a lo mismo? TPConsulting nació para responder esa pregunta.
+            Pasamos años construyendo sistemas para algunas de las empresas más grandes del mundo. Luego nos preguntamos: ¿por qué las PyMEs mexicanas no pueden tener acceso a lo mismo? TPConsulting nació para responder esa pregunta.
           </p>
         </div>
       </section>
@@ -99,43 +98,41 @@ export default function NosotrosPage() {
               <div className={styles.bioHeader}>
                 <div className={styles.bioAvatar} aria-hidden="true">TP</div>
                 <div>
-                  <p className={styles.bioName}>Trevor Patterson</p>
-                  <p className={styles.bioRole}>Co-fundador · Staff Software Engineer · GenAI & Automation</p>
+                  <p className={styles.bioName}>Trevor Benavides</p>
+                  <p className={styles.bioRole}>Co-fundador · Arquitecto de Software & Automatización</p>
                 </div>
               </div>
               <p className={styles.bioText}>
-                Trevor es Consultor Senior de Ingeniería de Software en Valtech (antes Kin + Carta / Spire Digital), donde lleva más de 8 años entregando aplicaciones de nivel enterprise para Fortune 500 e instituciones financieras. Como Frontend Lead y Workflow Architect en Starbucks, es dueño de la plataforma frontend y la biblioteca de componentes, diseñó la automatización CI/CD con GitHub Actions, y ha liderado la adopción de IA construyendo servidores MCP, bibliotecas de habilidades para agentes y sistemas de memoria persistente.
+                Trevor diseña e implementa sistemas de automatización y arquitectura de software para algunas de las empresas más grandes del mundo. Con más de 8 años como consultor enterprise para compañías Fortune 500 — incluyendo Starbucks y Discover — opera en el nivel más alto de ingeniería de software: plataformas que sirven millones de usuarios, pipelines de CI/CD que automatizan entregas completas, y sistemas de IA que orquestan múltiples modelos de forma autónoma.
               </p>
               <p className={styles.bioText}>
-                En Discover Card integró Apple Pay e implementó accesibilidad WCAG en flujos de pago críticos. En Commonwealth Financial fue reconocido como Empleado del Mes — el primer consultor externo en recibir ese reconocimiento. Bilingüe en inglés y español, con formación en arte y diseño, combina precisión técnica con sensibilidad visual.
+                Ahora aplica esa misma mentalidad enterprise a negocios de todos tamaños en México. Lo que las grandes empresas pagan millones en construir, Trevor lo adapta a tu escala — con la misma calidad técnica, pero a un precio accesible.
               </p>
               <div className={styles.bioCredentials}>
-                <span className={styles.credential}>8+ años en consultoría enterprise Fortune 500</span>
-                <span className={styles.credential}>Starbucks — Frontend Lead & Workflow Architect (actual)</span>
-                <span className={styles.credential}>Discover Card — Apple Pay, WCAG · Commonwealth Financial — Empleado del Mes</span>
-                <span className={styles.credential}>React · Next.js · TypeScript · FastAPI · Python · AWS/GCP/Azure · LangGraph · CrewAI · MCP Servers · n8n · Supabase</span>
+                <span className={styles.credential}>8+ años de consultoría Fortune 500</span>
+                <span className={styles.credential}>Clientes: Starbucks, Discover y más</span>
+                <span className={styles.credential}>Arquitectura de plataformas · Agentes IA · Orquestación multi-modelo · MCP · CI/CD · Full-stack</span>
+                <span className={styles.credential}>Bilingüe inglés/español</span>
               </div>
             </div>
 
             <div className={styles.bioCard}>
               <div className={styles.bioHeader}>
-                <div className={styles.bioAvatar} aria-hidden="true">PM</div>
+                <div className={styles.bioAvatar} aria-hidden="true">PE</div>
                 <div>
                   <p className={styles.bioName}>Pablo Estrada</p>
-                  <p className={styles.bioRole}>Co-fundador · Director de Estrategia</p>
+                  <p className={styles.bioRole}>Co-fundador · Estrategia & Operaciones de Negocio</p>
                 </div>
               </div>
               <p className={styles.bioText}>
-                Pablo aporta una perspectiva única: entiende los negocios mexicanos desde adentro. Con experiencia en gestión operativa y escalamiento de empresas en el mercado latinoamericano, Pablo es quien traduce los procesos del cliente en arquitecturas de automatización que realmente se implementan y se usan.
+                Pablo conoce el mercado mexicano desde adentro. Su experiencia en estrategia de negocio y operaciones es lo que garantiza que cada proyecto que entregamos genere valor real desde el primer día — no soluciones técnicas que nadie en tu equipo termina usando.
               </p>
               <p className={styles.bioText}>
-                Es el puente entre la visión técnica y la realidad operativa del negocio. Su rol es garantizar que cada automatización que entregamos genere valor desde el primer día, no que se convierta en otro sistema que nadie usa.
+                Es el puente entre la visión técnica y la realidad de operar un negocio en México. Próximamente compartiremos más sobre su trayectoria.
               </p>
               <div className={styles.bioCredentials}>
-                <span className={styles.credential}>Experiencia en gestión operativa de PyMEs</span>
-                <span className={styles.credential}>Especialidad: estrategia de transformación, gestión del cambio</span>
-                <span className={styles.credential}>Foco en implementación efectiva y adopción del equipo</span>
-                <span className={styles.credential}>Relaciones con proveedores y socios en LATAM</span>
+                <span className={styles.credential}>Estrategia de negocio · Mercado mexicano</span>
+                <span className={styles.credential}>Operaciones y escalamiento de PyMEs</span>
               </div>
             </div>
 
