@@ -1,0 +1,188 @@
+.main { flex: 1; }
+
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  margin-bottom: var(--space-3);
+}
+
+.header {
+  background-color: var(--bg-raised);
+  padding: var(--space-16) 0 var(--space-12);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: var(--fg-1);
+  line-height: 1.15;
+  margin-bottom: var(--space-4);
+}
+
+.subtitle {
+  font-size: 1.0625rem;
+  color: var(--fg-2);
+  line-height: 1.7;
+  max-width: 48ch;
+}
+
+/* ── Body ────────────────────────────────────────────────── */
+.body {
+  background-color: var(--bg-canvas);
+  padding: var(--space-12) 0 var(--space-20);
+}
+
+.bodyInner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .bodyInner {
+    grid-template-columns: 1fr 380px;
+  }
+}
+
+/* ── Form wrapper ────────────────────────────────────────── */
+.formWrapper {
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+}
+
+.formTitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fg-1);
+  margin-bottom: var(--space-6);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sideCard {
+  padding: var(--space-6);
+  background-color: var(--bg-inset);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sideTitle {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.sideText {
+  font-size: 0.9375rem;
+  color: var(--fg-2);
+  line-height: 1.6;
+}
+
+.contactMethod {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background-color: var(--bg-raised);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+  min-height: 44px;
+}
+
+.contactMethod:hover {
+  background-color: var(--bg-nest-3);
+  text-decoration: none;
+}
+
+.contactMethodIcon {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.contactMethodLabel {
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--fg-1);
+  display: block;
+}
+
+.contactMethodValue {
+  font-size: 0.8125rem;
+  color: var(--fg-2);
+  display: block;
+}
+
+.calendarPlaceholder {
+  padding: var(--space-8);
+  background-color: var(--bg-nest-3);
+  border-radius: var(--radius-md);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.calendarIcon {
+  font-size: 2rem;
+}
+
+.calendarTitle {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--fg-1);
+}
+
+.calendarText {
+  font-size: 0.875rem;
+  color: var(--fg-2);
+}
+
+.calendarLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-3) var(--space-6);
+  font-family: var(--font-ui);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--fg-on-accent);
+  background-color: var(--accent-primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background-color var(--transition-fast);
+}
+
+.calendarLink:hover {
+  background-color: var(--accent-primary-hover);
+  text-decoration: none;
+}
