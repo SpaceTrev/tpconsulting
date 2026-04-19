@@ -3,10 +3,10 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Servicios — Volante",
+  title: "Servicios — FAC",
   description: "Catálogo completo de servicios de automatización e integración para cualquier empresa. Diagnóstico desde $1,000 MXN.",
   openGraph: {
-    title: "Servicios — Volante",
+    title: "Servicios — FAC",
     description: "Catálogo completo de servicios de automatización e integración para cualquier empresa.",
     locale: "es_MX",
     type: "website",

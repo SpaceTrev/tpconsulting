@@ -33,10 +33,10 @@ export default function Footer() {
       <div className={styles.inner}>
         <div className={styles.col}>
           <Link href="/" className={styles.logo}>
-            Volante
+            FAC
           </Link>
           <p className={styles.tagline}>
-            Volante · Automatización inteligente para tu negocio.
+            FAC · Automatización inteligente para tu negocio.
           </p>
           <p className={styles.location}>Guadalajara, Jalisco · México</p>
           <Link
@@ -90,13 +90,13 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="mailto:hola@volante.mx" className={styles.colLinkMono}>
-                hola@volante.mx
+              <Link href="mailto:hola@fac.mx" className={styles.colLinkMono}>
+                hola@fac.mx
               </Link>
             </li>
             <li>
               <Link
-                href="https://calendly.com/volante"
+                href="https://calendly.com/fac"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.colLink}
@@ -110,7 +110,7 @@ export default function Footer() {
 
       <div className={styles.bottom}>
         <p className={styles.bottomText}>
-          &copy; 2026 Volante. Todos los derechos reservados.
+          &copy; 2026 FAC. Todos los derechos reservados.
           enterprise
         </p>
       </div>

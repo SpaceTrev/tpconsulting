@@ -35,24 +35,24 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Volante — Automatización inteligente para tu negocio",
+  title: "FAC — Automatización inteligente para tu negocio",
   description:
     "Diseñamos e implementamos sistemas de automatización de nivel enterprise para empresas de todos tamaños. Diagnóstico técnico desde $1,000 MXN.",
   openGraph: {
-    title: "Volante — Automatización inteligente para tu negocio",
+    title: "FAC — Automatización inteligente para tu negocio",
     description:
       "Diseñamos e implementamos sistemas de automatización de nivel enterprise para empresas de todos tamaños. Diagnóstico técnico desde $1,000 MXN.",
     type: "website",
     locale: "es_MX",
-    siteName: "Volante",
+    siteName: "FAC",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Volante — Automatización inteligente para tu negocio",
+    title: "FAC — Automatización inteligente para tu negocio",
     description:
       "Diseñamos e implementamos sistemas de automatización de nivel enterprise para empresas de todos tamaños.",
   },
-  metadataBase: new URL("https://volante.mx"),
+  metadataBase: new URL("https://fac.mx"),
   alternates: { canonical: "/" },
 };
 

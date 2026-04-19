@@ -4,10 +4,10 @@ import styles from "./page.module.css";
 import SolutionFilter from "./SolutionFilter";
 
 export const metadata: Metadata = {
-  title: "Soluciones — Volante",
+  title: "Soluciones — FAC",
   description: "12 soluciones de automatización preconfiguradas para tu industria. Actívala en días, no meses.",
   openGraph: {
-    title: "Soluciones — Volante",
+    title: "Soluciones — FAC",
     description: "Soluciones de automatización probadas para manufactura, retail, logística, servicios y más.",
     locale: "es_MX",
   },
