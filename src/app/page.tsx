@@ -489,6 +489,20 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Manifesto ── */}
+      <section className={styles.manifestoSection}>
+        <div className={styles.container}>
+          <div className={styles.manifestoInner}>
+            <blockquote className={styles.manifestoQuote}>
+              <p className={styles.manifestoText}>
+                "No venimos a venderte automatización por vender automatización. Venimos a encontrar dónde se te está yendo el tiempo y el dinero, atacar eso primero, medir el resultado, y solo entonces construir lo siguiente. Así sabemos que cada peso que inviertes tiene un retorno claro — no solo funciones bonitas que nadie usa."
+              </p>
+              <span className={styles.manifestoAttribution}>— La filosofía detrás de cada proyecto</span>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
       {/* ── Pricing ── */}
       <section className={styles.pricingSection}>
         <div className={styles.container}>
@@ -506,6 +520,20 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Enterprise strip ── */}
+      <div className={styles.enterpriseStrip}>
+        <div className={styles.container}>
+          <div className={styles.enterpriseInner}>
+            <p className={styles.enterpriseText}>
+              ¿Empresa grande o corporativo? También trabajamos con organizaciones de mayor escala — soluciones enterprise a la medida.
+            </p>
+            <Link href="/contacto" className={styles.enterpriseLink}>
+              Contactar para enterprise →
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* ── Case Study ── */}
       <section className={styles.caseStudySection}>
