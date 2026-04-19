@@ -54,10 +54,10 @@ const initial: FormData = {
 const STAGES = ["Tu Negocio", "Tu Operación", "Tu Mayor Dolor", "Inversión"];
 
 const TIER_OPTIONS = [
-  { value: "explorador", label: "Explorador", price: "$1,000 MXN", desc: "Diagnóstico Express 48hrs" },
-  { value: "estudio", label: "Estudio", price: "$5,000 MXN", desc: "Diagnóstico Profundo + Roadmap" },
-  { value: "transformacion", label: "Transformación", price: "$10,000 MXN", desc: "Diagnóstico + 1 Automatización implementada", popular: true },
-  { value: "empresa", label: "Empresa", price: "$15,000 MXN", desc: "Diagnóstico + 3 Automatizaciones integradas" },
+  { value: "escaneo", label: "Escaneo Rápido", price: "$1,000 MXN", desc: "Evaluación básica de necesidades en 48hrs" },
+  { value: "diagnostico", label: "Diagnóstico Técnico", price: "$5,000 MXN", desc: "Análisis profundo con recomendaciones de arquitectura" },
+  { value: "plan", label: "Plan Completo", price: "$10,000 MXN", desc: "Plan técnico detallado + cotización de implementación", popular: true },
+  { value: "ejecutivo", label: "Análisis Ejecutivo", price: "$15,000 MXN", desc: "Análisis ejecutivo con proyecciones, legal y roadmap de expansión" },
 ];
 
 /* ── Helpers ───────────────────────────────────────────────── */

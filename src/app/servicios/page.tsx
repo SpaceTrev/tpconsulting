@@ -74,7 +74,7 @@ const services = [
     number: "03",
     icon: <IconGear />,
     name: "Automatización de Procesos",
-    price: "desde $15,000 MXN",
+    price: "A cotizar",
     desc: "Implementación de flujos automatizados conectados a tus herramientas actuales. Usamos Make.com, n8n, Zapier y desarrollo custom según lo que más conviene.",
     deliverable: "Sistema automatizado en producción",
     features: [
@@ -91,7 +91,7 @@ const services = [
     number: "04",
     icon: <IconLink />,
     name: "Integración de Sistemas",
-    price: "desde $20,000 MXN",
+    price: "A cotizar",
     desc: "Conecta tu CRM, ERP, contabilidad, logística y canales de venta en un ecosistema unificado. Sin duplicados, sin captura manual.",
     deliverable: "APIs funcionando + Documentación técnica",
     features: [
@@ -108,7 +108,7 @@ const services = [
     number: "05",
     icon: <IconBot />,
     name: "Agentes de IA",
-    price: "desde $30,000 MXN",
+    price: "A cotizar",
     desc: "Asistentes inteligentes entrenados con el conocimiento de tu empresa. Atienden clientes, califican leads, generan cotizaciones y escalan casos complejos.",
     deliverable: "Agente IA desplegado y operando",
     features: [
@@ -125,7 +125,7 @@ const services = [
     number: "06",
     icon: <IconCode />,
     name: "Desarrollo a Medida",
-    price: "desde $50,000 MXN",
+    price: "A cotizar",
     desc: "Software personalizado para procesos únicos de tu empresa que no encuentras en el mercado. Desde portales internos hasta sistemas de gestión complejos.",
     deliverable: "Aplicación completa + código fuente",
     features: [
@@ -142,7 +142,7 @@ const services = [
     number: "07",
     icon: <IconBriefcase />,
     name: "Consultoría Estratégica",
-    price: "$3,000 MXN / hora",
+    price: "A cotizar",
     desc: "Sesiones de estrategia con nuestros especialistas para resolver dudas, validar decisiones tecnológicas o planificar tu próxima fase de crecimiento.",
     deliverable: "Plan de acción documentado",
     features: [
@@ -159,7 +159,7 @@ const services = [
     number: "08",
     icon: <IconSupport />,
     name: "Soporte y Mantenimiento",
-    price: "desde $5,000 MXN / mes",
+    price: "A cotizar",
     desc: "Mantenimiento preventivo y reactivo de todas tus automatizaciones. Monitoreo continuo, actualizaciones y respuesta garantizada en menos de 24 horas.",
     deliverable: "SLA garantizado 24hrs",
     features: [

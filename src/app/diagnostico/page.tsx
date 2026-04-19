@@ -24,17 +24,17 @@ export default async function DiagnosticoPage({
     <main className={styles.main}>
       <div className={styles.header}>
         <div className={styles.container}>
-          <span className={styles.eyebrow}>Diagnóstico técnico</span>
+          <span className={styles.eyebrow}>Análisis y plan técnico</span>
           <h1 className={styles.title}>Descubre exactamente qué automatizar en tu negocio</h1>
           <p className={styles.subtitle}>
-            26 preguntas. 10 minutos de tu tiempo. Un reporte personalizado con las oportunidades de automatización de mayor impacto para tu empresa.
+            Nuestro diagnóstico te da un plan técnico detallado con costos de implementación estimados — para que sepas exactamente qué se puede construir, cuánto cuesta, y qué impacto tendrá en tu negocio.
           </p>
           <div className={styles.guarantees}>
             <span className={styles.guarantee}>
-              <span aria-hidden="true">⏱</span> Resultados en 48hrs
+              <span aria-hidden="true">⏱</span> Análisis en 48hrs
             </span>
             <span className={styles.guarantee}>
-              <span aria-hidden="true">📋</span> Reporte PDF ejecutivo
+              <span aria-hidden="true">📋</span> Plan técnico + costos estimados
             </span>
             <span className={styles.guarantee}>
               <span aria-hidden="true">🔒</span> Datos 100% confidenciales
@@ -55,9 +55,9 @@ export default async function DiagnosticoPage({
                 <li>Mapa completo de tus procesos actuales</li>
                 <li>Identificación de los 3–5 puntos de mayor pérdida de tiempo</li>
                 <li>Estimación de horas y dinero recuperables por mes</li>
-                <li>Roadmap priorizado de automatizaciones</li>
+                <li>Plan técnico con costos de implementación estimados</li>
                 <li>Recomendación de herramientas según tu presupuesto</li>
-                <li>Sesión de 30 minutos para revisar resultados</li>
+                <li>La implementación es un proyecto separado — el plan te dice exactamente qué costará</li>
               </ul>
             </div>
             <div className={styles.asideCard}>

@@ -3,11 +3,11 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Casos de Éxito — TPConsulting",
-  description: "Empresa de renta vacacional pasó de caos manual a automatización total. −85% trabajo administrativo, $12K MXN ahorro mensual.",
+  title: "Proyectos — TPConsulting",
+  description: "Proyecto en curso: automatización de gestión de renta vacacional en CDMX. Pipeline de 5 etapas con WhatsApp, IA y integración multi-plataforma.",
   openGraph: {
-    title: "Casos de Éxito — TPConsulting",
-    description: "Cómo automatizamos la gestión de 45 propiedades para una empresa de renta vacacional.",
+    title: "Proyectos — TPConsulting",
+    description: "Cómo estamos automatizando la gestión de 45 propiedades para una empresa de renta vacacional en CDMX.",
     locale: "es_MX",
     type: "website",
   },
@@ -63,41 +63,41 @@ export default function CasosPage() {
       {/* ── Hero ── */}
       <section className={styles.hero}>
         <div className={styles.container}>
-          <span className={styles.eyebrow}>Caso de éxito</span>
+          <span className={styles.eyebrow}>Proyecto en curso</span>
           <h1 className={styles.heroTitle}>
-            45 propiedades, 3 empleados, operación completamente automatizada
+            45 propiedades, 3 empleados, automatización en progreso
           </h1>
           <p className={styles.heroSubtitle}>
-            Una empresa de gestión de renta vacacional en CDMX pasó de administrar su operación en hojas de cálculo y mensajes dispersos, a un sistema completamente automatizado en 6 semanas. Así lo hicimos.
+            Una empresa de gestión de renta vacacional en CDMX está migrando de hojas de cálculo y mensajes dispersos a un sistema completamente automatizado. Aquí documentamos el proceso tal como está ocurriendo.
           </p>
           <div className={styles.heroMeta}>
             <span className={styles.heroBadge}>🏠 Sector: Renta Vacacional / PropTech</span>
             <span className={styles.heroBadge}>📍 Ciudad de México</span>
             <span className={styles.heroBadge}>👥 3 empleados, 45 propiedades</span>
-            <span className={styles.heroBadge}>⏱ 6 semanas de implementación</span>
+            <span className={styles.heroBadge}>🔄 Implementación en curso</span>
           </div>
         </div>
       </section>
 
-      {/* ── Results ── */}
-      <section className={styles.resultsBanner} aria-label="Resultados obtenidos">
+      {/* ── Projected outcomes ── */}
+      <section className={styles.resultsBanner} aria-label="Objetivos del proyecto">
         <div className={styles.container}>
           <div className={styles.resultsGrid}>
             <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>−85%</span>
-              <span className={styles.resultLabel}>Reducción en trabajo administrativo manual por semana</span>
+              <span className={styles.resultNumber}>5</span>
+              <span className={styles.resultLabel}>Automatizaciones en diseño e implementación</span>
             </div>
             <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>$12K</span>
-              <span className={styles.resultLabel}>MXN de ahorro mensual en personal operativo</span>
+              <span className={styles.resultNumber}>4</span>
+              <span className={styles.resultLabel}>Plataformas integradas: Airbnb, Booking.com, WhatsApp, contabilidad</span>
             </div>
             <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>0</span>
-              <span className={styles.resultLabel}>Dobles reservas o errores de coordinación desde la implementación</span>
+              <span className={styles.resultNumber}>12+</span>
+              <span className={styles.resultLabel}>Procesos manuales identificados para automatizar</span>
             </div>
             <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>4.9★</span>
-              <span className={styles.resultLabel}>Calificación promedio mantenida en Airbnb y Booking.com</span>
+              <span className={styles.resultNumber}>3</span>
+              <span className={styles.resultLabel}>Empleados que recuperarán tiempo operativo cada semana</span>
             </div>
           </div>
         </div>

@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 };
 
 const trevorTags = [
-  "Fortune 500",
-  "Starbucks",
-  "Arquitectura enterprise",
-  "Sistemas distribuidos",
-  "Automatización",
+  "Valtech / Kin + Carta",
+  "Starbucks · Discover Card",
+  "React · Next.js · TypeScript",
+  "GenAI · Agentes IA · MCP Servers",
+  "8+ años Fortune 500",
 ];
 
 const pabloTags = [
@@ -100,20 +100,20 @@ export default function NosotrosPage() {
                 <div className={styles.bioAvatar} aria-hidden="true">TP</div>
                 <div>
                   <p className={styles.bioName}>Trevor Patterson</p>
-                  <p className={styles.bioRole}>Co-fundador · Director Técnico</p>
+                  <p className={styles.bioRole}>Co-fundador · Staff Software Engineer · GenAI & Automation</p>
                 </div>
               </div>
               <p className={styles.bioText}>
-                Trevor lleva más de 9 años diseñando e implementando sistemas de automatización para empresas Fortune 500. Como líder técnico en proyectos de transformación digital para cadenas como Starbucks y CBRE, aprendió de primera mano los estándares de calidad, seguridad y escalabilidad que definen la operación de las empresas más grandes del mundo.
+                Trevor es Consultor Senior de Ingeniería de Software en Valtech (antes Kin + Carta / Spire Digital), donde lleva más de 8 años entregando aplicaciones de nivel enterprise para Fortune 500 e instituciones financieras. Como Frontend Lead y Workflow Architect en Starbucks, es dueño de la plataforma frontend y la biblioteca de componentes, diseñó la automatización CI/CD con GitHub Actions, y ha liderado la adopción de IA construyendo servidores MCP, bibliotecas de habilidades para agentes y sistemas de memoria persistente.
               </p>
               <p className={styles.bioText}>
-                Hoy aplica ese mismo rigor enterprise para construir sistemas de automatización que PyMEs mexicanas pueden activar, entender y mantener. Su filosofía: si un proceso tiene que explicarse en una reunión cada semana, está mal diseñado.
+                En Discover Card integró Apple Pay e implementó accesibilidad WCAG en flujos de pago críticos. En Commonwealth Financial fue reconocido como Empleado del Mes — el primer consultor externo en recibir ese reconocimiento. Bilingüe en inglés y español, con formación en arte y diseño, combina precisión técnica con sensibilidad visual.
               </p>
               <div className={styles.bioCredentials}>
-                <span className={styles.credential}>9+ años en automatización enterprise</span>
-                <span className={styles.credential}>Proyectos en Starbucks, CBRE y Fortune 500</span>
-                <span className={styles.credential}>Especialidad: arquitectura de sistemas, IA aplicada, integración de plataformas</span>
-                <span className={styles.credential}>152+ automatizaciones implementadas</span>
+                <span className={styles.credential}>8+ años en consultoría enterprise Fortune 500</span>
+                <span className={styles.credential}>Starbucks — Frontend Lead & Workflow Architect (actual)</span>
+                <span className={styles.credential}>Discover Card — Apple Pay, WCAG · Commonwealth Financial — Empleado del Mes</span>
+                <span className={styles.credential}>React · Next.js · TypeScript · FastAPI · Python · AWS/GCP/Azure · LangGraph · CrewAI · MCP Servers · n8n · Supabase</span>
               </div>
             </div>
 
@@ -121,7 +121,7 @@ export default function NosotrosPage() {
               <div className={styles.bioHeader}>
                 <div className={styles.bioAvatar} aria-hidden="true">PM</div>
                 <div>
-                  <p className={styles.bioName}>Pablo Morales</p>
+                  <p className={styles.bioName}>Pablo Estrada</p>
                   <p className={styles.bioRole}>Co-fundador · Director de Estrategia</p>
                 </div>
               </div>
