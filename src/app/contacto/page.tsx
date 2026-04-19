@@ -40,25 +40,37 @@ export default function ContactoPage() {
                   Respondemos todos los mensajes en menos de 24 horas hábiles. Normalmente somos mucho más rápidos.
                 </p>
                 <a
-                  href="https://wa.me/5215512345678?text=Hola%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20sus%20servicios%20de%20automatizaci%C3%B3n."
+                  href="https://wa.me/13038299013?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20servicios%20de%20automatizaci%C3%B3n"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.contactMethod}
                 >
                   <span className={styles.contactMethodIcon} aria-hidden="true">💬</span>
                   <span>
-                    <span className={styles.contactMethodLabel}>WhatsApp</span>
-                    <span className={styles.contactMethodValue}>+52 55 1234 5678 — Respuesta en &lt;2hrs</span>
+                    <span className={styles.contactMethodLabel}>WhatsApp — General</span>
+                    <span className={styles.contactMethodValue}>Trevor · +1 (303) 829-9013</span>
                   </span>
                 </a>
                 <a
-                  href="mailto:hola@fac.mx"
+                  href="https://wa.me/522281773964?text=Hola%2C%20me%20interesa%20un%20diagn%C3%B3stico%20para%20mi%20negocio"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.contactMethod}
+                >
+                  <span className={styles.contactMethodIcon} aria-hidden="true">💬</span>
+                  <span>
+                    <span className={styles.contactMethodLabel}>WhatsApp — Diagnóstico</span>
+                    <span className={styles.contactMethodValue}>Pablo · +52 (228) 177-3964</span>
+                  </span>
+                </a>
+                <a
+                  href="mailto:hola@thefac.co"
                   className={styles.contactMethod}
                 >
                   <span className={styles.contactMethodIcon} aria-hidden="true">✉️</span>
                   <span>
                     <span className={styles.contactMethodLabel}>Correo electrónico</span>
-                    <span className={styles.contactMethodValue}>hola@fac.mx</span>
+                    <span className={styles.contactMethodValue}>hola@thefac.co</span>
                   </span>
                 </a>
               </div>

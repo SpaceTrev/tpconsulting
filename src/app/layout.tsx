@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     description:
       "Diseñamos e implementamos sistemas de automatización de nivel enterprise para empresas de todos tamaños.",
   },
-  metadataBase: new URL("https://fac.mx"),
+  metadataBase: new URL("https://thefac.co"),
   alternates: { canonical: "/" },
 };
 
@@ -84,7 +84,7 @@ export default function RootLayout({
           <div className={styles.content}>{children}</div>
           <Footer />
         </div>
-        <WhatsAppButton phoneNumber="5215512345678" />
+        <WhatsAppButton phoneNumber="13038299013" message="Hola, me interesa saber más sobre sus servicios de automatización" />
       </body>
     </html>
   );

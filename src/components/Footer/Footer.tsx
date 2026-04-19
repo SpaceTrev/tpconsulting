@@ -40,7 +40,7 @@ export default function Footer() {
           </p>
           <p className={styles.location}>Guadalajara, Jalisco · México</p>
           <Link
-            href="https://wa.me/5213312345678"
+            href="https://wa.me/13038299013?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20servicios%20de%20automatizaci%C3%B3n"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.socialLink}
@@ -81,7 +81,7 @@ export default function Footer() {
           <ul className={styles.colLinks} role="list">
             <li>
               <Link
-                href="https://wa.me/5213312345678"
+                href="https://wa.me/13038299013?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20servicios%20de%20automatizaci%C3%B3n"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.colLinkAccent}
@@ -90,8 +90,8 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="mailto:hola@fac.mx" className={styles.colLinkMono}>
-                hola@fac.mx
+              <Link href="mailto:hola@thefac.co" className={styles.colLinkMono}>
+                hola@thefac.co
               </Link>
             </li>
             <li>
@@ -111,7 +111,6 @@ export default function Footer() {
       <div className={styles.bottom}>
         <p className={styles.bottomText}>
           &copy; 2026 FAC. Todos los derechos reservados.
-          enterprise
         </p>
       </div>
     </footer>
