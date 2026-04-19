@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { createClient } from "@supabase/supabase-js";
 import styles from "./page.module.css";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Admin — TPConsulting",
@@ -47,6 +49,12 @@ function formatDate(iso: string) {
 }
 
 export default async function AdminPage() {
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+
   const [{ data: diagnostics }, { data: contacts }] = await Promise.all([
     supabaseAdmin
       .from("diagnostic_submissions")

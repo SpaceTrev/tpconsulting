@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import styles from "./DiagnosticForm.module.css";
 
 /* ── Types ─────────────────────────────────────────────────── */
@@ -86,7 +86,9 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
-    const { error } = await supabase.from("diagnostic_submissions").insert([form]);
+    const client = getSupabase();
+    if (!client) { setStatus("error"); setErrorMsg("Supabase no configurado."); return; }
+    const { error } = await client.from("diagnostic_submissions").insert([form]);
     if (error) {
       setStatus("error");
       setErrorMsg("Hubo un error al enviar tu solicitud. Intenta de nuevo.");

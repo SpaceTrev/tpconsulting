@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 import formStyles from "@/components/DiagnosticForm/DiagnosticForm.module.css";
 
 interface ContactData {
@@ -25,7 +25,9 @@ export default function ContactForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
-    const { error } = await supabase.from("contacts").insert([{ ...form, source_page: "contacto" }]);
+    const client = getSupabase();
+    if (!client) { setStatus("error"); return; }
+    const { error } = await client.from("contacts").insert([{ ...form, source_page: "contacto" }]);
     setStatus(error ? "error" : "success");
   }
 
