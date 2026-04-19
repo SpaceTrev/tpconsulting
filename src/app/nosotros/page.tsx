@@ -22,10 +22,10 @@ const trevorTags = [
 ];
 
 const pabloTags = [
-  "Estrategia de negocio",
-  "Mercado mexicano",
-  "Operaciones",
-  "PyMEs",
+  "9+ años SaaS global",
+  "Brightcove · Lifesize",
+  "Estrategia de producto LATAM",
+  "APIs · Microservicios · Go-to-market",
 ];
 
 const valueCards = [
@@ -121,18 +121,23 @@ export default function NosotrosPage() {
                 <div className={styles.bioAvatar} aria-hidden="true">PE</div>
                 <div>
                   <p className={styles.bioName}>Pablo Estrada</p>
-                  <p className={styles.bioRole}>Co-fundador · Estrategia & Operaciones de Negocio</p>
+                  <p className={styles.bioRole}>Co-fundador · Estrategia de Producto & Plataformas</p>
                 </div>
               </div>
               <p className={styles.bioText}>
-                Pablo conoce el mercado mexicano desde adentro. Su experiencia en estrategia de negocio y operaciones es lo que garantiza que cada proyecto que entregamos genere valor real desde el primer día — no soluciones técnicas que nadie en tu equipo termina usando.
+                Pablo es un líder de producto con más de 9 años de experiencia dirigiendo plataformas, integraciones y productos de IA en empresas globales de SaaS. Ha liderado el lanzamiento de suites completas de IA en Brightcove — incluyendo capacidades adoptadas por millones de usuarios — y ha sido responsable de estrategia de producto para mercados en Latinoamérica, Estados Unidos y Europa.
               </p>
               <p className={styles.bioText}>
-                Es el puente entre la visión técnica y la realidad de operar un negocio. Próximamente compartiremos más sobre su trayectoria.
+                Su experiencia abarca desde la definición técnica de APIs y arquitecturas de microservicios hasta la ejecución de go-to-market y la optimización de adopción por datos. En Lifesize, fue dueño de la estrategia regional para LATAM, impulsando +20% de crecimiento año con año a través de localización, integraciones enterprise y decisiones de producto informadas por datos.
+              </p>
+              <p className={styles.bioText}>
+                En FAC, Pablo traduce necesidades de negocio complejas en planes técnicos claros y ejecutables — asegurando que cada automatización entregue impacto medible, no solo funcionalidad.
               </p>
               <div className={styles.bioCredentials}>
-                <span className={styles.credential}>Estrategia de negocio · Mercado mexicano</span>
-                <span className={styles.credential}>Operaciones y escalamiento de PyMEs</span>
+                <span className={styles.credential}>9+ años en SaaS global · Brightcove · Lifesize</span>
+                <span className={styles.credential}>Estrategia de producto para LATAM, EUA y Europa</span>
+                <span className={styles.credential}>+20% crecimiento YoY · Plataformas con millones de usuarios</span>
+                <span className={styles.credential}>APIs · Microservicios · Go-to-market · Decisiones por datos</span>
               </div>
             </div>
 
