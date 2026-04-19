@@ -1,0 +1,172 @@
+:root {
+  /* Surfaces — Solarized Light base */
+  --surface: #fdf6e3;
+  --surface-container-low: #f5ede2;
+  --surface-container: #eee8d5;
+  --surface-container-high: #e7e0cc;
+  --surface-container-highest: #ddd6c0;
+  --surface-bright: #f8f2e4;
+
+  /* Content */
+  --on-surface: #073642;
+  --on-surface-variant: #586e75;
+
+  /* Primary — PLACEHOLDER: Trev choosing between indigo #4338ca and copper #b45309 */
+  --primary: #4338ca;
+  --primary-container: #e0e7ff;
+  --on-primary: #ffffff;
+  --on-primary-container: #1e1b4b;
+
+  /* Secondary — Solarized yellow */
+  --secondary: #b58900;
+  --secondary-container: #fef3c7;
+  --on-secondary: #ffffff;
+  --on-secondary-container: #451a03;
+
+  /* Accent — Solarized red */
+  --accent: #c0392b;
+  --accent-container: #fee2e2;
+  --on-accent: #ffffff;
+
+  /* Outline */
+  --outline: rgba(101, 123, 131, 0.35);
+  --outline-variant: rgba(101, 123, 131, 0.15);
+
+  /* Typography */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Public Sans', sans-serif;
+  --font-ui: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* Border radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(7, 54, 66, 0.06);
+  --shadow-md: 0 4px 6px rgba(7, 54, 66, 0.08), 0 1px 3px rgba(7, 54, 66, 0.06);
+  --shadow-lg: 0 10px 15px rgba(7, 54, 66, 0.08), 0 4px 6px rgba(7, 54, 66, 0.04);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
+
+  /* Layout */
+  --max-width: 1200px;
+  --nav-height: 64px;
+}
+
+.dark {
+  /* Surfaces — Solarized Dark base */
+  --surface: #00161d;
+  --surface-container-low: #001f28;
+  --surface-container: #00232d;
+  --surface-container-high: #0d2e39;
+  --surface-container-highest: #133945;
+  --surface-bright: #183e49;
+
+  /* Content */
+  --on-surface: #cad4d7;
+  --on-surface-variant: #8fa8b0;
+
+  /* Primary — dark mode variant */
+  --primary: #818cf8;
+  --primary-container: #312e81;
+  --on-primary: #1e1b4b;
+  --on-primary-container: #c7d2fe;
+
+  /* Secondary — brightened yellow for dark */
+  --secondary: #f2bf43;
+  --secondary-container: #451a03;
+  --on-secondary: #1a1200;
+  --on-secondary-container: #fef3c7;
+
+  /* Accent — warmer red for dark */
+  --accent: #e87058;
+  --accent-container: #7f1d1d;
+  --on-accent: #1a0000;
+
+  /* Outline */
+  --outline: rgba(143, 168, 176, 0.25);
+  --outline-variant: rgba(65, 72, 75, 0.20);
+
+  /* Shadows adjusted for dark */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* Typography defaults */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  color: var(--on-surface);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Focus visible */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
