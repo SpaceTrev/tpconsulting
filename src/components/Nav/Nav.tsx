@@ -20,7 +20,7 @@ export default function Nav() {
       <header className={styles.header}>
         <nav className={styles.nav} aria-label="Navegación principal">
           <Link href="/" className={styles.logo}>
-            FAM Consulting
+            Volante
           </Link>
 
           <ul className={styles.links} role="list">

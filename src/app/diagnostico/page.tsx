@@ -3,10 +3,10 @@ import styles from "./page.module.css";
 import DiagnosticForm from "@/components/DiagnosticForm/DiagnosticForm";
 
 export const metadata: Metadata = {
-  title: "Diagnóstico Técnico — FAM Consulting",
+  title: "Diagnóstico Técnico — Volante",
   description: "Obtén un diagnóstico técnico de automatización para tu empresa desde $1,000 MXN. 26 preguntas, resultados en 48 horas.",
   openGraph: {
-    title: "Diagnóstico Técnico — FAM Consulting",
+    title: "Diagnóstico Técnico — Volante",
     description: "Obtén un diagnóstico técnico de automatización para tu empresa desde $1,000 MXN.",
     locale: "es_MX",
   },

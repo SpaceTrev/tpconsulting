@@ -3,10 +3,10 @@ import styles from "./page.module.css";
 import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contacto — FAM Consulting",
+  title: "Contacto — Volante",
   description: "Contáctanos para comenzar tu transformación digital. Respondemos en menos de 24 horas por WhatsApp o correo.",
   openGraph: {
-    title: "Contacto — FAM Consulting",
+    title: "Contacto — Volante",
     description: "Contáctanos para comenzar tu transformación digital. Respondemos en menos de 24 horas.",
     locale: "es_MX",
   },
@@ -52,13 +52,13 @@ export default function ContactoPage() {
                   </span>
                 </a>
                 <a
-                  href="mailto:hola@famconsulting.mx"
+                  href="mailto:hola@volante.mx"
                   className={styles.contactMethod}
                 >
                   <span className={styles.contactMethodIcon} aria-hidden="true">✉️</span>
                   <span>
                     <span className={styles.contactMethodLabel}>Correo electrónico</span>
-                    <span className={styles.contactMethodValue}>hola@famconsulting.mx</span>
+                    <span className={styles.contactMethodValue}>hola@volante.mx</span>
                   </span>
                 </a>
               </div>
@@ -71,7 +71,7 @@ export default function ContactoPage() {
                     30 minutos, sin costo. Platicamos sobre tu operación y te decimos si podemos ayudarte.
                   </p>
                   <a
-                    href="https://calendly.com/famconsulting"
+                    href="https://calendly.com/volante"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.calendarLink}

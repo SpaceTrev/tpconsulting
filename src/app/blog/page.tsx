@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Blog — FAM Consulting",
+  title: "Blog — Volante",
   description: "Artículos sobre automatización, IA y tecnología para cualquier empresa.",
   openGraph: {
-    title: "Blog — FAM Consulting",
+    title: "Blog — Volante",
     description: "Artículos sobre automatización, IA y tecnología para cualquier empresa.",
     locale: "es_MX",
   },

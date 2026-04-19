@@ -3,10 +3,10 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Nosotros — FAM Consulting",
-  description: "El equipo detrás de FAM Consulting opera al nivel más alto de ingeniería de software enterprise — y ahora lo hace accesible para cualquier negocio.",
+  title: "Nosotros — Volante",
+  description: "El equipo detrás de Volante opera al nivel más alto de ingeniería de software enterprise — y ahora lo hace accesible para cualquier negocio.",
   openGraph: {
-    title: "Nosotros — FAM Consulting",
+    title: "Nosotros — Volante",
     description: "8+ años de consultoría Fortune 500 (Starbucks, Discover) aplicados a empresas de todos tamaños.",
     locale: "es_MX",
     type: "website",
@@ -55,7 +55,7 @@ export default function NosotrosPage() {
             Ingeniería de nivel Fortune 500, ahora accesible para tu negocio
           </h1>
           <p className={styles.subtitle}>
-            Pasamos años construyendo sistemas para algunas de las empresas más grandes del mundo. Luego nos preguntamos: ¿por qué los negocios más pequeños no pueden tener acceso a lo mismo? FAM nació para responder esa pregunta.
+            Pasamos años construyendo sistemas para algunas de las empresas más grandes del mundo. Luego nos preguntamos: ¿por qué los negocios más pequeños no pueden tener acceso a lo mismo? Volante nació para responder esa pregunta.
           </p>
         </div>
       </section>

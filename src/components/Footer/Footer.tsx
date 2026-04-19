@@ -33,10 +33,10 @@ export default function Footer() {
       <div className={styles.inner}>
         <div className={styles.col}>
           <Link href="/" className={styles.logo}>
-            FAM Consulting
+            Volante
           </Link>
           <p className={styles.tagline}>
-            FAM · Automatización inteligente para tu negocio.
+            Volante · Automatización inteligente para tu negocio.
           </p>
           <p className={styles.location}>Guadalajara, Jalisco · México</p>
           <Link
@@ -90,13 +90,13 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="mailto:hola@famconsulting.mx" className={styles.colLinkMono}>
-                hola@famconsulting.mx
+              <Link href="mailto:hola@volante.mx" className={styles.colLinkMono}>
+                hola@volante.mx
               </Link>
             </li>
             <li>
               <Link
-                href="https://calendly.com/famconsulting"
+                href="https://calendly.com/volante"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.colLink}
@@ -110,7 +110,7 @@ export default function Footer() {
 
       <div className={styles.bottom}>
         <p className={styles.bottomText}>
-          &copy; 2025 FAM Consulting · Hecho en Guadalajara con tecnología
+          &copy; 2026 Volante. Todos los derechos reservados.
           enterprise
         </p>
       </div>

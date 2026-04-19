@@ -3,10 +3,10 @@ import Link from "next/link";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Proyectos — FAM Consulting",
+  title: "Proyectos — Volante",
   description: "Proyecto en curso: automatización de gestión de renta vacacional en CDMX. Pipeline de 5 etapas con WhatsApp, IA y integración multi-plataforma.",
   openGraph: {
-    title: "Proyectos — FAM Consulting",
+    title: "Proyectos — Volante",
     description: "Cómo estamos automatizando la gestión de 45 propiedades para una empresa de renta vacacional en CDMX.",
     locale: "es_MX",
     type: "website",
