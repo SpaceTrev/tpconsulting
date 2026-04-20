@@ -1,9 +1,28 @@
 'use client';
 
-import { useState, useEffect, useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useCallback, useMemo, CSSProperties } from 'react';
 import { TIERS, INDUSTRIES, relTime, type Contact, type Lead, type Diagnostic } from '@/lib/admin-data';
 import { fetchContacts, fetchLeads, fetchDiagnostics, updateContactStatus, convertContactToLead } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
+import { useRealtimeTable } from '@/lib/use-realtime';
+
+function downloadContactsCSV(rows: Contact[]) {
+  const headers = ['ID','Fecha','Nombre','Email','WhatsApp','Industria','Mensaje','Estado','Fuente'];
+  const data = rows.map(c => [
+    c.id,
+    new Date(c.submittedAt).toLocaleDateString('es-MX'),
+    c.name, c.email, c.whatsapp, c.industry,
+    c.message, c.status, c.source,
+  ]);
+  const csv = [headers, ...data].map(r =>
+    r.map(cell => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `contactos-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
 
 // ── Primitives ───────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -93,6 +112,11 @@ function ContactosSection({ contacts, onRefresh, isMobile }: { contacts: Contact
         <button onClick={() => { setQ(''); setStatus(''); }} style={{ display: 'inline-flex', alignItems: 'center', padding: '0 12px', minHeight: 40, background: 'transparent', color: 'var(--fg-2)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
           Limpiar
         </button>
+        <div style={{ marginLeft: 'auto' }}>
+          <button onClick={() => downloadContactsCSV(rows)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
+            <Icon name="arrowDown" size={14} /> CSV
+          </button>
+        </div>
       </div>
 
       {/* Two-col — stacks on mobile */}
@@ -348,11 +372,13 @@ export default function ContactosPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetchContacts().then(setContacts);
     fetchLeads().then(setLeads);
     fetchDiagnostics().then(setDiagnostics);
   }, []);
+  useEffect(() => { load(); }, [load]);
+  useRealtimeTable('contacts', load);
 
   return (
     <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -372,7 +398,7 @@ export default function ContactosPage() {
       </div>
 
       {section === 'contactos'
-        ? <ContactosSection contacts={contacts} onRefresh={() => fetchContacts().then(setContacts)} isMobile={isMobile} />
+        ? <ContactosSection contacts={contacts} onRefresh={load} isMobile={isMobile} />
         : <MetricasSection leads={leads} diagnostics={diagnostics} isMobile={isMobile} />
       }
     </div>

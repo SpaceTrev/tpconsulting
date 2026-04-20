@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { ASSIGNEES } from '@/lib/admin-data';
 import { useIsMobile } from '@/lib/use-mobile';
 import { getSupabase } from '@/lib/supabase';
+import { useAdminBadges, type AdminBadges } from '@/lib/use-admin-badges';
 
 // ── Icons ────────────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -102,20 +103,18 @@ function NavItem({ href, icon, label, count, active, collapsed, accent }: {
 }
 
 // ── Sidebar ──────────────────────────────────────────────────
-function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose, onLogout }: {
+function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose, onLogout, badges }: {
   collapsed: boolean; onToggle: () => void; pathname: string;
   isMobile?: boolean; onClose?: () => void; onLogout?: () => void;
+  badges?: AdminBadges;
 }) {
   const w = isMobile ? 280 : (collapsed ? 64 : 232);
-  const diagCount = 5;
-  const leadsCount = 8;
-  const contactosCount = 4;
 
   const items = [
-    { href: '/admin',           icon: 'home',      label: 'Overview' },
-    { href: '/admin/diagnosticos', icon: 'clipboard', label: 'Diagnósticos', count: diagCount, accent: true },
-    { href: '/admin/leads',     icon: 'users',     label: 'Leads',        count: leadsCount },
-    { href: '/admin/contactos', icon: 'mail',      label: 'Contactos',    count: contactosCount },
+    { href: '/admin',                icon: 'home',      label: 'Overview' },
+    { href: '/admin/diagnosticos',   icon: 'clipboard', label: 'Diagnósticos', count: badges?.diagnostics ?? 0, accent: true },
+    { href: '/admin/leads',          icon: 'users',     label: 'Leads',        count: badges?.leads ?? 0 },
+    { href: '/admin/contactos',      icon: 'mail',      label: 'Contactos',    count: badges?.contacts ?? 0 },
   ];
   const footer = [
     { href: '/admin/config',    icon: 'gear',      label: 'Configuración' },
@@ -227,6 +226,7 @@ function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
   pathname: string; theme: string; onTheme: () => void;
   isMobile?: boolean; onMenuOpen?: () => void;
 }) {
+  const router = useRouter();
   const titles: Record<string, string> = {
     '/admin':              'Overview',
     '/admin/diagnosticos': 'Diagnósticos',
@@ -284,7 +284,13 @@ function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
             <Icon name="search" size={16} color="var(--fg-3)" />
             <input
               value={search} onChange={e => setSearch(e.target.value)}
-              placeholder="Buscar leads, negocios, diagnósticos…"
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  const q = search.trim();
+                  router.push(q ? `${pathname}?q=${encodeURIComponent(q)}` : pathname);
+                }
+              }}
+              placeholder="Buscar leads, negocios, diagnósticos… (Enter)"
               style={{ flex: 1, background: 'transparent', border: 0, outline: 'none', fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-1)' }}
             />
             <kbd style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', padding: '2px 6px', background: 'var(--bg-inset)', borderRadius: 4 }}>/</kbd>
@@ -350,6 +356,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
   const isMobile = useIsMobile();
+  const badges = useAdminBadges();
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
@@ -426,6 +433,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           isMobile={isMobile}
           onClose={() => setMobileOpen(false)}
           onLogout={handleLogout}
+          badges={badges}
         />
       )}
 

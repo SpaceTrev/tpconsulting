@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useCallback, useMemo, CSSProperties } from 'react';
 import {
   TIERS, INDUSTRIES, URGENCIES, type Diagnostic,
   relTime,
@@ -9,6 +9,32 @@ import {
   fetchDiagnostics, updateDiagnosticStatus, convertDiagnosticToLead,
 } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
+import { useRealtimeTable } from '@/lib/use-realtime';
+
+function downloadCSV(rows: Diagnostic[]) {
+  const headers = ['ID','Fecha','Negocio','Contacto','WhatsApp','Email','Industria','Tier','Urgencia','Estado','Pago'];
+  const data = rows.map(d => [
+    d.id,
+    new Date(d.submittedAt).toLocaleDateString('es-MX'),
+    d.businessName,
+    d.contact.name,
+    d.contact.whatsapp,
+    d.contact.email,
+    d.industry,
+    d.tier,
+    d.urgency,
+    d.status,
+    d.paymentStatus,
+  ]);
+  const csv = [headers, ...data].map(r =>
+    r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `diagnosticos-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
 
 // ── Primitives ───────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -369,7 +395,14 @@ export default function DiagnosticosPage() {
   const [q, setQ]               = useState('');
   const [openId, setOpenId]     = useState<string | null>(null);
 
-  useEffect(() => { fetchDiagnostics().then(setDiagnostics); }, []);
+  const load = useCallback(() => { fetchDiagnostics().then(setDiagnostics); }, []);
+  useEffect(() => {
+    load();
+    // Initialize q from URL
+    const urlQ = new URLSearchParams(window.location.search).get('q');
+    if (urlQ) setQ(urlQ);
+  }, [load]);
+  useRealtimeTable('diagnostic_submissions', load);
 
   const filtered = useMemo(() => {
     return diagnostics.filter(d => {
@@ -406,7 +439,7 @@ export default function DiagnosticosPage() {
           Limpiar
         </button>
         <div style={{ marginLeft: 'auto' }}>
-          <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
+          <button onClick={() => downloadCSV(filtered)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
             <Icon name="download" size={14} /> Exportar CSV
           </button>
         </div>
@@ -448,7 +481,7 @@ export default function DiagnosticosPage() {
       </div>
 
       {/* Drawer */}
-      {openId && <DiagnosticDrawer diagId={openId} diagnostics={diagnostics} onRefresh={() => fetchDiagnostics().then(setDiagnostics)} onClose={() => setOpenId(null)} />}
+      {openId && <DiagnosticDrawer diagId={openId} diagnostics={diagnostics} onRefresh={load} onClose={() => setOpenId(null)} />}
     </div>
   );
 }

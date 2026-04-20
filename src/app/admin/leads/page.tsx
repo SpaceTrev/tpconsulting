@@ -1,12 +1,30 @@
 'use client';
 
-import { useState, useEffect, useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useCallback, useMemo, CSSProperties } from 'react';
 import {
   PIPELINE_STAGES, ASSIGNEES, INDUSTRIES, TIERS,
   relTime, formatMXNshort, formatMXN,
   type Lead, type Diagnostic,
 } from '@/lib/admin-data';
 import { fetchLeads, fetchDiagnostics, updateLeadStage, addLeadNote } from '@/lib/admin-queries';
+import { useRealtimeTable } from '@/lib/use-realtime';
+
+function downloadLeadsCSV(rows: Lead[]) {
+  const headers = ['ID','Contacto','Negocio','Industria','Etapa','Fuente','Responsable','WhatsApp','Email','Valor','Días en etapa'];
+  const data = rows.map(l => [
+    l.id, l.contactName, l.businessName, l.industry,
+    l.stage, l.source, l.assignee, l.whatsapp, l.email,
+    l.revenueEstimate, l.daysInStage,
+  ]);
+  const csv = [headers, ...data].map(r =>
+    r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `leads-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
 
 const STAGE_ORDER = ['nuevo','contactado','respondio','diagnostico','propuesta','negociando','cliente','perdido'];
 function nextStage(current: string): string | null {
@@ -414,10 +432,16 @@ export default function LeadsPage() {
   const [industry, setIndustry] = useState('');
   const [openId, setOpenId]     = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetchLeads().then(setLeads);
     fetchDiagnostics().then(setDiagnostics);
   }, []);
+  useEffect(() => {
+    load();
+    const urlQ = new URLSearchParams(window.location.search).get('q');
+    if (urlQ) setQ(urlQ);
+  }, [load]);
+  useRealtimeTable('leads', load);
 
   // Force table view on mobile for better readability
   const activeView = isMobile ? 'table' : view;
@@ -467,6 +491,9 @@ export default function LeadsPage() {
           ))}
         </div>
 
+        <button onClick={() => downloadLeadsCSV(filtered)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
+          <Icon name="kanban" size={14} /> CSV
+        </button>
         <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
           <Icon name="plus" size={14} color="var(--fg-on-accent)" /> Nuevo lead
         </button>
@@ -477,7 +504,7 @@ export default function LeadsPage() {
         : <LeadsTable leads={filtered} onOpen={setOpenId} />
       }
 
-      {openId && <LeadDrawer leadId={openId} leads={leads} diagnostics={diagnostics} onRefresh={() => fetchLeads().then(setLeads)} onClose={() => setOpenId(null)} />}
+      {openId && <LeadDrawer leadId={openId} leads={leads} diagnostics={diagnostics} onRefresh={load} onClose={() => setOpenId(null)} />}
     </div>
   );
 }
