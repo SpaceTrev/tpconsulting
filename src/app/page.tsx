@@ -371,7 +371,7 @@ export default function HomePage() {
               <em>ahora para tu negocio</em>
             </h1>
             <p className={styles.heroSubtitle}>
-              Implementamos los mismos sistemas de automatización que usan Starbucks, Amazon y empresas Fortune 500 — adaptados para tu PyME, a fracción del costo.
+              Implementamos los mismos sistemas de automatización que usan Starbucks, Discover y empresas Fortune 500 — adaptados para tu negocio, a fracción del costo.
             </p>
             <div className={styles.heroCtas}>
               <Link href="/diagnostico" className={styles.ctaPrimary}>
