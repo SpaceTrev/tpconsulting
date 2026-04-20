@@ -32,6 +32,9 @@
   color: var(--fg-1);
   text-decoration: none;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   transition: color var(--transition-fast);
 }
 

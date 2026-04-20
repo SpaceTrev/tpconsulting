@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import styles from "./Nav.module.css";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
+import FacMark from "@/components/Logo/FacMark";
 
 const links = [
   { href: "/servicios", label: "Servicios" },
@@ -20,6 +21,7 @@ export default function Nav() {
       <header className={styles.header}>
         <nav className={styles.nav} aria-label="Navegación principal">
           <Link href="/" className={styles.logo}>
+            <FacMark size={26} />
             FAC
           </Link>
 

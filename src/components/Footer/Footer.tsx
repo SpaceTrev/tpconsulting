@@ -1,5 +1,6 @@
 import Link from "next/link";
 import styles from "./Footer.module.css";
+import FacMark from "@/components/Logo/FacMark";
 
 const serviciosLinks = [
   { href: "/servicios#leads", label: "Captación de Leads" },
@@ -32,6 +33,7 @@ export default function Footer() {
       <div className={styles.inner}>
         <div className={styles.col}>
           <Link href="/" className={styles.logo}>
+            <FacMark size={26} />
             FAC
           </Link>
           <p className={styles.tagline}>
