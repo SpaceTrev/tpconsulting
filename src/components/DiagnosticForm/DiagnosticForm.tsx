@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 import styles from "./DiagnosticForm.module.css";
+import CalEmbed from "@/components/CalEmbed/CalEmbed";
 
 /* ── Types ─────────────────────────────────────────────────── */
 interface FormData {
@@ -117,6 +118,16 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
           Revisa tu WhatsApp y correo.
         </p>
         <p className={styles.successTier}>Plan seleccionado: <strong>{form.tier}</strong></p>
+        <div style={{ marginTop: '32px', width: '100%' }}>
+          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-primary)', marginBottom: '12px' }}>
+            Paso siguiente — Agenda tu sesión
+          </p>
+          <CalEmbed
+            mode="full"
+            title="Agenda tu sesión de diagnóstico"
+            subtitle="Reserva ahora para que te contactemos en el horario exacto que más te convenga."
+          />
+        </div>
       </div>
     );
   }
@@ -198,7 +209,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             <div className={styles.field}>
               <label className={styles.label}>¿Por dónde llegan tus clientes? (selecciona todos)</label>
               <div className={styles.checkGrid}>
-                {["WhatsApp","Redes sociales (Instagram/Facebook)","Google","Referidos / boca a boca","Mercado Libre / Amazon","Shopify / Tienda online","Llamada telefónica","Físico / tienda"].map((opt) => (
+                {["WhatsApp","Redes sociales (Instagram/Facebook)","Google","Referidos / boca a boca","Mercado Libre","Shopify / Tienda online","Llamada telefónica","Físico / tienda"].map((opt) => (
                   <label key={opt} className={styles.checkLabel}>
                     <input type="checkbox" checked={checked("customer_channels", opt)} onChange={() => setArr("customer_channels", opt)} className={styles.checkbox} />
                     {opt}

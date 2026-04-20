@@ -79,7 +79,7 @@ const solutions: Solution[] = [
   {
     icon: <IconSync />,
     title: "Sincronización Multi-canal",
-    description: "Unifica pedidos de Mercado Libre, Amazon, Shopify y tienda propia en un solo panel de control.",
+    description: "Unifica pedidos de Mercado Libre, Shopify y tienda propia en un solo panel de control.",
     outcomes: ["0 ventas duplicadas", "-3hrs/día en gestión de pedidos", "Stock actualizado en <5 min"],
     href: "/diagnostico",
     industries: ["Retail", "Logística"],

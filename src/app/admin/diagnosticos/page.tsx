@@ -1,11 +1,40 @@
 'use client';
 
-import { useState, useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useCallback, useMemo, CSSProperties } from 'react';
 import {
-  DIAGNOSTICS, TIERS, INDUSTRIES, URGENCIES, Diagnostic,
+  TIERS, INDUSTRIES, URGENCIES, type Diagnostic,
   relTime,
 } from '@/lib/admin-data';
+import {
+  fetchDiagnostics, updateDiagnosticStatus, convertDiagnosticToLead,
+} from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
+import { useRealtimeTable } from '@/lib/use-realtime';
+
+function downloadCSV(rows: Diagnostic[]) {
+  const headers = ['ID','Fecha','Negocio','Contacto','WhatsApp','Email','Industria','Tier','Urgencia','Estado','Pago'];
+  const data = rows.map(d => [
+    d.id,
+    new Date(d.submittedAt).toLocaleDateString('es-MX'),
+    d.businessName,
+    d.contact.name,
+    d.contact.whatsapp,
+    d.contact.email,
+    d.industry,
+    d.tier,
+    d.urgency,
+    d.status,
+    d.paymentStatus,
+  ]);
+  const csv = [headers, ...data].map(r =>
+    r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')
+  ).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `diagnosticos-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
 
 // ── Primitives ───────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -162,10 +191,25 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 // ── Diagnostic Drawer ────────────────────────────────────────
-function DiagnosticDrawer({ diagId, onClose }: { diagId: string; onClose: () => void }) {
-  const d = DIAGNOSTICS.find(x => x.id === diagId);
+function DiagnosticDrawer({ diagId, diagnostics, onRefresh, onClose }: { diagId: string; diagnostics: Diagnostic[]; onRefresh: () => void; onClose: () => void }) {
+  const d = diagnostics.find(x => x.id === diagId);
+  const [saving, setSaving] = useState(false);
   const isMobile = useIsMobile();
   if (!d) return null;
+
+  async function handleMarkReviewed() {
+    setSaving(true);
+    await updateDiagnosticStatus(d!.id, 'revisado');
+    onRefresh();
+    setSaving(false);
+  }
+
+  async function handleConvertToLead() {
+    setSaving(true);
+    const ok = await convertDiagnosticToLead(d!);
+    if (ok) { onRefresh(); onClose(); }
+    setSaving(false);
+  }
   const tier = TIERS.find(t => t.id === d.tier)!;
   const urg  = URGENCIES.find(u => u.id === d.urgency)!;
   const tc   = TIER_COLORS[d.tier] ?? TIER_COLORS.escaneo;
@@ -215,8 +259,8 @@ function DiagnosticDrawer({ diagId, onClose }: { diagId: string; onClose: () => 
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
-              <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> Convertir a lead
+            <button onClick={handleConvertToLead} disabled={saving || d.status === 'convertido'} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13, opacity: d.status === 'convertido' ? 0.5 : 1 }}>
+              <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> {d.status === 'convertido' ? 'Ya convertido' : 'Convertir a lead'}
             </button>
             <button onClick={() => window.open(`https://wa.me/${d.contact.whatsapp.replace(/\D/g, '')}`)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
               <Icon name="whatsapp" size={14} /> WhatsApp
@@ -224,9 +268,11 @@ function DiagnosticDrawer({ diagId, onClose }: { diagId: string; onClose: () => 
             <button onClick={() => window.open(`mailto:${d.contact.email}`)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
               <Icon name="mail" size={14} /> Email
             </button>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'transparent', color: 'var(--fg-2)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
-              <Icon name="check" size={14} /> Marcar revisado
-            </button>
+            {d.status === 'nuevo' && (
+              <button onClick={handleMarkReviewed} disabled={saving} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'transparent', color: 'var(--fg-2)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
+                <Icon name="check" size={14} /> Marcar revisado
+              </button>
+            )}
           </div>
         </div>
 
@@ -341,6 +387,7 @@ function FilterSelect({ value, onChange, options, placeholder }: {
 // ── Page ─────────────────────────────────────────────────────
 export default function DiagnosticosPage() {
   const isMobile = useIsMobile();
+  const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
   const [tier, setTier]         = useState('');
   const [industry, setIndustry] = useState('');
   const [urgency, setUrgency]   = useState('');
@@ -348,8 +395,17 @@ export default function DiagnosticosPage() {
   const [q, setQ]               = useState('');
   const [openId, setOpenId]     = useState<string | null>(null);
 
+  const load = useCallback(() => { fetchDiagnostics().then(setDiagnostics); }, []);
+  useEffect(() => {
+    load();
+    // Initialize q from URL
+    const urlQ = new URLSearchParams(window.location.search).get('q');
+    if (urlQ) setQ(urlQ);
+  }, [load]);
+  useRealtimeTable('diagnostic_submissions', load);
+
   const filtered = useMemo(() => {
-    return DIAGNOSTICS.filter(d => {
+    return diagnostics.filter(d => {
       if (tier     && d.tier !== tier) return false;
       if (industry && d.industry !== industry) return false;
       if (urgency  && d.urgency !== urgency) return false;
@@ -357,7 +413,7 @@ export default function DiagnosticosPage() {
       if (q && !(`${d.businessName} ${d.contact.name}`.toLowerCase().includes(q.toLowerCase()))) return false;
       return true;
     }).sort((a, b) => b.submittedAt - a.submittedAt);
-  }, [tier, industry, urgency, status, q]);
+  }, [diagnostics, tier, industry, urgency, status, q]);
 
   return (
     <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -383,7 +439,7 @@ export default function DiagnosticosPage() {
           Limpiar
         </button>
         <div style={{ marginLeft: 'auto' }}>
-          <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
+          <button onClick={() => downloadCSV(filtered)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
             <Icon name="download" size={14} /> Exportar CSV
           </button>
         </div>
@@ -393,7 +449,7 @@ export default function DiagnosticosPage() {
       <div style={{ display: 'flex', gap: 16, fontFamily: 'var(--font-ui)', fontSize: 13, color: 'var(--fg-3)', paddingLeft: 4 }}>
         <span><strong style={{ color: 'var(--fg-1)', fontFamily: 'var(--font-mono)' }}>{filtered.length}</strong> resultados</span>
         <span>·</span>
-        <span><strong style={{ color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>{DIAGNOSTICS.filter(x => x.status === 'nuevo').length}</strong> sin revisar</span>
+        <span><strong style={{ color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>{diagnostics.filter(x => x.status === 'nuevo').length}</strong> sin revisar</span>
       </div>
 
       {/* Table */}
@@ -425,7 +481,7 @@ export default function DiagnosticosPage() {
       </div>
 
       {/* Drawer */}
-      {openId && <DiagnosticDrawer diagId={openId} onClose={() => setOpenId(null)} />}
+      {openId && <DiagnosticDrawer diagId={openId} diagnostics={diagnostics} onRefresh={load} onClose={() => setOpenId(null)} />}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import styles from "./page.module.css";
 import ContactForm from "./ContactForm";
+import CalEmbed from "@/components/CalEmbed/CalEmbed";
 
 export const metadata: Metadata = {
   title: "Contacto — FAC",
@@ -76,21 +77,10 @@ export default function ContactoPage() {
               </div>
 
               <div className={styles.sideCard}>
-                <div className={styles.calendarPlaceholder}>
-                  <span className={styles.calendarIcon} aria-hidden="true">📅</span>
-                  <p className={styles.calendarTitle}>Agenda una llamada exploratoria</p>
-                  <p className={styles.calendarText}>
-                    30 minutos, sin costo. Platicamos sobre tu operación y te decimos si podemos ayudarte.
-                  </p>
-                  <a
-                    href="https://calendly.com/fac"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.calendarLink}
-                  >
-                    Ver disponibilidad →
-                  </a>
-                </div>
+                <CalEmbed
+                  title="Agenda una llamada exploratoria"
+                  subtitle="30 minutos, sin costo. Platicamos sobre tu operación y te decimos si podemos ayudarte."
+                />
               </div>
 
               <div className={styles.sideCard}>

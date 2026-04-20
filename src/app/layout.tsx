@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Public_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import styles from "./layout.module.css";
-import Nav from "@/components/Nav/Nav";
-import Footer from "@/components/Footer/Footer";
-import WhatsAppButton from "@/components/WhatsAppButton/WhatsAppButton";
+import MarketingShell from "@/components/MarketingShell";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -66,11 +63,7 @@ try {
 }
 `;
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" suppressHydrationWarning>
       <head>
@@ -78,13 +71,9 @@ export default function RootLayout({
       </head>
       <body
         className={`${spaceGrotesk.variable} ${publicSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+        style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
       >
-        <div className={styles.root}>
-          <Nav />
-          <div className={styles.content}>{children}</div>
-          <Footer />
-        </div>
-        <WhatsAppButton phoneNumber="13038299013" message="Hola, me interesa saber más sobre sus servicios de automatización" />
+        <MarketingShell>{children}</MarketingShell>
       </body>
     </html>
   );
