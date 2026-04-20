@@ -5,6 +5,7 @@ import {
   LEADS, PIPELINE_STAGES, ASSIGNEES, INDUSTRIES, DIAGNOSTICS, TIERS,
   relTime, formatMXNshort, formatMXN,
 } from '@/lib/admin-data';
+import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -112,14 +113,16 @@ function KanbanBoard({ leads, onOpen }: { leads: typeof LEADS; onOpen: (id: stri
   return (
     <div style={{
       display: 'grid', gap: 12,
-      gridTemplateColumns: `repeat(${activeStages.length}, minmax(200px, 1fr))`,
+      gridTemplateColumns: `repeat(${activeStages.length}, minmax(220px, 1fr))`,
       overflowX: 'auto', paddingBottom: 8,
-    }}>
+      scrollSnapType: 'x mandatory',
+      WebkitOverflowScrolling: 'touch',
+    } as CSSProperties}>
       {activeStages.map(stage => {
         const col = leads.filter(l => l.stage === stage.id);
         const total = col.reduce((s, l) => s + l.revenueEstimate, 0);
         return (
-          <div key={stage.id} style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
+          <div key={stage.id} style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0, scrollSnapAlign: 'start' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: 'var(--bg-raised)', borderRadius: 10 }}>
               <Dot color={stage.dot} />
               <span style={{ fontFamily: 'var(--font-ui)', fontSize: 13, fontWeight: 600, color: 'var(--fg-1)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stage.label}</span>
@@ -144,7 +147,8 @@ function KanbanBoard({ leads, onOpen }: { leads: typeof LEADS; onOpen: (id: stri
 // ── Leads Table ──────────────────────────────────────────────
 function LeadsTable({ leads, onOpen }: { leads: typeof LEADS; onOpen: (id: string) => void }) {
   return (
-    <div style={{ background: 'var(--bg-raised)', borderRadius: 12, overflow: 'hidden' }}>
+    <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', borderRadius: 12 } as CSSProperties}>
+    <div style={{ background: 'var(--bg-raised)', borderRadius: 12, overflow: 'hidden', minWidth: 700 }}>
       <div style={{
         display: 'grid', gridTemplateColumns: '2fr 1.2fr 1fr 1fr 0.9fr 0.9fr 0.7fr',
         padding: '14px 20px', fontFamily: 'var(--font-ui)', fontSize: 11, fontWeight: 600,
@@ -185,6 +189,7 @@ function LeadsTable({ leads, onOpen }: { leads: typeof LEADS; onOpen: (id: strin
         <div style={{ padding: '56px 20px', textAlign: 'center', color: 'var(--fg-3)', fontFamily: 'var(--font-body)' }}>Sin leads para estos filtros.</div>
       )}
     </div>
+    </div>
   );
 }
 
@@ -208,6 +213,7 @@ function LeadDrawer({ leadId, onClose }: { leadId: string; onClose: () => void }
   const l = LEADS.find(x => x.id === leadId);
   const [tab, setTab] = useState<'timeline' | 'info' | 'diag'>('timeline');
   const [noteDraft, setNoteDraft] = useState('');
+  const isMobile = useIsMobile();
   if (!l) return null;
   const stage = PIPELINE_STAGES.find(s => s.id === l.stage);
   const linkedDiag = l.linkedDiagnostic ? DIAGNOSTICS.find(d => d.id === l.linkedDiagnostic) : null;
@@ -215,7 +221,7 @@ function LeadDrawer({ leadId, onClose }: { leadId: string; onClose: () => void }
   return (
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,22,29,0.4)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', zIndex: 40 } as CSSProperties} />
-      <aside style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: 680, maxWidth: '95vw', background: 'var(--bg-canvas)', zIndex: 50, overflowY: 'auto', boxShadow: '-24px 0 48px rgba(0,22,29,0.12)' }}>
+      <aside style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: isMobile ? '100vw' : 680, maxWidth: isMobile ? '100vw' : '95vw', background: 'var(--bg-canvas)', zIndex: 50, overflowY: 'auto', boxShadow: '-24px 0 48px rgba(0,22,29,0.12)' }}>
 
         {/* Header */}
         <div style={{ position: 'sticky', top: 0, zIndex: 2, padding: '24px 28px 16px', background: 'var(--frost-bg)', backdropFilter: 'var(--frost-blur)' } as CSSProperties}>
@@ -367,12 +373,16 @@ function LeadDrawer({ leadId, onClose }: { leadId: string; onClose: () => void }
 
 // ── Leads Page ────────────────────────────────────────────────
 export default function LeadsPage() {
+  const isMobile = useIsMobile();
   const [view, setView]         = useState<'kanban' | 'table'>('kanban');
   const [q, setQ]               = useState('');
   const [assignee, setAssignee] = useState('');
   const [source, setSource]     = useState('');
   const [industry, setIndustry] = useState('');
   const [openId, setOpenId]     = useState<string | null>(null);
+
+  // Force table view on mobile for better readability
+  const activeView = isMobile ? 'table' : view;
 
   const filtered = useMemo(() => LEADS.filter(l => {
     if (q        && !(`${l.contactName} ${l.businessName}`.toLowerCase().includes(q.toLowerCase()))) return false;
@@ -383,7 +393,7 @@ export default function LeadsPage() {
   }), [q, assignee, source, industry]);
 
   return (
-    <div style={{ padding: '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: 220, maxWidth: 320 }}>
@@ -424,7 +434,7 @@ export default function LeadsPage() {
         </button>
       </div>
 
-      {view === 'kanban'
+      {activeView === 'kanban'
         ? <KanbanBoard leads={filtered} onOpen={setOpenId} />
         : <LeadsTable leads={filtered} onOpen={setOpenId} />
       }

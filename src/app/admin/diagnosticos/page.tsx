@@ -5,6 +5,7 @@ import {
   DIAGNOSTICS, TIERS, INDUSTRIES, URGENCIES, Diagnostic,
   relTime,
 } from '@/lib/admin-data';
+import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -163,6 +164,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 // ── Diagnostic Drawer ────────────────────────────────────────
 function DiagnosticDrawer({ diagId, onClose }: { diagId: string; onClose: () => void }) {
   const d = DIAGNOSTICS.find(x => x.id === diagId);
+  const isMobile = useIsMobile();
   if (!d) return null;
   const tier = TIERS.find(t => t.id === d.tier)!;
   const urg  = URGENCIES.find(u => u.id === d.urgency)!;
@@ -177,7 +179,8 @@ function DiagnosticDrawer({ diagId, onClose }: { diagId: string; onClose: () => 
         zIndex: 40,
       } as CSSProperties} />
       <aside style={{
-        position: 'fixed', top: 0, right: 0, bottom: 0, width: 640, maxWidth: '95vw',
+        position: 'fixed', top: 0, right: 0, bottom: 0,
+        width: isMobile ? '100vw' : 640, maxWidth: isMobile ? '100vw' : '95vw',
         background: 'var(--bg-canvas)', zIndex: 50, overflowY: 'auto',
         boxShadow: '-24px 0 48px rgba(0,22,29,0.12)',
       }}>
@@ -337,6 +340,7 @@ function FilterSelect({ value, onChange, options, placeholder }: {
 
 // ── Page ─────────────────────────────────────────────────────
 export default function DiagnosticosPage() {
+  const isMobile = useIsMobile();
   const [tier, setTier]         = useState('');
   const [industry, setIndustry] = useState('');
   const [urgency, setUrgency]   = useState('');
@@ -356,7 +360,7 @@ export default function DiagnosticosPage() {
   }, [tier, industry, urgency, status, q]);
 
   return (
-    <div style={{ padding: '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
       {/* Filters */}
       <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -393,7 +397,8 @@ export default function DiagnosticosPage() {
       </div>
 
       {/* Table */}
-      <div style={{ background: 'var(--bg-raised)', borderRadius: 12, overflow: 'hidden' }}>
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', borderRadius: 12 } as CSSProperties}>
+      <div style={{ background: 'var(--bg-raised)', borderRadius: 12, overflow: 'hidden', minWidth: 680 }}>
         <div style={{
           display: 'grid', gridTemplateColumns: '110px 1.8fr 1.1fr 1.1fr 0.9fr 0.9fr',
           padding: '14px 20px',
@@ -416,6 +421,7 @@ export default function DiagnosticosPage() {
             No hay diagnósticos que coincidan con estos filtros.
           </div>
         )}
+      </div>
       </div>
 
       {/* Drawer */}

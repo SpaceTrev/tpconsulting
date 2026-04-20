@@ -3,6 +3,7 @@
 import { useState, useEffect, CSSProperties } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ASSIGNEES } from '@/lib/admin-data';
+import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Icons ────────────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -23,6 +24,8 @@ function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
     chevronL: <path d="M15 6l-9 6 9 6"/>,
     bell:     <><path d="M18 15V10a6 6 0 10-12 0v5l-2 3h16z"/><path d="M10 21h4"/></>,
     arrow:    <><path d="M5 12h14M13 6l6 6-6 6"/></>,
+    menu:     <><path d="M4 6h16M4 12h16M4 18h16"/></>,
+    x:        <><path d="M6 6l12 12M18 6L6 18"/></>,
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
@@ -63,7 +66,7 @@ function NavItem({ href, icon, label, count, active, collapsed, accent }: {
       style={{
         position: 'relative',
         display: 'flex', alignItems: 'center', gap: 12,
-        width: '100%', minHeight: 40, padding: collapsed ? '0 10px' : '0 12px',
+        width: '100%', minHeight: 44, padding: collapsed ? '0 10px' : '0 12px',
         background: active ? 'var(--bg-raised)' : (hover ? 'var(--bg-inset)' : 'transparent'),
         color: active ? 'var(--fg-1)' : 'var(--fg-2)',
         border: 0, borderRadius: 8, cursor: 'pointer',
@@ -97,10 +100,11 @@ function NavItem({ href, icon, label, count, active, collapsed, accent }: {
 }
 
 // ── Sidebar ──────────────────────────────────────────────────
-function Sidebar({ collapsed, onToggle, pathname }: {
+function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose }: {
   collapsed: boolean; onToggle: () => void; pathname: string;
+  isMobile?: boolean; onClose?: () => void;
 }) {
-  const w = collapsed ? 64 : 232;
+  const w = isMobile ? 280 : (collapsed ? 64 : 232);
   const diagCount = 5;
   const leadsCount = 8;
   const contactosCount = 4;
@@ -116,16 +120,25 @@ function Sidebar({ collapsed, onToggle, pathname }: {
     { href: '/',                icon: 'external',  label: 'Marketing site' },
   ];
 
+  const asideStyle: CSSProperties = isMobile ? {
+    position: 'fixed', top: 0, left: 0, bottom: 0,
+    width: w, zIndex: 30,
+    background: 'var(--bg-canvas)',
+    display: 'flex', flexDirection: 'column',
+    padding: '16px 12px',
+    boxShadow: '4px 0 24px rgba(0,22,29,0.16)',
+  } : {
+    position: 'sticky', top: 0, alignSelf: 'flex-start',
+    width: w, height: '100vh', flexShrink: 0,
+    background: 'var(--bg-canvas)',
+    display: 'flex', flexDirection: 'column',
+    padding: '16px 12px',
+    transition: 'width 240ms cubic-bezier(.22,1,.36,1)',
+    zIndex: 10,
+  };
+
   return (
-    <aside style={{
-      position: 'sticky', top: 0, alignSelf: 'flex-start',
-      width: w, height: '100vh', flexShrink: 0,
-      background: 'var(--bg-canvas)',
-      display: 'flex', flexDirection: 'column',
-      padding: '16px 12px',
-      transition: 'width 240ms cubic-bezier(.22,1,.36,1)',
-      zIndex: 10,
-    }}>
+    <aside style={asideStyle}>
       {/* Logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 8px', marginBottom: 24, minHeight: 40 }}>
         <svg width="24" height="24" viewBox="0 0 64 64" style={{ flexShrink: 0 }}>
@@ -138,28 +151,37 @@ function Sidebar({ collapsed, onToggle, pathname }: {
             <line x1="-20" y1="0" x2="-10" y2="0" stroke="var(--accent-primary)" strokeWidth="3.5" strokeLinecap="round"/>
           </g>
         </svg>
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
             <span style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 16, color: 'var(--fg-1)', letterSpacing: '-0.01em' }}>FAC</span>
             <span style={{ fontFamily: 'var(--font-ui)', fontSize: 10, color: 'var(--fg-3)', letterSpacing: '0.12em', marginTop: 3, textTransform: 'uppercase' }}>CRM</span>
           </div>
         )}
+        {isMobile && (
+          <button onClick={onClose} style={{
+            marginLeft: 'auto', width: 32, height: 32, borderRadius: 8, border: 0,
+            background: 'var(--bg-inset)', color: 'var(--fg-3)',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <Icon name="x" size={16} />
+          </button>
+        )}
       </div>
 
       <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, flex: 1 }}>
         {items.map(it => (
-          <NavItem key={it.href} {...it} active={pathname === it.href} collapsed={collapsed} />
+          <NavItem key={it.href} {...it} active={pathname === it.href} collapsed={!isMobile && collapsed} />
         ))}
         <div style={{ height: 1, background: 'var(--bg-inset)', margin: '16px 8px' }} />
         {footer.map(it => (
-          <NavItem key={it.href} {...it} active={false} collapsed={collapsed} />
+          <NavItem key={it.href} {...it} active={false} collapsed={!isMobile && collapsed} />
         ))}
       </nav>
 
       {/* User */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 8px', marginTop: 8, minHeight: 44 }}>
         <Avatar id="TB" size={28} />
-        {!collapsed && (
+        {(!collapsed || isMobile) && (
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: 13, fontWeight: 600, color: 'var(--fg-1)' }}>Trevor B.</div>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: 11, color: 'var(--fg-3)' }}>trevor@thefac.co</div>
@@ -167,22 +189,25 @@ function Sidebar({ collapsed, onToggle, pathname }: {
         )}
       </div>
 
-      {/* Collapse toggle */}
-      <button onClick={onToggle} title={collapsed ? 'Expandir' : 'Colapsar'} style={{
-        position: 'absolute', top: 28, right: -12,
-        width: 24, height: 24, borderRadius: 6, border: 0,
-        background: 'var(--bg-raised)', color: 'var(--fg-3)',
-        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}>
-        <Icon name={collapsed ? 'chevronR' : 'chevronL'} size={14} />
-      </button>
+      {/* Collapse toggle — desktop only */}
+      {!isMobile && (
+        <button onClick={onToggle} title={collapsed ? 'Expandir' : 'Colapsar'} style={{
+          position: 'absolute', top: 28, right: -12,
+          width: 24, height: 24, borderRadius: 6, border: 0,
+          background: 'var(--bg-raised)', color: 'var(--fg-3)',
+          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Icon name={collapsed ? 'chevronR' : 'chevronL'} size={14} />
+        </button>
+      )}
     </aside>
   );
 }
 
 // ── Topbar ───────────────────────────────────────────────────
-function Topbar({ pathname, theme, onTheme }: {
+function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
   pathname: string; theme: string; onTheme: () => void;
+  isMobile?: boolean; onMenuOpen?: () => void;
 }) {
   const titles: Record<string, string> = {
     '/admin':              'Overview',
@@ -199,57 +224,99 @@ function Topbar({ pathname, theme, onTheme }: {
     '/admin/config':       'Ajustes generales',
   };
   const [search, setSearch] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 5,
-      display: 'flex', alignItems: 'center', gap: 16,
-      padding: '14px 28px',
+      display: 'flex', alignItems: 'center', gap: isMobile ? 10 : 16,
+      padding: isMobile ? '12px 16px' : '14px 28px',
       background: 'var(--frost-bg)',
       backdropFilter: 'var(--frost-blur)',
       WebkitBackdropFilter: 'var(--frost-blur)',
-      minHeight: 72,
+      minHeight: isMobile ? 60 : 72,
     } as CSSProperties}>
-      <div style={{ flex: '0 0 auto' }}>
-        <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: 22, color: 'var(--fg-1)', letterSpacing: '-0.01em', lineHeight: 1.2 }}>
+
+      {/* Hamburger — mobile only */}
+      {isMobile && (
+        <button onClick={onMenuOpen} style={{
+          width: 44, height: 44, borderRadius: 8, border: 0,
+          background: 'var(--bg-raised)', color: 'var(--fg-2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0,
+        }}>
+          <Icon name="menu" size={18} />
+        </button>
+      )}
+
+      <div style={{ flex: isMobile ? 1 : '0 0 auto', minWidth: 0 }}>
+        <h1 style={{ margin: 0, fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: isMobile ? 18 : 22, color: 'var(--fg-1)', letterSpacing: '-0.01em', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
           {titles[pathname] ?? 'Admin'}
         </h1>
-        <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color: 'var(--fg-3)', marginTop: 2 }}>
-          {subtitles[pathname] ?? ''}
-        </div>
+        {!isMobile && (
+          <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color: 'var(--fg-3)', marginTop: 2 }}>
+            {subtitles[pathname] ?? ''}
+          </div>
+        )}
       </div>
 
-      {/* Search */}
-      <div style={{ flex: 1, maxWidth: 420, marginLeft: 'auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minHeight: 40, padding: '0 14px', background: 'var(--bg-raised)', borderRadius: 8 }}>
-          <Icon name="search" size={16} color="var(--fg-3)" />
-          <input
-            value={search} onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar leads, negocios, diagnósticos…"
-            style={{ flex: 1, background: 'transparent', border: 0, outline: 'none', fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-1)' }}
-          />
-          <kbd style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', padding: '2px 6px', background: 'var(--bg-inset)', borderRadius: 4 }}>/</kbd>
+      {/* Search — desktop always visible */}
+      {!isMobile && (
+        <div style={{ flex: 1, maxWidth: 420, marginLeft: 'auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minHeight: 40, padding: '0 14px', background: 'var(--bg-raised)', borderRadius: 8 }}>
+            <Icon name="search" size={16} color="var(--fg-3)" />
+            <input
+              value={search} onChange={e => setSearch(e.target.value)}
+              placeholder="Buscar leads, negocios, diagnósticos…"
+              style={{ flex: 1, background: 'transparent', border: 0, outline: 'none', fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-1)' }}
+            />
+            <kbd style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', padding: '2px 6px', background: 'var(--bg-inset)', borderRadius: 4 }}>/</kbd>
+          </div>
         </div>
+      )}
+
+      {/* Mobile search dropdown */}
+      {isMobile && searchOpen && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, padding: '0 16px 12px', background: 'var(--frost-bg)', backdropFilter: 'var(--frost-blur)', zIndex: 4 } as CSSProperties}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, minHeight: 44, padding: '0 14px', background: 'var(--bg-raised)', borderRadius: 8 }}>
+            <Icon name="search" size={16} color="var(--fg-3)" />
+            <input
+              autoFocus
+              value={search} onChange={e => setSearch(e.target.value)}
+              placeholder="Buscar…"
+              style={{ flex: 1, background: 'transparent', border: 0, outline: 'none', fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-1)' }}
+            />
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
+        {isMobile && (
+          <button onClick={() => setSearchOpen(s => !s)} style={{
+            width: 44, height: 44, borderRadius: 8, border: 0,
+            background: 'var(--bg-raised)', color: 'var(--fg-2)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+          }}>
+            <Icon name="search" size={18} />
+          </button>
+        )}
+
+        <button onClick={onTheme} title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'} style={{
+          width: 44, height: 44, borderRadius: 8, border: 0,
+          background: 'var(--bg-raised)', color: 'var(--fg-2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        }}>
+          <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
+        </button>
+
+        <button title="Notificaciones" style={{
+          position: 'relative', width: 44, height: 44, borderRadius: 8, border: 0,
+          background: 'var(--bg-raised)', color: 'var(--fg-2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        }}>
+          <Icon name="bell" size={18} />
+          <span style={{ position: 'absolute', top: 8, right: 9, width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-primary)' }} />
+        </button>
       </div>
-
-      {/* Theme toggle */}
-      <button onClick={onTheme} title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'} style={{
-        width: 40, height: 40, borderRadius: 8, border: 0,
-        background: 'var(--bg-raised)', color: 'var(--fg-2)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-      }}>
-        <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={18} />
-      </button>
-
-      {/* Notifications */}
-      <button title="Notificaciones" style={{
-        position: 'relative', width: 40, height: 40, borderRadius: 8, border: 0,
-        background: 'var(--bg-raised)', color: 'var(--fg-2)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-      }}>
-        <Icon name="bell" size={18} />
-        <span style={{ position: 'absolute', top: 8, right: 9, width: 7, height: 7, borderRadius: '50%', background: 'var(--accent-primary)' }} />
-      </button>
     </header>
   );
 }
@@ -259,11 +326,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const stored = localStorage.getItem('fac-theme') as 'light' | 'dark' | null;
     if (stored) setTheme(stored);
   }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -281,9 +354,39 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         fontFamily: 'var(--font-body)',
       }}
     >
-      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(c => !c)} pathname={pathname} />
+      {/* Mobile backdrop */}
+      {isMobile && mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          style={{
+            position: 'fixed', inset: 0,
+            background: 'rgba(0,22,29,0.5)',
+            backdropFilter: 'blur(2px)',
+            WebkitBackdropFilter: 'blur(2px)',
+            zIndex: 20,
+          } as CSSProperties}
+        />
+      )}
+
+      {/* Sidebar — always on desktop, overlay drawer on mobile */}
+      {(!isMobile || mobileOpen) && (
+        <Sidebar
+          collapsed={collapsed}
+          onToggle={() => setCollapsed(c => !c)}
+          pathname={pathname}
+          isMobile={isMobile}
+          onClose={() => setMobileOpen(false)}
+        />
+      )}
+
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <Topbar pathname={pathname} theme={theme} onTheme={toggleTheme} />
+        <Topbar
+          pathname={pathname}
+          theme={theme}
+          onTheme={toggleTheme}
+          isMobile={isMobile}
+          onMenuOpen={() => setMobileOpen(true)}
+        />
         <main style={{ flex: 1 }}>
           {children}
         </main>
