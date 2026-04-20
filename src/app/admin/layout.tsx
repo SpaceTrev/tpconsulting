@@ -4,6 +4,7 @@ import { useState, useEffect, CSSProperties } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ASSIGNEES } from '@/lib/admin-data';
 import { useIsMobile } from '@/lib/use-mobile';
+import { getSupabase } from '@/lib/supabase';
 
 // ── Icons ────────────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -26,6 +27,7 @@ function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
     arrow:    <><path d="M5 12h14M13 6l6 6-6 6"/></>,
     menu:     <><path d="M4 6h16M4 12h16M4 18h16"/></>,
     x:        <><path d="M6 6l12 12M18 6L6 18"/></>,
+    logout:   <><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></>,
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
@@ -100,9 +102,9 @@ function NavItem({ href, icon, label, count, active, collapsed, accent }: {
 }
 
 // ── Sidebar ──────────────────────────────────────────────────
-function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose }: {
+function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose, onLogout }: {
   collapsed: boolean; onToggle: () => void; pathname: string;
-  isMobile?: boolean; onClose?: () => void;
+  isMobile?: boolean; onClose?: () => void; onLogout?: () => void;
 }) {
   const w = isMobile ? 280 : (collapsed ? 64 : 232);
   const diagCount = 5;
@@ -188,6 +190,22 @@ function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose }: {
           </div>
         )}
       </div>
+
+      {/* Logout */}
+      {onLogout && (
+        <button onClick={onLogout} title="Cerrar sesión" style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          width: '100%', minHeight: 40, padding: collapsed && !isMobile ? '0 10px' : '0 12px',
+          background: 'transparent', border: 0, borderRadius: 8,
+          color: 'var(--fg-3)', cursor: 'pointer', fontFamily: 'var(--font-ui)', fontSize: 14,
+          textAlign: 'left', transition: 'background 180ms',
+        }}
+        onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-inset)')}
+        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+          <Icon name="logout" size={16} color="currentColor" />
+          {(!collapsed || isMobile) && <span>Cerrar sesión</span>}
+        </button>
+      )}
 
       {/* Collapse toggle — desktop only */}
       {!isMobile && (
@@ -322,12 +340,17 @@ function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
 }
 
 // ── Admin Layout ─────────────────────────────────────────────
+const ALLOWED_EMAILS = ['trevbdev@gmail.com', 'pabstrada@gmail.com'];
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router   = useRouter();
   const [collapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [authed, setAuthed] = useState(false);
   const isMobile = useIsMobile();
+  const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
     const stored = localStorage.getItem('fac-theme') as 'light' | 'dark' | null;
@@ -337,6 +360,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  // Auth guard — skip for the login page itself
+  useEffect(() => {
+    if (isLoginPage) { setAuthed(true); return; }
+    const sb = getSupabase();
+    if (!sb) { router.replace('/admin/login'); return; }
+    sb.auth.getSession().then(({ data }) => {
+      if (data.session && ALLOWED_EMAILS.includes(data.session.user.email ?? '')) {
+        setAuthed(true);
+      } else {
+        router.replace('/admin/login');
+      }
+    });
+    const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') { setAuthed(false); router.replace('/admin/login'); }
+      if (session && ALLOWED_EMAILS.includes(session.user.email ?? '')) setAuthed(true);
+    });
+    return () => subscription.unsubscribe();
+  }, [isLoginPage, router]);
+
+  async function handleLogout() {
+    await getSupabase()?.auth.signOut();
+    router.replace('/admin/login');
+  }
+
+  if (!authed && !isLoginPage) return null;
 
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
@@ -376,6 +425,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           pathname={pathname}
           isMobile={isMobile}
           onClose={() => setMobileOpen(false)}
+          onLogout={handleLogout}
         />
       )}
 
