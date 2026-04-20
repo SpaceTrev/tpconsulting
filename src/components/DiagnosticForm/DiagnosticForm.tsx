@@ -198,7 +198,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             <div className={styles.field}>
               <label className={styles.label}>¿Por dónde llegan tus clientes? (selecciona todos)</label>
               <div className={styles.checkGrid}>
-                {["WhatsApp","Redes sociales (Instagram/Facebook)","Google","Referidos / boca a boca","Mercado Libre / Amazon","Shopify / Tienda online","Llamada telefónica","Físico / tienda"].map((opt) => (
+                {["WhatsApp","Redes sociales (Instagram/Facebook)","Google","Referidos / boca a boca","Mercado Libre","Shopify / Tienda online","Llamada telefónica","Físico / tienda"].map((opt) => (
                   <label key={opt} className={styles.checkLabel}>
                     <input type="checkbox" checked={checked("customer_channels", opt)} onChange={() => setArr("customer_channels", opt)} className={styles.checkbox} />
                     {opt}
