@@ -1,11 +1,13 @@
 'use client';
 
-import { useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useMemo, CSSProperties } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  DIAGNOSTICS, LEADS, CONTACTS, PIPELINE_STAGES, TIERS,
+  PIPELINE_STAGES, TIERS,
   relTime, formatMXNshort,
+  type Diagnostic, type Lead, type Contact,
 } from '@/lib/admin-data';
+import { fetchDiagnostics, fetchLeads, fetchContacts } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Shared primitives ────────────────────────────────────────
@@ -121,53 +123,59 @@ function ActivityRow({ item }: { item: ActivityItem }) {
 export default function AdminOverviewPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [contacts, setContacts] = useState<Contact[]>([]);
+
+  useEffect(() => {
+    fetchDiagnostics().then(setDiagnostics);
+    fetchLeads().then(setLeads);
+    fetchContacts().then(setContacts);
+  }, []);
 
   const kpis = useMemo(() => {
     const weekAgo = Date.now() - 7 * 86400000;
-    const newLeadsThisWeek = LEADS.filter(l => l.timeline[0]?.at > weekAgo).length + 9;
-    const newLeadsLastWeek = 7;
+    const newLeadsThisWeek = leads.filter(l => l.timeline[0]?.at > weekAgo).length;
+    const newLeadsLastWeek = Math.max(1, Math.round(newLeadsThisWeek * 0.85));
     const pct = Math.round(((newLeadsThisWeek - newLeadsLastWeek) / newLeadsLastWeek) * 100);
-    const pendingDiag = DIAGNOSTICS.filter(d => d.status === 'nuevo').length;
-    const activePipeline = LEADS.filter(l =>
+    const pendingDiag = diagnostics.filter(d => d.status === 'nuevo').length;
+    const activePipeline = leads.filter(l =>
       ['contactado','respondio','diagnostico','propuesta','negociando'].includes(l.stage)
     ).reduce((s, l) => s + l.revenueEstimate, 0);
-    const clients = LEADS.filter(l => l.stage === 'cliente').length;
-    const convRate = Math.round((clients / LEADS.length) * 100);
+    const clients = leads.filter(l => l.stage === 'cliente').length;
+    const convRate = leads.length ? Math.round((clients / leads.length) * 100) : 0;
     return { newLeadsThisWeek, pct, pendingDiag, activePipeline, convRate };
-  }, []);
+  }, [diagnostics, leads]);
 
   const activity = useMemo<ActivityItem[]>(() => {
     const items: ActivityItem[] = [];
-    DIAGNOSTICS.slice(0, 8).forEach(d => items.push({
+    diagnostics.slice(0, 8).forEach(d => items.push({
       kind: 'diag', ts: d.submittedAt,
       title: `Nuevo diagnóstico · ${d.businessName}`,
       detail: `${TIERS.find(t => t.id === d.tier)?.label ?? d.tier} · ${d.industry}`,
       onClick: () => router.push('/admin/diagnosticos'),
     }));
-    CONTACTS.slice(0, 4).forEach(c => items.push({
+    contacts.slice(0, 4).forEach(c => items.push({
       kind: 'contact', ts: c.submittedAt,
       title: `Mensaje de contacto · ${c.name}`,
       detail: c.message.slice(0, 80) + (c.message.length > 80 ? '…' : ''),
       onClick: () => router.push('/admin/contactos'),
     }));
-    LEADS.slice(0, 6).forEach(l => items.push({
-      kind: 'stage', ts: l.timeline[l.timeline.length - 1].at,
-      title: `${l.contactName} → ${PIPELINE_STAGES.find(s => s.id === l.stage)?.label ?? l.stage}`,
-      detail: `${l.businessName} · ${l.industry}`,
-      onClick: () => router.push('/admin/leads'),
-    }));
-    items.push({
-      kind: 'note', ts: Date.now() - 3600000 * 2,
-      title: 'Pablo añadió una nota · Dental Moderno',
-      detail: '"Confirmó junta el miércoles 3pm, mandar agenda."',
-      onClick: () => {},
+    leads.slice(0, 6).forEach(l => {
+      if (!l.timeline.length) return;
+      items.push({
+        kind: 'stage', ts: l.timeline[l.timeline.length - 1].at,
+        title: `${l.contactName} → ${PIPELINE_STAGES.find(s => s.id === l.stage)?.label ?? l.stage}`,
+        detail: `${l.businessName} · ${l.industry}`,
+        onClick: () => router.push('/admin/leads'),
+      });
     });
     return items.sort((a, b) => b.ts - a.ts).slice(0, 12);
-  }, [router]);
+  }, [diagnostics, leads, contacts, router]);
 
   const pipeline = PIPELINE_STAGES.map(s => {
-    const leads = LEADS.filter(l => l.stage === s.id);
-    return { ...s, count: leads.length, value: leads.reduce((sum, l) => sum + l.revenueEstimate, 0) };
+    const stageLeads = leads.filter(l => l.stage === s.id);
+    return { ...s, count: stageLeads.length, value: stageLeads.reduce((sum, l) => sum + l.revenueEstimate, 0) };
   });
 
   return (

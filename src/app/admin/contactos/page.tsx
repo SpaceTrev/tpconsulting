@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useMemo, CSSProperties } from 'react';
-import { CONTACTS, LEADS, DIAGNOSTICS, TIERS, INDUSTRIES, relTime } from '@/lib/admin-data';
+import { useState, useEffect, useMemo, CSSProperties } from 'react';
+import { TIERS, INDUSTRIES, relTime, type Contact, type Lead, type Diagnostic } from '@/lib/admin-data';
+import { fetchContacts, fetchLeads, fetchDiagnostics } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
@@ -52,18 +53,18 @@ const STATUS = {
 } as const;
 
 // ── Contactos section ─────────────────────────────────────────
-function ContactosSection({ isMobile }: { isMobile?: boolean }) {
+function ContactosSection({ contacts, isMobile }: { contacts: Contact[]; isMobile?: boolean }) {
   const [q, setQ]             = useState('');
   const [status, setStatus]   = useState('');
   const [selected, setSelected] = useState<string | null>(null);
 
-  const rows = useMemo(() => CONTACTS.filter(c => {
+  const rows = useMemo(() => contacts.filter(c => {
     if (q      && !(`${c.name} ${c.message}`.toLowerCase().includes(q.toLowerCase()))) return false;
     if (status && c.status !== status) return false;
     return true;
-  }).sort((a, b) => b.submittedAt - a.submittedAt), [q, status]);
+  }).sort((a, b) => b.submittedAt - a.submittedAt), [contacts, q, status]);
 
-  const c = selected ? CONTACTS.find(x => x.id === selected) ?? null : null;
+  const c = selected ? contacts.find(x => x.id === selected) ?? null : null;
 
   return (
     <>
@@ -186,7 +187,7 @@ function ContactosSection({ isMobile }: { isMobile?: boolean }) {
 }
 
 // ── Métricas section ──────────────────────────────────────────
-function MetricasSection({ isMobile }: { isMobile?: boolean }) {
+function MetricasSection({ leads, diagnostics, isMobile }: { leads: Lead[]; diagnostics: Diagnostic[]; isMobile?: boolean }) {
   const weeks = Array.from({ length: 12 }).map((_, i) => ({
     label: `S${12 - i}`,
     leads: Math.round(6 + Math.sin(i * 0.7) * 3 + i * 0.4),
@@ -194,20 +195,20 @@ function MetricasSection({ isMobile }: { isMobile?: boolean }) {
     clientes: Math.max(0, Math.round((6 + Math.sin(i * 0.7) * 3 + i * 0.4) * 0.25)),
   })).reverse();
 
-  const tierMix = TIERS.map(t => ({ ...t, count: DIAGNOSTICS.filter(d => d.tier === t.id).length }));
-  const totalTier = tierMix.reduce((s, t) => s + t.count, 0);
+  const tierMix = TIERS.map(t => ({ ...t, count: diagnostics.filter(d => d.tier === t.id).length }));
+  const totalTier = Math.max(1, tierMix.reduce((s, t) => s + t.count, 0));
 
   const industryMix = INDUSTRIES.map(i => ({
-    name: i, count: LEADS.filter(l => l.industry === i).length,
+    name: i, count: leads.filter(l => l.industry === i).length,
   })).filter(x => x.count > 0).sort((a, b) => b.count - a.count).slice(0, 8);
   const topCount = industryMix[0]?.count || 1;
 
-  const totalL    = LEADS.length;
-  const contacted = LEADS.filter(l => !['nuevo'].includes(l.stage)).length;
-  const responded = LEADS.filter(l => !['nuevo','contactado'].includes(l.stage)).length;
-  const diag      = LEADS.filter(l => ['diagnostico','propuesta','negociando','cliente'].includes(l.stage)).length;
-  const proposed  = LEADS.filter(l => ['propuesta','negociando','cliente'].includes(l.stage)).length;
-  const clients   = LEADS.filter(l => l.stage === 'cliente').length;
+  const totalL    = leads.length;
+  const contacted = leads.filter(l => !['nuevo'].includes(l.stage)).length;
+  const responded = leads.filter(l => !['nuevo','contactado'].includes(l.stage)).length;
+  const diag      = leads.filter(l => ['diagnostico','propuesta','negociando','cliente'].includes(l.stage)).length;
+  const proposed  = leads.filter(l => ['propuesta','negociando','cliente'].includes(l.stage)).length;
+  const clients   = leads.filter(l => l.stage === 'cliente').length;
   const funnel    = [
     { label: 'Leads', count: totalL },
     { label: 'Contactados', count: contacted },
@@ -216,7 +217,7 @@ function MetricasSection({ isMobile }: { isMobile?: boolean }) {
     { label: 'Propuesta', count: proposed },
     { label: 'Clientes', count: clients },
   ];
-  const totalRev = DIAGNOSTICS.reduce((s, d) => s + (TIERS.find(t => t.id === d.tier)?.price ?? 0), 0);
+  const totalRev = diagnostics.reduce((s, d) => s + (TIERS.find(t => t.id === d.tier)?.price ?? 0), 0);
   const max = Math.max(...weeks.flatMap(w => [w.leads, w.diagnosticos, w.clientes]));
 
   return (
@@ -226,8 +227,8 @@ function MetricasSection({ isMobile }: { isMobile?: boolean }) {
         {[
           { label: 'Ingresos diagnósticos', value: `$${(totalRev / 1000).toFixed(0)}K`, unit: 'últimas 12 sem', delta: 18 },
           { label: 'Leads totales', value: totalL, unit: 'en pipeline', delta: 12 },
-          { label: 'Contacto→respuesta', value: `${Math.round(responded / contacted * 100)}%`, unit: 'promedio', delta: -4 },
-          { label: 'Ticket promedio', value: `$${Math.round(totalRev / DIAGNOSTICS.length / 1000)}K`, unit: 'por diagnóstico', delta: 6 },
+          { label: 'Contacto→respuesta', value: contacted ? `${Math.round(responded / contacted * 100)}%` : '—', unit: 'promedio', delta: -4 },
+          { label: 'Ticket promedio', value: diagnostics.length ? `$${Math.round(totalRev / diagnostics.length / 1000)}K` : '—', unit: 'por diagnóstico', delta: 6 },
         ].map(({ label, value, unit, delta }) => (
           <div key={label} style={{ background: 'var(--bg-raised)', borderRadius: 12, padding: 20 }}>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 500, color: 'var(--fg-3)' }}>{label}</div>
@@ -340,6 +341,15 @@ function MetricasSection({ isMobile }: { isMobile?: boolean }) {
 export default function ContactosPage() {
   const isMobile = useIsMobile();
   const [section, setSection] = useState<'contactos' | 'metricas'>('contactos');
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
+
+  useEffect(() => {
+    fetchContacts().then(setContacts);
+    fetchLeads().then(setLeads);
+    fetchDiagnostics().then(setDiagnostics);
+  }, []);
 
   return (
     <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -358,7 +368,10 @@ export default function ContactosPage() {
         ))}
       </div>
 
-      {section === 'contactos' ? <ContactosSection isMobile={isMobile} /> : <MetricasSection isMobile={isMobile} />}
+      {section === 'contactos'
+        ? <ContactosSection contacts={contacts} isMobile={isMobile} />
+        : <MetricasSection leads={leads} diagnostics={diagnostics} isMobile={isMobile} />
+      }
     </div>
   );
 }

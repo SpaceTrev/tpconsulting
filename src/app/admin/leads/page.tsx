@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useMemo, CSSProperties } from 'react';
 import {
-  LEADS, PIPELINE_STAGES, ASSIGNEES, INDUSTRIES, DIAGNOSTICS, TIERS,
+  PIPELINE_STAGES, ASSIGNEES, INDUSTRIES, TIERS,
   relTime, formatMXNshort, formatMXN,
+  type Lead, type Diagnostic,
 } from '@/lib/admin-data';
+import { fetchLeads, fetchDiagnostics } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
@@ -73,7 +75,7 @@ function FilterSelect({ value, onChange, options, placeholder }: {
 }
 
 // ── Lead Card (kanban) ────────────────────────────────────────
-function LeadCard({ l, onClick }: { l: typeof LEADS[0]; onClick: () => void }) {
+function LeadCard({ l, onClick }: { l: Lead; onClick: () => void }) {
   const [hover, setHover] = useState(false);
   const stale = l.daysInStage > 7;
   return (
@@ -108,7 +110,7 @@ function LeadCard({ l, onClick }: { l: typeof LEADS[0]; onClick: () => void }) {
 }
 
 // ── Kanban Board ─────────────────────────────────────────────
-function KanbanBoard({ leads, onOpen }: { leads: typeof LEADS; onOpen: (id: string) => void }) {
+function KanbanBoard({ leads, onOpen }: { leads: Lead[]; onOpen: (id: string) => void }) {
   const activeStages = PIPELINE_STAGES.filter(s => s.id !== 'perdido');
   return (
     <div style={{
@@ -145,7 +147,7 @@ function KanbanBoard({ leads, onOpen }: { leads: typeof LEADS; onOpen: (id: stri
 }
 
 // ── Leads Table ──────────────────────────────────────────────
-function LeadsTable({ leads, onOpen }: { leads: typeof LEADS; onOpen: (id: string) => void }) {
+function LeadsTable({ leads, onOpen }: { leads: Lead[]; onOpen: (id: string) => void }) {
   return (
     <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', borderRadius: 12 } as CSSProperties}>
     <div style={{ background: 'var(--bg-raised)', borderRadius: 12, overflow: 'hidden', minWidth: 700 }}>
@@ -209,14 +211,14 @@ function TimelineItem({ dot, time, children }: { dot: string; time: string; chil
 }
 
 // ── Lead Drawer ──────────────────────────────────────────────
-function LeadDrawer({ leadId, onClose }: { leadId: string; onClose: () => void }) {
-  const l = LEADS.find(x => x.id === leadId);
+function LeadDrawer({ leadId, leads, diagnostics, onClose }: { leadId: string; leads: Lead[]; diagnostics: Diagnostic[]; onClose: () => void }) {
+  const l = leads.find(x => x.id === leadId);
   const [tab, setTab] = useState<'timeline' | 'info' | 'diag'>('timeline');
   const [noteDraft, setNoteDraft] = useState('');
   const isMobile = useIsMobile();
   if (!l) return null;
   const stage = PIPELINE_STAGES.find(s => s.id === l.stage);
-  const linkedDiag = l.linkedDiagnostic ? DIAGNOSTICS.find(d => d.id === l.linkedDiagnostic) : null;
+  const linkedDiag = l.linkedDiagnostic ? diagnostics.find(d => d.id === l.linkedDiagnostic) : null;
 
   return (
     <>
@@ -374,6 +376,8 @@ function LeadDrawer({ leadId, onClose }: { leadId: string; onClose: () => void }
 // ── Leads Page ────────────────────────────────────────────────
 export default function LeadsPage() {
   const isMobile = useIsMobile();
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
   const [view, setView]         = useState<'kanban' | 'table'>('kanban');
   const [q, setQ]               = useState('');
   const [assignee, setAssignee] = useState('');
@@ -381,16 +385,21 @@ export default function LeadsPage() {
   const [industry, setIndustry] = useState('');
   const [openId, setOpenId]     = useState<string | null>(null);
 
+  useEffect(() => {
+    fetchLeads().then(setLeads);
+    fetchDiagnostics().then(setDiagnostics);
+  }, []);
+
   // Force table view on mobile for better readability
   const activeView = isMobile ? 'table' : view;
 
-  const filtered = useMemo(() => LEADS.filter(l => {
+  const filtered = useMemo(() => leads.filter(l => {
     if (q        && !(`${l.contactName} ${l.businessName}`.toLowerCase().includes(q.toLowerCase()))) return false;
     if (assignee && l.assignee !== assignee) return false;
     if (source   && l.source !== source) return false;
     if (industry && l.industry !== industry) return false;
     return true;
-  }), [q, assignee, source, industry]);
+  }), [leads, q, assignee, source, industry]);
 
   return (
     <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -439,7 +448,7 @@ export default function LeadsPage() {
         : <LeadsTable leads={filtered} onOpen={setOpenId} />
       }
 
-      {openId && <LeadDrawer leadId={openId} onClose={() => setOpenId(null)} />}
+      {openId && <LeadDrawer leadId={openId} leads={leads} diagnostics={diagnostics} onClose={() => setOpenId(null)} />}
     </div>
   );
 }

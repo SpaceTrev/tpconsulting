@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useMemo, CSSProperties } from 'react';
+import { useState, useEffect, useMemo, CSSProperties } from 'react';
 import {
-  DIAGNOSTICS, TIERS, INDUSTRIES, URGENCIES, Diagnostic,
+  TIERS, INDUSTRIES, URGENCIES, type Diagnostic,
   relTime,
 } from '@/lib/admin-data';
+import { fetchDiagnostics } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
@@ -162,8 +163,8 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 // ── Diagnostic Drawer ────────────────────────────────────────
-function DiagnosticDrawer({ diagId, onClose }: { diagId: string; onClose: () => void }) {
-  const d = DIAGNOSTICS.find(x => x.id === diagId);
+function DiagnosticDrawer({ diagId, diagnostics, onClose }: { diagId: string; diagnostics: Diagnostic[]; onClose: () => void }) {
+  const d = diagnostics.find(x => x.id === diagId);
   const isMobile = useIsMobile();
   if (!d) return null;
   const tier = TIERS.find(t => t.id === d.tier)!;
@@ -341,6 +342,7 @@ function FilterSelect({ value, onChange, options, placeholder }: {
 // ── Page ─────────────────────────────────────────────────────
 export default function DiagnosticosPage() {
   const isMobile = useIsMobile();
+  const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
   const [tier, setTier]         = useState('');
   const [industry, setIndustry] = useState('');
   const [urgency, setUrgency]   = useState('');
@@ -348,8 +350,10 @@ export default function DiagnosticosPage() {
   const [q, setQ]               = useState('');
   const [openId, setOpenId]     = useState<string | null>(null);
 
+  useEffect(() => { fetchDiagnostics().then(setDiagnostics); }, []);
+
   const filtered = useMemo(() => {
-    return DIAGNOSTICS.filter(d => {
+    return diagnostics.filter(d => {
       if (tier     && d.tier !== tier) return false;
       if (industry && d.industry !== industry) return false;
       if (urgency  && d.urgency !== urgency) return false;
@@ -357,7 +361,7 @@ export default function DiagnosticosPage() {
       if (q && !(`${d.businessName} ${d.contact.name}`.toLowerCase().includes(q.toLowerCase()))) return false;
       return true;
     }).sort((a, b) => b.submittedAt - a.submittedAt);
-  }, [tier, industry, urgency, status, q]);
+  }, [diagnostics, tier, industry, urgency, status, q]);
 
   return (
     <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -393,7 +397,7 @@ export default function DiagnosticosPage() {
       <div style={{ display: 'flex', gap: 16, fontFamily: 'var(--font-ui)', fontSize: 13, color: 'var(--fg-3)', paddingLeft: 4 }}>
         <span><strong style={{ color: 'var(--fg-1)', fontFamily: 'var(--font-mono)' }}>{filtered.length}</strong> resultados</span>
         <span>·</span>
-        <span><strong style={{ color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>{DIAGNOSTICS.filter(x => x.status === 'nuevo').length}</strong> sin revisar</span>
+        <span><strong style={{ color: 'var(--accent-primary)', fontFamily: 'var(--font-mono)' }}>{diagnostics.filter(x => x.status === 'nuevo').length}</strong> sin revisar</span>
       </div>
 
       {/* Table */}
@@ -425,7 +429,7 @@ export default function DiagnosticosPage() {
       </div>
 
       {/* Drawer */}
-      {openId && <DiagnosticDrawer diagId={openId} onClose={() => setOpenId(null)} />}
+      {openId && <DiagnosticDrawer diagId={openId} diagnostics={diagnostics} onClose={() => setOpenId(null)} />}
     </div>
   );
 }
