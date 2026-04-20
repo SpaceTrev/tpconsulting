@@ -149,3 +149,15 @@
   font-size: 0.8125rem;
   color: var(--fg-3);
 }
+
+/* ── Optional collapsible form section ───────────────────── */
+.optionalSection {
+  background-color: var(--bg-raised);
+  padding: 0 0 var(--space-20);
+  border-top: 1px solid var(--bg-inset);
+}
+
+.optionalSection .container {
+  max-width: 780px;
+  padding-top: var(--space-10);
+}

@@ -88,14 +88,12 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
     setStatus("loading");
     setErrorMsg("");
     const client = getSupabase();
-    if (!client) { setStatus("error"); setErrorMsg("Supabase no configurado."); return; }
-    const { error } = await client.from("diagnostic_submissions").insert([form]);
-    if (error) {
-      setStatus("error");
-      setErrorMsg("Hubo un error al enviar tu solicitud. Intenta de nuevo.");
-    } else {
-      setStatus("success");
+    if (client) {
+      const { error } = await client.from("diagnostic_submissions").insert([form]);
+      if (error) console.error("[DiagnosticForm] insert error:", error);
     }
+    // Always show success — even if Supabase is unreachable, the booking (Cal embed) already captured the lead
+    setStatus("success");
   }
 
   const handleNext = () => {
@@ -158,17 +156,17 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             <legend className={styles.legend}>Cuéntanos sobre tu negocio</legend>
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Nombre de tu empresa <span aria-hidden="true">*</span></label>
-                <input className={styles.input} type="text" value={form.business_name} onChange={(e) => set("business_name", e.target.value)} placeholder="Ej: Distribuidora López S.A." required />
+                <label className={styles.label}>Nombre de tu empresa</label>
+                <input className={styles.input} type="text" value={form.business_name} onChange={(e) => set("business_name", e.target.value)} placeholder="Ej: Distribuidora López S.A."/>
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>Ciudad <span aria-hidden="true">*</span></label>
-                <input className={styles.input} type="text" value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ej: Guadalajara, CDMX" required />
+                <label className={styles.label}>Ciudad</label>
+                <input className={styles.input} type="text" value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ej: Guadalajara, CDMX"/>
               </div>
             </div>
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Industria <span aria-hidden="true">*</span></label>
+                <label className={styles.label}>Industria</label>
                 <select className={styles.select} value={form.industry} onChange={(e) => set("industry", e.target.value)} required>
                   <option value="">Selecciona tu industria</option>
                   {["Manufactura","Retail / Comercio","Logística y distribución","Servicios profesionales","Construcción","Alimentos y bebidas","Salud","Educación","Inmobiliario","E-commerce","Otro"].map((opt) => (
@@ -306,7 +304,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>¿Qué te está costando más tiempo y dinero?</legend>
             <div className={styles.field}>
-              <label className={styles.label}>¿Cuál es tu mayor pérdida de tiempo operativa? <span aria-hidden="true">*</span></label>
+              <label className={styles.label}>¿Cuál es tu mayor pérdida de tiempo operativa?</label>
               <textarea
                 className={styles.textarea}
                 value={form.biggest_time_waste}
@@ -317,7 +315,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
               />
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>Si pudieras automatizar UNA sola cosa en tu negocio, ¿qué sería? <span aria-hidden="true">*</span></label>
+              <label className={styles.label}>Si pudieras automatizar UNA sola cosa en tu negocio, ¿qué sería?</label>
               <textarea
                 className={styles.textarea}
                 value={form.one_thing_to_automate}
@@ -402,7 +400,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Selecciona tu plan <span aria-hidden="true">*</span></label>
+              <label className={styles.label}>Selecciona tu plan</label>
               <div className={styles.tierGrid}>
                 {TIER_OPTIONS.map((t) => (
                   <button
@@ -423,18 +421,18 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Nombre completo <span aria-hidden="true">*</span></label>
-                <input className={styles.input} type="text" value={form.contact_name} onChange={(e) => set("contact_name", e.target.value)} placeholder="Ana García" required />
+                <label className={styles.label}>Nombre completo</label>
+                <input className={styles.input} type="text" value={form.contact_name} onChange={(e) => set("contact_name", e.target.value)} placeholder="Ana García"/>
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>WhatsApp <span aria-hidden="true">*</span></label>
-                <input className={styles.input} type="tel" value={form.contact_whatsapp} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+52 33 1234 5678" required />
+                <label className={styles.label}>WhatsApp</label>
+                <input className={styles.input} type="tel" value={form.contact_whatsapp} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+52 33 1234 5678"/>
               </div>
             </div>
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Correo electrónico <span aria-hidden="true">*</span></label>
-                <input className={styles.input} type="email" value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} placeholder="ana@miempresa.com" required />
+                <label className={styles.label}>Correo electrónico</label>
+                <input className={styles.input} type="email" value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} placeholder="ana@miempresa.com"/>
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>¿Cómo prefieres que te contactemos?</label>
@@ -448,9 +446,6 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
               </div>
             </div>
 
-            {status === "error" && (
-              <p className={styles.errorMsg} role="alert">{errorMsg}</p>
-            )}
           </fieldset>
         )}
 
@@ -466,10 +461,6 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
               type="button"
               className={styles.btnNext}
               onClick={() => setStage((s) => s + 1)}
-              disabled={
-                (stage === 0 && (!form.business_name || !form.industry || !form.city)) ||
-                (stage === 2 && (!form.biggest_time_waste || !form.one_thing_to_automate))
-              }
             >
               Siguiente →
             </button>
@@ -477,9 +468,9 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             <button
               type="submit"
               className={styles.btnSubmit}
-              disabled={status === "loading" || !form.tier || !form.contact_name || !form.contact_whatsapp || !form.contact_email}
+              disabled={status === "loading"}
             >
-              {status === "loading" ? "Enviando..." : "Enviar solicitud de diagnóstico"}
+              {status === "loading" ? "Enviando..." : "Enviar respuestas (opcional)"}
             </button>
           )}
         </div>

@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import styles from "./page.module.css";
 import DiagnosticForm from "@/components/DiagnosticForm/DiagnosticForm";
+import CalEmbed from "@/components/CalEmbed/CalEmbed";
+import CollapsibleForm from "./CollapsibleForm";
 
 export const metadata: Metadata = {
-  title: "Diagnóstico Técnico — FAC",
-  description: "Obtén un diagnóstico técnico de automatización para tu empresa desde $1,000 MXN. 26 preguntas, resultados en 48 horas.",
+  title: "Agenda una llamada — FAC",
+  description: "Reserva una llamada exploratoria gratuita de 30 minutos. Platicamos sobre tu operación y te decimos qué se puede automatizar.",
   openGraph: {
-    title: "Diagnóstico Técnico — FAC",
-    description: "Obtén un diagnóstico técnico de automatización para tu empresa desde $1,000 MXN.",
+    title: "Agenda una llamada — FAC",
+    description: "30 minutos, sin costo. Platicamos sobre tu operación y te decimos qué se puede automatizar.",
     locale: "es_MX",
   },
 };
@@ -24,20 +26,20 @@ export default async function DiagnosticoPage({
     <main className={styles.main}>
       <div className={styles.header}>
         <div className={styles.container}>
-          <span className={styles.eyebrow}>Análisis y plan técnico</span>
-          <h1 className={styles.title}>Descubre exactamente qué automatizar en tu negocio</h1>
+          <span className={styles.eyebrow}>Paso 1 — Agenda tu llamada</span>
+          <h1 className={styles.title}>Hablemos sobre tu negocio</h1>
           <p className={styles.subtitle}>
-            Nuestro diagnóstico te da un plan técnico detallado con costos de implementación estimados — para que sepas exactamente qué se puede construir, cuánto cuesta, y qué impacto tendrá en tu negocio.
+            30 minutos, sin costo. Platicamos sobre tu operación, identificamos qué se puede automatizar, y te decimos con honestidad si podemos ayudarte.
           </p>
           <div className={styles.guarantees}>
             <span className={styles.guarantee}>
-              <span aria-hidden="true">⏱</span> Análisis en 48hrs
+              <span aria-hidden="true">⏱</span> 30 min, sin costo
             </span>
             <span className={styles.guarantee}>
-              <span aria-hidden="true">📋</span> Plan técnico + costos estimados
+              <span aria-hidden="true">🎯</span> Diagnóstico honesto
             </span>
             <span className={styles.guarantee}>
-              <span aria-hidden="true">🔒</span> Datos 100% confidenciales
+              <span aria-hidden="true">🔒</span> Sin presión de venta
             </span>
           </div>
         </div>
@@ -45,31 +47,44 @@ export default async function DiagnosticoPage({
 
       <div className={styles.body}>
         <div className={styles.container}>
+          {/* Primary: Calendar */}
           <div className={styles.formWrapper}>
-            <DiagnosticForm initialTier={tier} />
+            <CalEmbed
+              mode="full"
+              title="Elige el horario que más te convenga"
+              subtitle="Confirmaremos tu cita por WhatsApp o correo."
+            />
           </div>
+
+          {/* Secondary: Sidebar info */}
           <aside className={styles.aside}>
             <div className={styles.asideCard}>
-              <h3 className={styles.asideTitle}>¿Qué incluye tu diagnóstico?</h3>
+              <h3 className={styles.asideTitle}>¿Qué pasa en la llamada?</h3>
               <ul className={styles.asideList}>
-                <li>Mapa completo de tus procesos actuales</li>
-                <li>Identificación de los 3–5 puntos de mayor pérdida de tiempo</li>
-                <li>Estimación de horas y dinero recuperables por mes</li>
-                <li>Plan técnico con costos de implementación estimados</li>
-                <li>Recomendación de herramientas según tu presupuesto</li>
-                <li>La implementación es un proyecto separado — el plan te dice exactamente qué costará</li>
+                <li>Te escuchamos: ¿qué procesos te quitan más tiempo?</li>
+                <li>Identificamos 2–3 oportunidades concretas de automatización</li>
+                <li>Te decimos qué herramientas y costos implicaría</li>
+                <li>Si hay fit, te proponemos un diagnóstico formal</li>
+                <li>Si no, te lo decimos directo — sin rodeos</li>
               </ul>
             </div>
             <div className={styles.asideCard}>
-              <h3 className={styles.asideTitle}>¿Por qué vale la pena saberlo?</h3>
+              <h3 className={styles.asideTitle}>¿Para quién es esto?</h3>
               <ul className={styles.asideList}>
-                <li>El 72% de las PyMEs operan con procesos 100% manuales — y no saben cuánto les cuesta</li>
-                <li>Los negocios que automatizan su primer contacto responden 100× más rápido que los que lo hacen manual (Harvard Business Review)</li>
-                <li>Un sistema de recordatorios por WhatsApp reduce las citas perdidas entre un 40–60%</li>
-                <li>El diagnóstico te muestra exactamente cuánto tiempo y dinero estás dejando sobre la mesa</li>
+                <li>PyMEs con 3–200 empleados en México</li>
+                <li>Dueños o directores que operan con procesos manuales</li>
+                <li>Negocios que pierden tiempo en tareas repetitivas</li>
+                <li>Empresas que quieren crecer sin contratar más personal</li>
               </ul>
             </div>
           </aside>
+        </div>
+      </div>
+
+      {/* Optional: Pre-call diagnostic form */}
+      <div className={styles.optionalSection}>
+        <div className={styles.container}>
+          <CollapsibleForm initialTier={tier} />
         </div>
       </div>
     </main>
