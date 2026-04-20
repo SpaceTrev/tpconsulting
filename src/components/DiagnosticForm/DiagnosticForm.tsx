@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 import styles from "./DiagnosticForm.module.css";
+import CalEmbed from "@/components/CalEmbed/CalEmbed";
 
 /* ── Types ─────────────────────────────────────────────────── */
 interface FormData {
@@ -117,6 +118,16 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
           Revisa tu WhatsApp y correo.
         </p>
         <p className={styles.successTier}>Plan seleccionado: <strong>{form.tier}</strong></p>
+        <div style={{ marginTop: '32px', width: '100%' }}>
+          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-primary)', marginBottom: '12px' }}>
+            Paso siguiente — Agenda tu sesión
+          </p>
+          <CalEmbed
+            mode="full"
+            title="Agenda tu sesión de diagnóstico"
+            subtitle="Reserva ahora para que te contactemos en el horario exacto que más te convenga."
+          />
+        </div>
       </div>
     );
   }
