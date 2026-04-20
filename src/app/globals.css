@@ -43,6 +43,12 @@
   --shadow-md: 0 4px 6px rgba(7, 54, 66, 0.08), 0 1px 3px rgba(7, 54, 66, 0.06);
   --shadow-lg: 0 10px 15px rgba(7, 54, 66, 0.08), 0 4px 6px rgba(7, 54, 66, 0.04);
 
+  /* === Semantic state colors === */
+  --success: #6b8e23;
+  --warning: #b58900;
+  --danger:  #dc322f;
+  --info:    #268bd2;
+
   /* === Legacy aliases (for components still using old names) === */
   --surface:                  var(--bg-canvas);
   --surface-container-low:    var(--bg-raised);
@@ -98,6 +104,12 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3);
+
+  /* === Semantic state colors === */
+  --success: #a8c234;
+  --warning: #f2bf43;
+  --danger:  #ff5a56;
+  --info:    #4cb4e8;
 
   /* === Legacy aliases === */
   --surface:                  var(--bg-canvas);
