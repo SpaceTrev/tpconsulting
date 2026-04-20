@@ -2,6 +2,7 @@
 
 import { useState, useMemo, CSSProperties } from 'react';
 import { CONTACTS, LEADS, DIAGNOSTICS, TIERS, INDUSTRIES, relTime } from '@/lib/admin-data';
+import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -51,7 +52,7 @@ const STATUS = {
 } as const;
 
 // ── Contactos section ─────────────────────────────────────────
-function ContactosSection() {
+function ContactosSection({ isMobile }: { isMobile?: boolean }) {
   const [q, setQ]             = useState('');
   const [status, setStatus]   = useState('');
   const [selected, setSelected] = useState<string | null>(null);
@@ -92,8 +93,8 @@ function ContactosSection() {
         </button>
       </div>
 
-      {/* Two-col */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 16, alignItems: 'start' }}>
+      {/* Two-col — stacks on mobile */}
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr', gap: 16, alignItems: 'start' }}>
 
         {/* List */}
         <div style={{ background: 'var(--bg-raised)', borderRadius: 12, overflow: 'hidden' }}>
@@ -185,7 +186,7 @@ function ContactosSection() {
 }
 
 // ── Métricas section ──────────────────────────────────────────
-function MetricasSection() {
+function MetricasSection({ isMobile }: { isMobile?: boolean }) {
   const weeks = Array.from({ length: 12 }).map((_, i) => ({
     label: `S${12 - i}`,
     leads: Math.round(6 + Math.sin(i * 0.7) * 3 + i * 0.4),
@@ -221,7 +222,7 @@ function MetricasSection() {
   return (
     <>
       {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 16 }}>
         {[
           { label: 'Ingresos diagnósticos', value: `$${(totalRev / 1000).toFixed(0)}K`, unit: 'últimas 12 sem', delta: 18 },
           { label: 'Leads totales', value: totalL, unit: 'en pipeline', delta: 12 },
@@ -242,7 +243,7 @@ function MetricasSection() {
       </div>
 
       {/* Bar chart + Tier mix */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: 16 }}>
         <div style={{ background: 'var(--bg-raised)', borderRadius: 12, padding: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>
             <div>
@@ -293,7 +294,7 @@ function MetricasSection() {
       </div>
 
       {/* Funnel + Industry */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1.2fr', gap: 16 }}>
         <div style={{ background: 'var(--bg-raised)', borderRadius: 12, padding: 20 }}>
           <div style={{ fontFamily: 'var(--font-ui)', fontSize: 11, fontWeight: 600, color: 'var(--accent-primary)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Embudo</div>
           <h3 style={{ margin: '6px 0 18px', fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 500, color: 'var(--fg-1)' }}>Conversión de leads</h3>
@@ -337,10 +338,11 @@ function MetricasSection() {
 
 // ── Page ─────────────────────────────────────────────────────
 export default function ContactosPage() {
+  const isMobile = useIsMobile();
   const [section, setSection] = useState<'contactos' | 'metricas'>('contactos');
 
   return (
-    <div style={{ padding: '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+    <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 16 }}>
 
       {/* Tab switcher */}
       <div style={{ display: 'flex', gap: 4, padding: '0 0 4px', borderBottom: '1px solid var(--bg-inset)' }}>
@@ -356,7 +358,7 @@ export default function ContactosPage() {
         ))}
       </div>
 
-      {section === 'contactos' ? <ContactosSection /> : <MetricasSection />}
+      {section === 'contactos' ? <ContactosSection isMobile={isMobile} /> : <MetricasSection isMobile={isMobile} />}
     </div>
   );
 }

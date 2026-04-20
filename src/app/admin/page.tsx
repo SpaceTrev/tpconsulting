@@ -6,6 +6,7 @@ import {
   DIAGNOSTICS, LEADS, CONTACTS, PIPELINE_STAGES, TIERS,
   relTime, formatMXNshort,
 } from '@/lib/admin-data';
+import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Shared primitives ────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -119,6 +120,7 @@ function ActivityRow({ item }: { item: ActivityItem }) {
 // ── Overview Page ────────────────────────────────────────────
 export default function AdminOverviewPage() {
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   const kpis = useMemo(() => {
     const weekAgo = Date.now() - 7 * 86400000;
@@ -169,10 +171,10 @@ export default function AdminOverviewPage() {
   });
 
   return (
-    <div style={{ padding: '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 24 }}>
 
       {/* KPI row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 16 }}>
         <KpiCard label="Nuevos leads" value={kpis.newLeadsThisWeek} unit="esta semana" delta={kpis.pct} accent="var(--accent-primary)" />
         <KpiCard label="Diagnósticos pendientes" value={kpis.pendingDiag} unit="sin revisar" warning={kpis.pendingDiag > 5} onClick={() => router.push('/admin/diagnosticos')} />
         <KpiCard label="Pipeline activo" value={formatMXNshort(kpis.activePipeline)} mono unit="en negociación" />
@@ -180,7 +182,7 @@ export default function AdminOverviewPage() {
       </div>
 
       {/* Two-col */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 16, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.5fr 1fr', gap: 16, alignItems: 'start' }}>
 
         {/* Activity */}
         <Card padded={false}>
