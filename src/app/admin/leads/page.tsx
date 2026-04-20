@@ -6,7 +6,14 @@ import {
   relTime, formatMXNshort, formatMXN,
   type Lead, type Diagnostic,
 } from '@/lib/admin-data';
-import { fetchLeads, fetchDiagnostics } from '@/lib/admin-queries';
+import { fetchLeads, fetchDiagnostics, updateLeadStage, addLeadNote } from '@/lib/admin-queries';
+
+const STAGE_ORDER = ['nuevo','contactado','respondio','diagnostico','propuesta','negociando','cliente','perdido'];
+function nextStage(current: string): string | null {
+  const idx = STAGE_ORDER.indexOf(current);
+  if (idx < 0 || idx >= STAGE_ORDER.indexOf('cliente')) return null;
+  return STAGE_ORDER[idx + 1];
+}
 import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
@@ -211,14 +218,33 @@ function TimelineItem({ dot, time, children }: { dot: string; time: string; chil
 }
 
 // ── Lead Drawer ──────────────────────────────────────────────
-function LeadDrawer({ leadId, leads, diagnostics, onClose }: { leadId: string; leads: Lead[]; diagnostics: Diagnostic[]; onClose: () => void }) {
+function LeadDrawer({ leadId, leads, diagnostics, onRefresh, onClose }: { leadId: string; leads: Lead[]; diagnostics: Diagnostic[]; onRefresh: () => void; onClose: () => void }) {
   const l = leads.find(x => x.id === leadId);
   const [tab, setTab] = useState<'timeline' | 'info' | 'diag'>('timeline');
   const [noteDraft, setNoteDraft] = useState('');
+  const [saving, setSaving] = useState(false);
   const isMobile = useIsMobile();
   if (!l) return null;
   const stage = PIPELINE_STAGES.find(s => s.id === l.stage);
   const linkedDiag = l.linkedDiagnostic ? diagnostics.find(d => d.id === l.linkedDiagnostic) : null;
+  const next = nextStage(l.stage);
+
+  async function handleAdvanceStage() {
+    if (!next) return;
+    setSaving(true);
+    await updateLeadStage(l!, next);
+    onRefresh();
+    setSaving(false);
+  }
+
+  async function handleSaveNote() {
+    if (!noteDraft.trim()) return;
+    setSaving(true);
+    await addLeadNote(l!, noteDraft.trim(), 'TB');
+    setNoteDraft('');
+    onRefresh();
+    setSaving(false);
+  }
 
   return (
     <>
@@ -268,9 +294,11 @@ function LeadDrawer({ leadId, leads, diagnostics, onClose }: { leadId: string; l
           </div>
 
           <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
-              <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> Avanzar etapa
-            </button>
+            {next && (
+              <button onClick={handleAdvanceStage} disabled={saving} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
+                <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> → {PIPELINE_STAGES.find(s => s.id === next)?.label ?? next}
+              </button>
+            )}
             <button onClick={() => window.open(`https://wa.me/${l.whatsapp.replace(/\D/g, '')}`)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
               <Icon name="whatsapp" size={14} /> WhatsApp
             </button>
@@ -306,9 +334,10 @@ function LeadDrawer({ leadId, leads, diagnostics, onClose }: { leadId: string; l
             <>
               <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
                 <input value={noteDraft} onChange={e => setNoteDraft(e.target.value)}
+                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSaveNote(); } }}
                   placeholder="Añadir una nota o actualización…"
                   style={{ flex: 1, minHeight: 44, padding: '0 14px', background: 'var(--bg-raised)', border: 0, borderRadius: 8, fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--fg-1)', outline: 'none' }} />
-                <button onClick={() => setNoteDraft('')} style={{ display: 'inline-flex', alignItems: 'center', padding: '0 16px', minHeight: 44, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>Guardar</button>
+                <button onClick={handleSaveNote} disabled={saving || !noteDraft.trim()} style={{ display: 'inline-flex', alignItems: 'center', padding: '0 16px', minHeight: 44, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14, opacity: !noteDraft.trim() ? 0.5 : 1 }}>Guardar</button>
               </div>
               <div style={{ position: 'relative', paddingLeft: 24 }}>
                 <div style={{ position: 'absolute', left: 7, top: 8, bottom: 8, width: 1, background: 'var(--bg-inset)' }} />
@@ -448,7 +477,7 @@ export default function LeadsPage() {
         : <LeadsTable leads={filtered} onOpen={setOpenId} />
       }
 
-      {openId && <LeadDrawer leadId={openId} leads={leads} diagnostics={diagnostics} onClose={() => setOpenId(null)} />}
+      {openId && <LeadDrawer leadId={openId} leads={leads} diagnostics={diagnostics} onRefresh={() => fetchLeads().then(setLeads)} onClose={() => setOpenId(null)} />}
     </div>
   );
 }

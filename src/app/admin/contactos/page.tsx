@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, CSSProperties } from 'react';
 import { TIERS, INDUSTRIES, relTime, type Contact, type Lead, type Diagnostic } from '@/lib/admin-data';
-import { fetchContacts, fetchLeads, fetchDiagnostics } from '@/lib/admin-queries';
+import { fetchContacts, fetchLeads, fetchDiagnostics, updateContactStatus, convertContactToLead } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
@@ -53,10 +53,11 @@ const STATUS = {
 } as const;
 
 // ── Contactos section ─────────────────────────────────────────
-function ContactosSection({ contacts, isMobile }: { contacts: Contact[]; isMobile?: boolean }) {
+function ContactosSection({ contacts, onRefresh, isMobile }: { contacts: Contact[]; onRefresh: () => void; isMobile?: boolean }) {
   const [q, setQ]             = useState('');
   const [status, setStatus]   = useState('');
   const [selected, setSelected] = useState<string | null>(null);
+  const [saving, setSaving]   = useState(false);
 
   const rows = useMemo(() => contacts.filter(c => {
     if (q      && !(`${c.name} ${c.message}`.toLowerCase().includes(q.toLowerCase()))) return false;
@@ -161,8 +162,8 @@ function ContactosSection({ contacts, isMobile }: { contacts: Contact[]; isMobil
             </div>
 
             <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
-              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
-                <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> Convertir a lead
+              <button onClick={async () => { setSaving(true); const ok = await convertContactToLead(c); if (ok) { onRefresh(); setSelected(null); } setSaving(false); }} disabled={saving || c.status === 'convertido'} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13, opacity: c.status === 'convertido' ? 0.5 : 1 }}>
+                <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> {c.status === 'convertido' ? 'Ya convertido' : 'Convertir a lead'}
               </button>
               <button onClick={() => window.open(`https://wa.me/${c.whatsapp.replace(/\D/g, '')}`)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--bg-inset)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
                 <Icon name="whatsapp" size={14} /> WhatsApp
@@ -170,9 +171,11 @@ function ContactosSection({ contacts, isMobile }: { contacts: Contact[]; isMobil
               <button onClick={() => window.open(`mailto:${c.email}`)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--bg-inset)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
                 <Icon name="mail" size={14} /> Email
               </button>
-              <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'transparent', color: 'var(--fg-2)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
-                <Icon name="check" size={14} /> Marcar respondido
-              </button>
+              {c.status === 'nuevo' && (
+                <button onClick={async () => { setSaving(true); await updateContactStatus(c.id, 'respondido'); onRefresh(); setSaving(false); }} disabled={saving} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'transparent', color: 'var(--fg-2)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
+                  <Icon name="check" size={14} /> Marcar respondido
+                </button>
+              )}
             </div>
           </Card>
         ) : (
@@ -369,7 +372,7 @@ export default function ContactosPage() {
       </div>
 
       {section === 'contactos'
-        ? <ContactosSection contacts={contacts} isMobile={isMobile} />
+        ? <ContactosSection contacts={contacts} onRefresh={() => fetchContacts().then(setContacts)} isMobile={isMobile} />
         : <MetricasSection leads={leads} diagnostics={diagnostics} isMobile={isMobile} />
       }
     </div>

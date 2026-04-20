@@ -115,3 +115,94 @@ export async function fetchLeads(): Promise<Lead[]> {
   if (error || !data) return [];
   return data.map(mapLead);
 }
+
+// ── Mutations ─────────────────────────────────────────────────
+
+export async function updateDiagnosticStatus(id: string, status: string): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  const { error } = await sb
+    .from('diagnostic_submissions')
+    .update({ status })
+    .eq('id', id);
+  return !error;
+}
+
+export async function convertDiagnosticToLead(d: Diagnostic): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  const { error } = await sb.from('leads').insert([{
+    stage: 'nuevo',
+    contact_name: d.contact.name,
+    business_name: d.businessName,
+    industry: d.industry,
+    source: 'diagnostico',
+    assignee: 'TB',
+    whatsapp: d.contact.whatsapp,
+    email: d.contact.email,
+    last_note: '',
+    next_action: 'Contactar para agendar reunión',
+    revenue_estimate: 0,
+    linked_diagnostic: d.id,
+    timeline: [{ stage: 'nuevo', at: Date.now() }],
+    notes: [],
+    days_in_stage: 0,
+  }]);
+  if (error) return false;
+  await sb.from('diagnostic_submissions').update({ status: 'convertido' }).eq('id', d.id);
+  return true;
+}
+
+export async function updateLeadStage(lead: Lead, nextStage: string): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  const newTimeline = [...lead.timeline, { stage: nextStage, at: Date.now() }];
+  const { error } = await sb
+    .from('leads')
+    .update({ stage: nextStage, days_in_stage: 0, timeline: newTimeline })
+    .eq('id', lead.id);
+  return !error;
+}
+
+export async function addLeadNote(lead: Lead, text: string, author: string): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  const newNotes = [...lead.notes, { at: Date.now(), author, text }];
+  const { error } = await sb
+    .from('leads')
+    .update({ notes: newNotes, last_note: text })
+    .eq('id', lead.id);
+  return !error;
+}
+
+export async function updateContactStatus(id: string, status: string): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  const { error } = await sb.from('contacts').update({ status }).eq('id', id);
+  return !error;
+}
+
+export async function convertContactToLead(c: Contact): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  const { error } = await sb.from('leads').insert([{
+    stage: 'nuevo',
+    contact_name: c.name,
+    business_name: c.name,
+    industry: c.industry,
+    source: 'contacto',
+    assignee: 'TB',
+    whatsapp: c.whatsapp,
+    email: c.email,
+    last_note: c.message,
+    next_action: 'Responder mensaje',
+    revenue_estimate: 0,
+    linked_diagnostic: null,
+    timeline: [{ stage: 'nuevo', at: Date.now() }],
+    notes: [],
+    days_in_stage: 0,
+  }]);
+  if (error) return false;
+  await sb.from('contacts').update({ status: 'convertido' }).eq('id', c.id);
+  return true;
+}

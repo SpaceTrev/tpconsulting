@@ -5,7 +5,9 @@ import {
   TIERS, INDUSTRIES, URGENCIES, type Diagnostic,
   relTime,
 } from '@/lib/admin-data';
-import { fetchDiagnostics } from '@/lib/admin-queries';
+import {
+  fetchDiagnostics, updateDiagnosticStatus, convertDiagnosticToLead,
+} from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
 
 // ── Primitives ───────────────────────────────────────────────
@@ -163,10 +165,25 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 // ── Diagnostic Drawer ────────────────────────────────────────
-function DiagnosticDrawer({ diagId, diagnostics, onClose }: { diagId: string; diagnostics: Diagnostic[]; onClose: () => void }) {
+function DiagnosticDrawer({ diagId, diagnostics, onRefresh, onClose }: { diagId: string; diagnostics: Diagnostic[]; onRefresh: () => void; onClose: () => void }) {
   const d = diagnostics.find(x => x.id === diagId);
+  const [saving, setSaving] = useState(false);
   const isMobile = useIsMobile();
   if (!d) return null;
+
+  async function handleMarkReviewed() {
+    setSaving(true);
+    await updateDiagnosticStatus(d!.id, 'revisado');
+    onRefresh();
+    setSaving(false);
+  }
+
+  async function handleConvertToLead() {
+    setSaving(true);
+    const ok = await convertDiagnosticToLead(d!);
+    if (ok) { onRefresh(); onClose(); }
+    setSaving(false);
+  }
   const tier = TIERS.find(t => t.id === d.tier)!;
   const urg  = URGENCIES.find(u => u.id === d.urgency)!;
   const tc   = TIER_COLORS[d.tier] ?? TIER_COLORS.escaneo;
@@ -216,8 +233,8 @@ function DiagnosticDrawer({ diagId, diagnostics, onClose }: { diagId: string; di
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
-              <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> Convertir a lead
+            <button onClick={handleConvertToLead} disabled={saving || d.status === 'convertido'} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13, opacity: d.status === 'convertido' ? 0.5 : 1 }}>
+              <Icon name="arrow" size={14} color="var(--fg-on-accent)" /> {d.status === 'convertido' ? 'Ya convertido' : 'Convertir a lead'}
             </button>
             <button onClick={() => window.open(`https://wa.me/${d.contact.whatsapp.replace(/\D/g, '')}`)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
               <Icon name="whatsapp" size={14} /> WhatsApp
@@ -225,9 +242,11 @@ function DiagnosticDrawer({ diagId, diagnostics, onClose }: { diagId: string; di
             <button onClick={() => window.open(`mailto:${d.contact.email}`)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
               <Icon name="mail" size={14} /> Email
             </button>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'transparent', color: 'var(--fg-2)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
-              <Icon name="check" size={14} /> Marcar revisado
-            </button>
+            {d.status === 'nuevo' && (
+              <button onClick={handleMarkReviewed} disabled={saving} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32, background: 'transparent', color: 'var(--fg-2)', border: 0, borderRadius: 8, cursor: saving ? 'wait' : 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13 }}>
+                <Icon name="check" size={14} /> Marcar revisado
+              </button>
+            )}
           </div>
         </div>
 
@@ -429,7 +448,7 @@ export default function DiagnosticosPage() {
       </div>
 
       {/* Drawer */}
-      {openId && <DiagnosticDrawer diagId={openId} diagnostics={diagnostics} onClose={() => setOpenId(null)} />}
+      {openId && <DiagnosticDrawer diagId={openId} diagnostics={diagnostics} onRefresh={() => fetchDiagnostics().then(setDiagnostics)} onClose={() => setOpenId(null)} />}
     </div>
   );
 }
