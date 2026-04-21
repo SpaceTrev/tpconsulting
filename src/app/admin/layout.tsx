@@ -29,6 +29,10 @@ function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
     menu:     <><path d="M4 6h16M4 12h16M4 18h16"/></>,
     x:        <><path d="M6 6l12 12M18 6L6 18"/></>,
     logout:   <><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></>,
+    folder:   <><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></>,
+    zap:      <><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></>,
+    cpu:      <><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></>,
+    lock:     <><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></>,
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
@@ -103,18 +107,25 @@ function NavItem({ href, icon, label, count, active, collapsed, accent }: {
 }
 
 // ── Sidebar ──────────────────────────────────────────────────
-function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose, onLogout, badges }: {
+const TREVOR_EMAIL = 'trevbdev@gmail.com';
+
+function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose, onLogout, badges, userEmail }: {
   collapsed: boolean; onToggle: () => void; pathname: string;
   isMobile?: boolean; onClose?: () => void; onLogout?: () => void;
-  badges?: AdminBadges;
+  badges?: AdminBadges; userEmail?: string;
 }) {
   const w = isMobile ? 280 : (collapsed ? 64 : 232);
 
   const items = [
-    { href: '/admin',                icon: 'home',      label: 'Overview' },
-    { href: '/admin/diagnosticos',   icon: 'clipboard', label: 'Diagnósticos', count: badges?.diagnostics ?? 0, accent: true },
-    { href: '/admin/leads',          icon: 'users',     label: 'Leads',        count: badges?.leads ?? 0 },
-    { href: '/admin/contactos',      icon: 'mail',      label: 'Contactos',    count: badges?.contacts ?? 0 },
+    { href: '/admin',                 icon: 'home',      label: 'Overview' },
+    { href: '/admin/diagnosticos',    icon: 'clipboard', label: 'Diagnósticos',    count: badges?.diagnostics ?? 0, accent: true },
+    { href: '/admin/leads',           icon: 'users',     label: 'Leads',           count: badges?.leads ?? 0 },
+    { href: '/admin/contactos',       icon: 'mail',      label: 'Contactos',       count: badges?.contacts ?? 0 },
+    { href: '/admin/projects',        icon: 'folder',    label: 'Proyectos',       count: badges?.projects ?? 0 },
+    { href: '/admin/automations',     icon: 'zap',       label: 'Automatizaciones', count: badges?.automations ?? 0 },
+    ...(userEmail === TREVOR_EMAIL
+      ? [{ href: '/admin/orchestration', icon: 'cpu', label: 'Orquestación' }]
+      : []),
   ];
   const footer = [
     { href: '/admin/config',    icon: 'gear',      label: 'Configuración' },
@@ -228,18 +239,24 @@ function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
 }) {
   const router = useRouter();
   const titles: Record<string, string> = {
-    '/admin':              'Overview',
-    '/admin/diagnosticos': 'Diagnósticos',
-    '/admin/leads':        'Leads',
-    '/admin/contactos':    'Contactos',
-    '/admin/config':       'Configuración',
+    '/admin':                 'Overview',
+    '/admin/diagnosticos':    'Diagnósticos',
+    '/admin/leads':           'Leads',
+    '/admin/contactos':       'Contactos',
+    '/admin/projects':        'Proyectos',
+    '/admin/automations':     'Automatizaciones',
+    '/admin/orchestration':   'Orquestación',
+    '/admin/config':          'Configuración',
   };
   const subtitles: Record<string, string> = {
-    '/admin':              'Vista general',
-    '/admin/diagnosticos': 'Respuestas del formulario de diagnóstico',
-    '/admin/leads':        'Pipeline comercial',
-    '/admin/contactos':    'Mensajes desde thefac.co',
-    '/admin/config':       'Ajustes generales',
+    '/admin':                 'Vista general',
+    '/admin/diagnosticos':    'Respuestas del formulario de diagnóstico',
+    '/admin/leads':           'Pipeline comercial',
+    '/admin/contactos':       'Mensajes desde thefac.co',
+    '/admin/projects':        'Tablero de proyectos activos',
+    '/admin/automations':     'Catálogo y automatizaciones desplegadas',
+    '/admin/orchestration':   'Estado del sistema · solo Trevor',
+    '/admin/config':          'Ajustes generales',
   };
   const [search, setSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
@@ -355,6 +372,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authed, setAuthed] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | undefined>();
   const isMobile = useIsMobile();
   const badges = useAdminBadges();
   const isLoginPage = pathname === '/admin/login';
@@ -377,13 +395,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     sb.auth.getSession().then(({ data }) => {
       if (data.session && ALLOWED_EMAILS.includes(data.session.user.email ?? '')) {
         setAuthed(true);
+        setUserEmail(data.session.user.email ?? undefined);
       } else {
         router.replace('/admin/login');
       }
     });
     const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') { setAuthed(false); router.replace('/admin/login'); }
-      if (session && ALLOWED_EMAILS.includes(session.user.email ?? '')) setAuthed(true);
+      if (event === 'SIGNED_OUT') { setAuthed(false); setUserEmail(undefined); router.replace('/admin/login'); }
+      if (session && ALLOWED_EMAILS.includes(session.user.email ?? '')) {
+        setAuthed(true);
+        setUserEmail(session.user.email ?? undefined);
+      }
     });
     return () => subscription.unsubscribe();
   }, [isLoginPage, router]);
@@ -434,6 +456,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           onClose={() => setMobileOpen(false)}
           onLogout={handleLogout}
           badges={badges}
+          userEmail={userEmail}
         />
       )}
 
