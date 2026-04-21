@@ -266,8 +266,8 @@ function LeadDrawer({ leadId, leads, diagnostics, onRefresh, onClose }: { leadId
 
   return (
     <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,22,29,0.4)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', zIndex: 40 } as CSSProperties} />
-      <aside style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: isMobile ? '100vw' : 680, maxWidth: isMobile ? '100vw' : '95vw', background: 'var(--bg-canvas)', zIndex: 50, overflowY: 'auto', boxShadow: '-24px 0 48px rgba(0,22,29,0.12)' }}>
+      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,22,29,0.4)', backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)', zIndex: 110 } as CSSProperties} />
+      <aside style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: isMobile ? '100vw' : 680, maxWidth: isMobile ? '100vw' : '95vw', background: 'var(--bg-canvas)', zIndex: 120, overflowY: 'auto', boxShadow: '-24px 0 48px rgba(0,22,29,0.12)' }}>
 
         {/* Header */}
         <div style={{ position: 'sticky', top: 0, zIndex: 2, padding: '24px 28px 16px', background: 'var(--frost-bg)', backdropFilter: 'var(--frost-blur)' } as CSSProperties}>

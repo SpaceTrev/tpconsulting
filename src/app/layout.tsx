@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Public_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import MarketingShell from "@/components/MarketingShell";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -73,7 +72,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${spaceGrotesk.variable} ${publicSans.variable} ${inter.variable} ${jetbrainsMono.variable}`}
         style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
       >
-        <MarketingShell>{children}</MarketingShell>
+        {children}
       </body>
     </html>
   );
