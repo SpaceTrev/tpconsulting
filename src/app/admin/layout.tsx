@@ -360,8 +360,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
-    const stored = localStorage.getItem('fac-theme') as 'light' | 'dark' | null;
-    if (stored) setTheme(stored);
+    const domT = document.documentElement.getAttribute('data-theme') as 'light' | 'dark' | null;
+    const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    setTheme(domT || stored || 'light');
   }, []);
 
   useEffect(() => {
@@ -397,13 +398,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const toggleTheme = () => {
     const next = theme === 'dark' ? 'light' : 'dark';
     setTheme(next);
-    localStorage.setItem('fac-theme', next);
+    localStorage.setItem('theme', next);
     document.documentElement.setAttribute('data-theme', next);
   };
 
   return (
     <div
-      data-theme={theme}
       style={{
         display: 'flex', minHeight: '100vh',
         background: 'var(--bg-canvas)',
