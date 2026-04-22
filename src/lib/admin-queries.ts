@@ -218,6 +218,8 @@ export async function createLead(payload: {
 }): Promise<boolean> {
   const sb = getSupabase();
   if (!sb) return false;
+  if (!Number.isFinite(payload.estimatedPrice) || payload.estimatedPrice < 0) return false;
+  const revenueEstimate = Math.round(payload.estimatedPrice);
   const { error } = await sb.from('leads').insert([{
     stage: 'nuevo',
     contact_name: payload.contactName,
@@ -229,7 +231,7 @@ export async function createLead(payload: {
     email: payload.email,
     last_note: payload.notes,
     next_action: 'Contactar para iniciar conversación',
-    revenue_estimate: payload.estimatedPrice,
+    revenue_estimate: revenueEstimate,
     estimated_price: payload.estimatedPrice,
     linked_diagnostic: null,
     timeline: [{ stage: 'nuevo', at: Date.now() }],

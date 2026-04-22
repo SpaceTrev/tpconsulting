@@ -475,6 +475,8 @@ export default function LeadsPage() {
             { value: 'contacto', label: 'Formulario' },
             { value: 'manual', label: 'Manual' },
             { value: 'referido', label: 'Referido' },
+            { value: 'linkedin', label: 'LinkedIn' },
+            { value: 'otro', label: 'Otro' },
           ]} />
         <FilterSelect value={industry} onChange={setIndustry} placeholder="Industria" options={INDUSTRIES} />
 

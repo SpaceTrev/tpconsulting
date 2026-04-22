@@ -510,7 +510,10 @@ export default function ProjectsPage() {
           <FilterSelect
             value={selectedClientId}
             onChange={setSelectedClientId}
-            options={(ctxClients.length > 0 ? ctxClients : clients).map(c => ({ value: c.id, label: c.name }))}
+            options={[
+              ...ctxClients,
+              ...clients.filter(c => !ctxClients.some(ctx => ctx.id === c.id)),
+            ].map(c => ({ value: c.id, label: c.name }))}
             placeholder="Todos los clientes"
           />
           <button onClick={() => setNewClientOpen(true)} style={{

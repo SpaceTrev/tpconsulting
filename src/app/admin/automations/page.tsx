@@ -465,7 +465,7 @@ export default function AutomationsPage() {
           )}
           {view === 'deployed' && (
             <>
-              <FilterSelect value={selectedClientId} onChange={setSelectedClientId} options={(ctxClients.length > 0 ? ctxClients : clients).map(c => ({ value: c.id, label: c.name }))} placeholder="Cliente" />
+              <FilterSelect value={selectedClientId} onChange={setSelectedClientId} options={[...ctxClients, ...clients.filter(c => !ctxClients.some(ctx => ctx.id === c.id))].map(c => ({ value: c.id, label: c.name }))} placeholder="Cliente" />
               <FilterSelect value={filterStatus} onChange={setFilterStatus} options={DEPLOY_STATUS.map(s => ({ value: s.id, label: s.label }))} placeholder="Estado" />
             </>
           )}
