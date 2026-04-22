@@ -98,7 +98,12 @@ function mapLead(row: any): Lead {
     email: row.email ?? '',
     lastNote: row.last_note ?? '',
     nextAction: row.next_action ?? '',
-    revenueEstimate: row.revenue_estimate ?? 0,
+    revenueEstimate: row.estimated_price ?? row.revenue_estimate ?? 0,
+    estimatedPrice: row.estimated_price ?? null,
+    leadId: row.lead_id ?? null,
+    leadSource: row.lead_source ?? null,
+    result: row.result ?? null,
+    lossReason: row.loss_reason ?? null,
     linkedDiagnostic: row.linked_diagnostic ?? null,
     timeline: row.timeline ?? [],
     notes: row.notes ?? [],
@@ -205,4 +210,39 @@ export async function convertContactToLead(c: Contact): Promise<boolean> {
   if (error) return false;
   await sb.from('contacts').update({ status: 'convertido' }).eq('id', c.id);
   return true;
+}
+
+// ── Ops KPI helpers ───────────────────────────────────────────
+
+export async function fetchActiveClientsCount(): Promise<number> {
+  const sb = getSupabase();
+  if (!sb) return 0;
+  const { count } = await sb
+    .from('clients')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'active');
+  return count ?? 0;
+}
+
+export async function fetchLiveAutomationCost(): Promise<number> {
+  const sb = getSupabase();
+  if (!sb) return 0;
+  const { data } = await sb
+    .from('deployed_automations')
+    .select('monthly_cost')
+    .eq('status', 'live');
+  return (data ?? []).reduce((s, r) => s + (r.monthly_cost ?? 0), 0);
+}
+
+export async function fetchUpsellsPipeline(): Promise<{ active: number; closed: number }> {
+  const sb = getSupabase();
+  if (!sb) return { active: 0, closed: 0 };
+  const { data } = await sb
+    .from('upsells')
+    .select('estimated_price,result');
+  const rows = data ?? [];
+  return {
+    active: rows.filter(r => !r.result).reduce((s, r) => s + (r.estimated_price ?? 0), 0),
+    closed: rows.filter(r => r.result === 'ganado').reduce((s, r) => s + (r.estimated_price ?? 0), 0),
+  };
 }

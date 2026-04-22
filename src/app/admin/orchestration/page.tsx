@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, CSSProperties } from 'react';
 import { getSupabase } from '@/lib/supabase';
 import { relTime } from '@/lib/admin-data';
 import { useIsMobile } from '@/lib/use-mobile';
+import { useClientContext } from '@/lib/client-context';
 
 const TREVOR_EMAIL = 'trevbdev@gmail.com';
 
@@ -107,8 +108,8 @@ function CostBarChart({ data }: { data: { label: string; value: number; color: s
 }
 
 // ── Client Row ───────────────────────────────────────────────
-function ClientRow({ client, autos }: { client: Client; autos: DeployedAuto[] }) {
-  const [open, setOpen] = useState(false);
+function ClientRow({ client, autos, defaultOpen }: { client: Client; autos: DeployedAuto[]; defaultOpen?: boolean }) {
+  const [open, setOpen] = useState(defaultOpen ?? false);
   const live = autos.filter(a => a.status === 'live').length;
   const errors = autos.reduce((s, a) => s + (a.error_count ?? 0), 0);
   const totalCost = autos.reduce((s, a) => s + (a.monthly_cost ?? 0), 0);
@@ -156,6 +157,7 @@ function ClientRow({ client, autos }: { client: Client; autos: DeployedAuto[] })
 // ── Main Page ────────────────────────────────────────────────
 export default function OrchestrationPage() {
   const isMobile = useIsMobile();
+  const { selectedClientId } = useClientContext();
   const [clients, setClients] = useState<Client[]>([]);
   const [deployed, setDeployed] = useState<DeployedAuto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -252,7 +254,7 @@ export default function OrchestrationPage() {
               <div style={{ padding: '32px 20px', textAlign: 'center', fontFamily: 'var(--font-ui)', fontSize: 13, color: 'var(--fg-3)' }}>Sin clientes aún</div>
             ) : (
               clients.map(c => (
-                <ClientRow key={c.id} client={c} autos={deployed.filter(d => d.client_id === c.id)} />
+                <ClientRow key={c.id} client={c} autos={deployed.filter(d => d.client_id === c.id)} defaultOpen={!!selectedClientId && c.id === selectedClientId} />
               ))
             )}
           </div>

@@ -6,6 +6,7 @@ import { ASSIGNEES } from '@/lib/admin-data';
 import { useIsMobile } from '@/lib/use-mobile';
 import { getSupabase } from '@/lib/supabase';
 import { useAdminBadges, type AdminBadges } from '@/lib/use-admin-badges';
+import { ClientContextProvider, useClientContext } from '@/lib/client-context';
 
 // ── Icons ────────────────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -233,11 +234,39 @@ function Sidebar({ collapsed, onToggle, pathname, isMobile, onClose, onLogout, b
 }
 
 // ── Topbar ───────────────────────────────────────────────────
+const CLIENT_FILTER_PAGES = ['/admin/projects', '/admin/automations', '/admin/orchestration'];
+
+function ClientPill() {
+  const { clients, selectedClientId, setSelectedClientId } = useClientContext();
+  if (clients.length === 0) return null;
+  return (
+    <select
+      value={selectedClientId}
+      onChange={e => setSelectedClientId(e.target.value)}
+      style={{
+        minHeight: 36, padding: '0 28px 0 10px',
+        background: selectedClientId ? 'var(--accent-primary)' : 'var(--bg-raised)',
+        color: selectedClientId ? 'var(--fg-on-accent)' : 'var(--fg-2)',
+        fontFamily: 'var(--font-ui)', fontSize: 13, fontWeight: 600,
+        border: 0, borderRadius: 8, outline: 'none', appearance: 'none',
+        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='${selectedClientId ? '%23fffbf0' : '%23586e75'}' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>")`,
+        backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center',
+        cursor: 'pointer', flexShrink: 0,
+        transition: 'background 180ms',
+      }}
+    >
+      <option value="">Todos los clientes</option>
+      {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+    </select>
+  );
+}
+
 function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
   pathname: string; theme: string; onTheme: () => void;
   isMobile?: boolean; onMenuOpen?: () => void;
 }) {
   const router = useRouter();
+  const showClientPill = CLIENT_FILTER_PAGES.includes(pathname);
   const titles: Record<string, string> = {
     '/admin':                 'Overview',
     '/admin/diagnosticos':    'Diagnósticos',
@@ -294,9 +323,12 @@ function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
         )}
       </div>
 
+      {/* Client context pill — desktop, only on relevant pages */}
+      {!isMobile && showClientPill && <ClientPill />}
+
       {/* Search — desktop always visible */}
       {!isMobile && (
-        <div style={{ flex: 1, maxWidth: 420, marginLeft: 'auto' }}>
+        <div style={{ flex: 1, maxWidth: 420, marginLeft: showClientPill ? 0 : 'auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, minHeight: 40, padding: '0 14px', background: 'var(--bg-raised)', borderRadius: 8 }}>
             <Icon name="search" size={16} color="var(--fg-3)" />
             <input
@@ -366,6 +398,14 @@ function Topbar({ pathname, theme, onTheme, isMobile, onMenuOpen }: {
 const ALLOWED_EMAILS = ['trevbdev@gmail.com', 'pabstrada@gmail.com'];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <ClientContextProvider>
+      <AdminLayoutInner>{children}</AdminLayoutInner>
+    </ClientContextProvider>
+  );
+}
+
+function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router   = useRouter();
   const [collapsed, setCollapsed] = useState(false);

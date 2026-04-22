@@ -5,6 +5,7 @@ import { ASSIGNEES, relTime } from '@/lib/admin-data';
 import { getSupabase } from '@/lib/supabase';
 import { useRealtimeTable } from '@/lib/use-realtime';
 import { useIsMobile } from '@/lib/use-mobile';
+import { useClientContext } from '@/lib/client-context';
 
 // ── Types ────────────────────────────────────────────────────
 interface Client {
@@ -408,20 +409,20 @@ function KanbanCard({ project, onClick }: { project: Project; onClick: () => voi
 // ── Main Page ────────────────────────────────────────────────
 export default function ProjectsPage() {
   const isMobile = useIsMobile();
+  const { clients: ctxClients, selectedClientId, setSelectedClientId } = useClientContext();
   const [clients, setClients] = useState<Client[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedClient, setSelectedClient] = useState('');
   const [openId, setOpenId] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [c, p] = await Promise.all([fetchClients(), fetchProjects(selectedClient || undefined)]);
+    const [c, p] = await Promise.all([fetchClients(), fetchProjects(selectedClientId || undefined)]);
     setClients(c);
     setProjects(p);
     setLoading(false);
-  }, [selectedClient]);
+  }, [selectedClientId]);
 
   useEffect(() => { load(); }, [load]);
   useRealtimeTable('projects', load);
@@ -448,9 +449,9 @@ export default function ProjectsPage() {
         </div>
         <div style={{ display: 'flex', gap: 8, marginLeft: 'auto', flexWrap: 'wrap' }}>
           <FilterSelect
-            value={selectedClient}
-            onChange={setSelectedClient}
-            options={clients.map(c => ({ value: c.id, label: c.name }))}
+            value={selectedClientId}
+            onChange={setSelectedClientId}
+            options={(ctxClients.length > 0 ? ctxClients : clients).map(c => ({ value: c.id, label: c.name }))}
             placeholder="Todos los clientes"
           />
           <button onClick={() => setNewOpen(true)} style={{
@@ -469,7 +470,7 @@ export default function ProjectsPage() {
       ) : projects.length === 0 ? (
         <div style={{ padding: '64px 24px', textAlign: 'center', background: 'var(--bg-raised)', borderRadius: 12 }}>
           <Icon name="folder" size={40} color="var(--fg-3)" />
-          <p style={{ margin: '16px 0 0', fontFamily: 'var(--font-ui)', fontSize: 15, color: 'var(--fg-3)' }}>No hay proyectos{selectedClient ? ' para este cliente' : ''}. Crea el primero.</p>
+          <p style={{ margin: '16px 0 0', fontFamily: 'var(--font-ui)', fontSize: 15, color: 'var(--fg-3)' }}>No hay proyectos{selectedClientId ? ' para este cliente' : ''}. Crea el primero.</p>
         </div>
       ) : (
         <>
