@@ -212,6 +212,51 @@ export async function convertContactToLead(c: Contact): Promise<boolean> {
   return true;
 }
 
+export async function createLead(payload: {
+  contactName: string; email: string; whatsapp: string;
+  industry: string; source: string; estimatedPrice: number; notes: string;
+}): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  if (!Number.isFinite(payload.estimatedPrice) || payload.estimatedPrice < 0) return false;
+  const revenueEstimate = Math.round(payload.estimatedPrice);
+  const { error } = await sb.from('leads').insert([{
+    stage: 'nuevo',
+    contact_name: payload.contactName,
+    business_name: payload.contactName,
+    industry: payload.industry,
+    source: payload.source,
+    assignee: 'TB',
+    whatsapp: payload.whatsapp,
+    email: payload.email,
+    last_note: payload.notes,
+    next_action: 'Contactar para iniciar conversación',
+    revenue_estimate: revenueEstimate,
+    estimated_price: payload.estimatedPrice,
+    linked_diagnostic: null,
+    timeline: [{ stage: 'nuevo', at: Date.now() }],
+    notes: payload.notes ? [{ at: Date.now(), author: 'TB', text: payload.notes }] : [],
+    days_in_stage: 0,
+  }]);
+  return !error;
+}
+
+export async function createClient(payload: {
+  name: string; email?: string; company?: string; phone?: string; notes?: string;
+}): Promise<boolean> {
+  const sb = getSupabase();
+  if (!sb) return false;
+  const { error } = await sb.from('clients').insert([{
+    name: payload.name,
+    email: payload.email || null,
+    company: payload.company || null,
+    phone: payload.phone || null,
+    notes: payload.notes || null,
+    status: 'active',
+  }]);
+  return !error;
+}
+
 // ── Ops KPI helpers ───────────────────────────────────────────
 
 export async function fetchActiveClientsCount(): Promise<number> {

@@ -6,6 +6,7 @@ import { getSupabase } from '@/lib/supabase';
 import { useRealtimeTable } from '@/lib/use-realtime';
 import { useIsMobile } from '@/lib/use-mobile';
 import { useClientContext } from '@/lib/client-context';
+import { createClient } from '@/lib/admin-queries';
 
 // ── Types ────────────────────────────────────────────────────
 interface Client {
@@ -290,6 +291,63 @@ function ProjectDrawer({ project, onClose, onRefresh }: {
   );
 }
 
+// ── New Client Modal ─────────────────────────────────────────
+const cInputStyle: CSSProperties = { width: '100%', boxSizing: 'border-box', minHeight: 42, padding: '0 12px', background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, outline: 'none', fontFamily: 'var(--font-body)', fontSize: 14 };
+
+function NewClientModal({ onClose, onCreated }: { onClose: () => void; onCreated: () => void }) {
+  const [name, setName] = useState('');
+  const [company, setCompany] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [notes, setNotes] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState('');
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim()) { setErr('El nombre es obligatorio'); return; }
+    setSaving(true);
+    const ok = await createClient({ name: name.trim(), company: company.trim(), email: email.trim(), phone: phone.trim(), notes: notes.trim() });
+    if (ok) { onCreated(); onClose(); }
+    else { setErr('Error al guardar el cliente'); setSaving(false); }
+  }
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,22,29,0.5)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)', zIndex: 150 } as CSSProperties} />
+      <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 460, maxWidth: '95vw', background: 'var(--bg-canvas)', borderRadius: 16, padding: '28px 24px', zIndex: 160, boxShadow: '0 24px 64px rgba(0,22,29,0.24)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+          <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 700, color: 'var(--fg-1)' }}>Nuevo Cliente</h3>
+          <button onClick={onClose} style={{ width: 32, height: 32, borderRadius: 8, border: 0, background: 'var(--bg-inset)', color: 'var(--fg-2)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Icon name="x" size={15} />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {[
+            { label: 'Nombre *', value: name, setter: setName, placeholder: 'ej. Juan García', autoFocus: true },
+            { label: 'Empresa (opcional)', value: company, setter: setCompany, placeholder: 'ej. Panadería San Juan' },
+            { label: 'Email', value: email, setter: setEmail, placeholder: 'juan@empresa.mx' },
+            { label: 'Teléfono / WhatsApp', value: phone, setter: setPhone, placeholder: '+52 33 1234 5678' },
+          ].map(f => (
+            <div key={f.label}>
+              <label style={{ display: 'block', fontFamily: 'var(--font-ui)', fontSize: 11, fontWeight: 600, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>{f.label}</label>
+              <input value={f.value} onChange={e => f.setter(e.target.value)} placeholder={f.placeholder} autoFocus={f.autoFocus} style={cInputStyle} />
+            </div>
+          ))}
+          <div>
+            <label style={{ display: 'block', fontFamily: 'var(--font-ui)', fontSize: 11, fontWeight: 600, color: 'var(--fg-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Notas</label>
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Industria, contexto, cómo llegó…" style={{ ...cInputStyle, minHeight: 'unset', padding: '10px 12px', resize: 'vertical', lineHeight: '1.6' }} />
+          </div>
+          {err && <p style={{ margin: 0, fontFamily: 'var(--font-ui)', fontSize: 13, color: '#dc322f' }}>{err}</p>}
+          <button type="submit" disabled={saving || !name.trim()} style={{ marginTop: 4, minHeight: 44, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 10, fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: 15, cursor: (saving || !name.trim()) ? 'not-allowed' : 'pointer', opacity: !name.trim() ? 0.5 : 1 }}>
+            {saving ? 'Guardando…' : 'Crear cliente'}
+          </button>
+        </form>
+      </div>
+    </>
+  );
+}
+
 // ── New Project Modal ────────────────────────────────────────
 function NewProjectModal({ clients, onClose, onCreated }: {
   clients: Client[]; onClose: () => void; onCreated: () => void;
@@ -415,6 +473,7 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [openId, setOpenId] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
+  const [newClientOpen, setNewClientOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -451,9 +510,20 @@ export default function ProjectsPage() {
           <FilterSelect
             value={selectedClientId}
             onChange={setSelectedClientId}
-            options={(ctxClients.length > 0 ? ctxClients : clients).map(c => ({ value: c.id, label: c.name }))}
+            options={[
+              ...ctxClients,
+              ...clients.filter(c => !ctxClients.some(ctx => ctx.id === c.id)),
+            ].map(c => ({ value: c.id, label: c.name }))}
             placeholder="Todos los clientes"
           />
+          <button onClick={() => setNewClientOpen(true)} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 14px', minHeight: 40,
+            background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8,
+            fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+          }}>
+            <Icon name="plus" size={16} />
+            Nuevo Cliente
+          </button>
           <button onClick={() => setNewOpen(true)} style={{
             display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40,
             background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8,
@@ -529,6 +599,9 @@ export default function ProjectsPage() {
       )}
       {newOpen && (
         <NewProjectModal clients={clients} onClose={() => setNewOpen(false)} onCreated={load} />
+      )}
+      {newClientOpen && (
+        <NewClientModal onClose={() => setNewClientOpen(false)} onCreated={load} />
       )}
     </div>
   );
