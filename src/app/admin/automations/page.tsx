@@ -5,6 +5,7 @@ import { ASSIGNEES, relTime } from '@/lib/admin-data';
 import { getSupabase } from '@/lib/supabase';
 import { useRealtimeTable } from '@/lib/use-realtime';
 import { useIsMobile } from '@/lib/use-mobile';
+import { useClientContext } from '@/lib/client-context';
 
 // ── Types ────────────────────────────────────────────────────
 interface Client { id: string; name: string; }
@@ -382,13 +383,13 @@ function DeployedDrawer({ auto, onClose, onRefresh }: {
 // ── Main Page ────────────────────────────────────────────────
 export default function AutomationsPage() {
   const isMobile = useIsMobile();
+  const { clients: ctxClients, selectedClientId, setSelectedClientId } = useClientContext();
   const [view, setView] = useState<'catalog' | 'deployed'>('catalog');
   const [clients, setClients] = useState<Client[]>([]);
   const [catalog, setCatalog] = useState<CatalogItem[]>([]);
   const [deployed, setDeployed] = useState<DeployedAuto[]>([]);
   const [loading, setLoading] = useState(true);
   const [q, setQ] = useState('');
-  const [filterClient, setFilterClient] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [deployItem, setDeployItem] = useState<CatalogItem | null>(null);
@@ -413,11 +414,11 @@ export default function AutomationsPage() {
   }), [catalog, q, filterCategory]);
 
   const filteredDeployed = useMemo(() => deployed.filter(d => {
-    if (q && !d.name.toLowerCase().includes(q.toLowerCase()) && !d.client?.name.toLowerCase().includes(q.toLowerCase())) return false;
-    if (filterClient && d.client_id !== filterClient) return false;
+    if (q && !d.name.toLowerCase().includes(q.toLowerCase()) && !(d.client?.name ?? '').toLowerCase().includes(q.toLowerCase())) return false;
+    if (selectedClientId && d.client_id !== selectedClientId) return false;
     if (filterStatus && d.status !== filterStatus) return false;
     return true;
-  }), [deployed, q, filterClient, filterStatus]);
+  }), [deployed, q, selectedClientId, filterStatus]);
 
   const liveCount = deployed.filter(d => d.status === 'live').length;
   const totalMonthlyCost = deployed.filter(d => d.status === 'live').reduce((s, d) => s + (d.monthly_cost || 0), 0);
@@ -464,7 +465,7 @@ export default function AutomationsPage() {
           )}
           {view === 'deployed' && (
             <>
-              <FilterSelect value={filterClient} onChange={setFilterClient} options={clients.map(c => ({ value: c.id, label: c.name }))} placeholder="Cliente" />
+              <FilterSelect value={selectedClientId} onChange={setSelectedClientId} options={(ctxClients.length > 0 ? ctxClients : clients).map(c => ({ value: c.id, label: c.name }))} placeholder="Cliente" />
               <FilterSelect value={filterStatus} onChange={setFilterStatus} options={DEPLOY_STATUS.map(s => ({ value: s.id, label: s.label }))} placeholder="Estado" />
             </>
           )}

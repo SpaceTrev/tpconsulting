@@ -7,8 +7,17 @@ import {
   relTime, formatMXNshort,
   type Diagnostic, type Lead, type Contact,
 } from '@/lib/admin-data';
-import { fetchDiagnostics, fetchLeads, fetchContacts } from '@/lib/admin-queries';
+import {
+  fetchDiagnostics, fetchLeads, fetchContacts,
+  fetchActiveClientsCount, fetchLiveAutomationCost, fetchUpsellsPipeline,
+} from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
+
+const STAGE_WEIGHTS: Record<string, number> = {
+  nuevo: 0.05, contactado: 0.15, respondio: 0.25,
+  diagnostico: 0.40, propuesta: 0.55, negociando: 0.75,
+  cliente: 1.0, perdido: 0,
+};
 
 // ── Shared primitives ────────────────────────────────────────
 function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
@@ -126,11 +135,17 @@ export default function AdminOverviewPage() {
   const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [activeClients, setActiveClients] = useState(0);
+  const [liveCost, setLiveCost] = useState(0);
+  const [upsells, setUpsells] = useState({ active: 0, closed: 0 });
 
   useEffect(() => {
     fetchDiagnostics().then(setDiagnostics);
     fetchLeads().then(setLeads);
     fetchContacts().then(setContacts);
+    fetchActiveClientsCount().then(setActiveClients);
+    fetchLiveAutomationCost().then(setLiveCost);
+    fetchUpsellsPipeline().then(setUpsells);
   }, []);
 
   const kpis = useMemo(() => {
@@ -144,7 +159,10 @@ export default function AdminOverviewPage() {
     ).reduce((s, l) => s + l.revenueEstimate, 0);
     const clients = leads.filter(l => l.stage === 'cliente').length;
     const convRate = leads.length ? Math.round((clients / leads.length) * 100) : 0;
-    return { newLeadsThisWeek, pct, pendingDiag, activePipeline, convRate };
+    const weightedForecast = leads
+      .filter(l => l.stage !== 'perdido' && l.stage !== 'cliente')
+      .reduce((s, l) => s + l.revenueEstimate * (STAGE_WEIGHTS[l.stage] ?? 0.1), 0);
+    return { newLeadsThisWeek, pct, pendingDiag, activePipeline, convRate, weightedForecast };
   }, [diagnostics, leads]);
 
   const activity = useMemo<ActivityItem[]>(() => {
@@ -181,12 +199,23 @@ export default function AdminOverviewPage() {
   return (
     <div style={{ padding: isMobile ? '0 16px 48px' : '0 28px 48px', display: 'flex', flexDirection: 'column', gap: 24 }}>
 
-      {/* KPI row */}
+      {/* KPI row — sales */}
       <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 16 }}>
         <KpiCard label="Nuevos leads" value={kpis.newLeadsThisWeek} unit="esta semana" delta={kpis.pct} accent="var(--accent-primary)" />
         <KpiCard label="Diagnósticos pendientes" value={kpis.pendingDiag} unit="sin revisar" warning={kpis.pendingDiag > 5} onClick={() => router.push('/admin/diagnosticos')} />
         <KpiCard label="Pipeline activo" value={formatMXNshort(kpis.activePipeline)} mono unit="en negociación" />
         <KpiCard label="Tasa de conversión" value={`${kpis.convRate}%`} mono unit="lead → cliente" accent="var(--success)" />
+      </div>
+
+      {/* KPI row — ops */}
+      <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 16 }}>
+        <KpiCard label="Clientes activos" value={activeClients} unit="en servicio" onClick={() => router.push('/admin/projects')} />
+        <KpiCard label="Costo automatizaciones" value={formatMXNshort(liveCost)} mono unit="mensual · sistemas live" accent="var(--info)" />
+        <KpiCard label="Forecast ponderado" value={formatMXNshort(kpis.weightedForecast)} mono unit="por probabilidad de etapa" />
+        {upsells.active > 0
+          ? <KpiCard label="Pipeline upsells" value={formatMXNshort(upsells.active)} mono unit={`+ ${formatMXNshort(upsells.closed)} cerrado`} accent="var(--success)" />
+          : <KpiCard label="Upsells identificados" value="—" unit="sin oportunidades activas" />
+        }
       </div>
 
       {/* Two-col */}

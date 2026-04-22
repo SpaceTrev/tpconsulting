@@ -71,6 +71,11 @@ export interface Lead {
   lastNote: string;
   nextAction: string;
   revenueEstimate: number;
+  estimatedPrice: number | null;
+  leadId: string | null;
+  leadSource: string | null;
+  result: string | null;
+  lossReason: string | null;
   linkedDiagnostic: string | null;
   timeline: { stage: string; at: number }[];
   notes: { at: number; author: string; text: string }[];
@@ -193,6 +198,11 @@ export const LEADS: Lead[] = Array.from({ length: 22 }).map((_, i) => {
     lastNote: pick(notes, i),
     nextAction: ['Enviar propuesta','Agendar llamada','Confirmar junta','Esperando respuesta','Mandar contrato'][i % 5],
     revenueEstimate: pick(revenues, i),
+    estimatedPrice: pick(revenues, i),
+    leadId: `L-${String(i + 1).padStart(3, '0')}`,
+    leadSource: source,
+    result: null,
+    lossReason: null,
     linkedDiagnostic: source === 'diagnostico' ? `DX-${1024 + (i % 18)}` : null,
     timeline: reachedStages.map((s, k) => ({
       stage: s.id,
