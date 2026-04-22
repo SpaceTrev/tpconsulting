@@ -181,6 +181,12 @@ END $$;
 
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS timeline jsonb DEFAULT '[]'::jsonb;
 
+-- Drop legacy NOT NULL on the "intake-shape" columns.
+-- The RevOps createLead() writes `email` / `whatsapp`, not `contact_email` / `contact_whatsapp`.
+-- Dual-naming only works if the legacy columns are nullable.
+ALTER TABLE leads ALTER COLUMN contact_email    DROP NOT NULL;
+ALTER TABLE leads ALTER COLUMN contact_whatsapp DROP NOT NULL;
+
 -- Drop any legacy status CHECK constraint that might reject new stage-driven inserts.
 -- (001_init.sql created `status text CHECK (status IN ('nuevo','...'))` — code uses `stage` instead
 --  and never writes status, so the column can stay but the restrictive check must not block inserts.)
