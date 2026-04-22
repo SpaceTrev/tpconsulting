@@ -12,6 +12,7 @@ import {
   fetchActiveClientsCount, fetchLiveAutomationCost, fetchUpsellsPipeline,
 } from '@/lib/admin-queries';
 import { useIsMobile } from '@/lib/use-mobile';
+import { NewLeadModal } from './_components/NewLeadModal';
 
 const STAGE_WEIGHTS: Record<string, number> = {
   nuevo: 0.05, contactado: 0.15, respondio: 0.25,
@@ -32,6 +33,7 @@ function Icon({ name, size = 18, color = 'currentColor', strokeWidth = 1.75 }: {
     arrowDown:<path d="M12 5v14M6 13l6 6 6-6"/>,
     plus:     <><path d="M12 5v14M5 12h14"/></>,
     download: <><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 19h16"/></>,
+    x:        <><path d="M6 6l12 12M18 6L6 18"/></>,
   };
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
@@ -138,6 +140,7 @@ export default function AdminOverviewPage() {
   const [activeClients, setActiveClients] = useState(0);
   const [liveCost, setLiveCost] = useState(0);
   const [upsells, setUpsells] = useState({ active: 0, closed: 0 });
+  const [newLeadOpen, setNewLeadOpen] = useState(false);
 
   useEffect(() => {
     fetchDiagnostics().then(setDiagnostics);
@@ -270,7 +273,7 @@ export default function AdminOverviewPage() {
       <Card style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '16px 20px' }}>
         <span style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>Acciones rápidas</span>
         <div style={{ display: 'flex', gap: 8, flex: 1 }}>
-          <button onClick={() => router.push('/admin/leads')} style={{
+          <button onClick={() => setNewLeadOpen(true)} style={{
             display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 12px', minHeight: 32,
             background: 'var(--accent-primary)', color: 'var(--fg-on-accent)',
             border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 13,
@@ -295,6 +298,16 @@ export default function AdminOverviewPage() {
         <kbd style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)', padding: '3px 7px', background: 'var(--bg-inset)', borderRadius: 4 }}>n</kbd>
         <span style={{ fontFamily: 'var(--font-ui)', fontSize: 12, color: 'var(--fg-3)' }}>nuevo lead</span>
       </Card>
+
+      {newLeadOpen && (
+        <NewLeadModal
+          onClose={() => setNewLeadOpen(false)}
+          onCreated={() => {
+            fetchLeads().then(setLeads);
+            fetchContacts().then(setContacts);
+          }}
+        />
+      )}
     </div>
   );
 }

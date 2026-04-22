@@ -7,6 +7,7 @@ import {
   type Lead, type Diagnostic,
 } from '@/lib/admin-data';
 import { fetchLeads, fetchDiagnostics, updateLeadStage, addLeadNote } from '@/lib/admin-queries';
+import { NewLeadModal } from '@/app/admin/_components/NewLeadModal';
 import { useRealtimeTable } from '@/lib/use-realtime';
 
 function downloadLeadsCSV(rows: Lead[]) {
@@ -431,6 +432,7 @@ export default function LeadsPage() {
   const [source, setSource]     = useState('');
   const [industry, setIndustry] = useState('');
   const [openId, setOpenId]     = useState<string | null>(null);
+  const [newLeadOpen, setNewLeadOpen] = useState(false);
 
   const load = useCallback(() => {
     fetchLeads().then(setLeads);
@@ -494,7 +496,7 @@ export default function LeadsPage() {
         <button onClick={() => downloadLeadsCSV(filtered)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--bg-raised)', color: 'var(--fg-1)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
           <Icon name="kanban" size={14} /> CSV
         </button>
-        <button style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
+        <button onClick={() => setNewLeadOpen(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '0 16px', minHeight: 40, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', border: 0, borderRadius: 8, cursor: 'pointer', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: 14 }}>
           <Icon name="plus" size={14} color="var(--fg-on-accent)" /> Nuevo lead
         </button>
       </div>
@@ -505,6 +507,7 @@ export default function LeadsPage() {
       }
 
       {openId && <LeadDrawer leadId={openId} leads={leads} diagnostics={diagnostics} onRefresh={load} onClose={() => setOpenId(null)} />}
+      {newLeadOpen && <NewLeadModal onClose={() => setNewLeadOpen(false)} onCreated={load} />}
     </div>
   );
 }
