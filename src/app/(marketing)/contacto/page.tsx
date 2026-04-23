@@ -79,7 +79,7 @@ export default function ContactoPage() {
               <div className={styles.sideCard}>
                 <CalEmbed
                   title="Agenda una llamada exploratoria"
-                  subtitle="30 minutos, sin costo. Platicamos sobre tu operación y te decimos si podemos ayudarte."
+                  subtitle="15 minutos, sin costo. Platicamos sobre tu operación y te decimos si podemos ayudarte."
                 />
               </div>
 

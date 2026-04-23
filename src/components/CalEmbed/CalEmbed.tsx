@@ -46,7 +46,7 @@ export default function CalEmbed({ mode = 'sidebar', title, subtitle }: CalEmbed
   }, [theme]);
 
   if (!CAL_LINK) {
-    const waMsg = encodeURIComponent('Hola, quiero agendar una llamada exploratoria gratuita de 30 minutos con FAC.');
+    const waMsg = encodeURIComponent('Hola, quiero agendar una llamada exploratoria gratuita de 15 minutos con FAC.');
     const waUrl = `https://wa.me/13038299013?text=${waMsg}`;
     const isFullMode = mode === 'full';
     return (
@@ -86,7 +86,7 @@ export default function CalEmbed({ mode = 'sidebar', title, subtitle }: CalEmbed
           color: 'var(--fg-2)', margin: '0 0 32px', lineHeight: 1.6,
           maxWidth: 380,
         }}>
-          Escríbenos y te confirmamos horario en menos de 24 h. La llamada es de 30 minutos, sin costo y sin compromiso.
+          Escríbenos y te confirmamos horario en menos de 24 h. La llamada es de 15 minutos, sin costo y sin compromiso.
         </p>
 
         <a
@@ -116,7 +116,7 @@ export default function CalEmbed({ mode = 'sidebar', title, subtitle }: CalEmbed
           display: 'flex', gap: isFullMode ? 24 : 16, marginTop: 28, flexWrap: 'wrap', justifyContent: 'center',
         }}>
           {[
-            { icon: '⏱', text: '30 min · sin costo' },
+            { icon: '⏱', text: '15 min · sin costo' },
             { icon: '💬', text: 'Respuesta en < 24 h' },
             { icon: '🔒', text: 'Sin presión de venta' },
           ].map(({ icon, text }) => (

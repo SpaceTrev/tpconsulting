@@ -6,10 +6,10 @@ import CollapsibleForm from "./CollapsibleForm";
 
 export const metadata: Metadata = {
   title: "Agenda una llamada — FAC",
-  description: "Reserva una llamada exploratoria gratuita de 30 minutos. Platicamos sobre tu operación y te decimos qué se puede automatizar.",
+  description: "Reserva una llamada exploratoria gratuita de 15 minutos. Platicamos sobre tu operación y te decimos qué se puede automatizar.",
   openGraph: {
     title: "Agenda una llamada — FAC",
-    description: "30 minutos, sin costo. Platicamos sobre tu operación y te decimos qué se puede automatizar.",
+    description: "15 minutos, sin costo. Platicamos sobre tu operación y te decimos qué se puede automatizar.",
     locale: "es_MX",
   },
 };
@@ -29,11 +29,11 @@ export default async function DiagnosticoPage({
           <span className={styles.eyebrow}>Paso 1 — Agenda tu llamada</span>
           <h1 className={styles.title}>Hablemos sobre tu negocio</h1>
           <p className={styles.subtitle}>
-            30 minutos, sin costo. Platicamos sobre tu operación, identificamos qué se puede automatizar, y te decimos con honestidad si podemos ayudarte.
+            15 minutos, sin costo. Platicamos sobre tu operación, identificamos qué se puede automatizar, y te decimos con honestidad si podemos ayudarte.
           </p>
           <div className={styles.guarantees}>
             <span className={styles.guarantee}>
-              <span aria-hidden="true">⏱</span> 30 min, sin costo
+              <span aria-hidden="true">⏱</span> 15 min, sin costo
             </span>
             <span className={styles.guarantee}>
               <span aria-hidden="true">🎯</span> Diagnóstico honesto
