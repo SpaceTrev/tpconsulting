@@ -65,27 +65,13 @@
   padding: var(--space-12) 0 var(--space-20);
 }
 
+/* Single-column stacked layout: calendar first (full width so Cal's
+   month_view renders calendar + time slots side-by-side), aside cards below. */
 .body .container {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--space-10);
   align-items: start;
-}
-
-/* Calendar gets max room; aside shrinks to only as wide as its content needs,
-   so on common desktops (1280–1440px) the Cal embed isn't cramped. */
-@media (min-width: 1024px) {
-  .body .container {
-    grid-template-columns: minmax(0, 1fr) 300px;
-    gap: var(--space-8);
-  }
-}
-
-@media (min-width: 1280px) {
-  .body .container {
-    grid-template-columns: minmax(0, 1fr) 320px;
-    gap: var(--space-10);
-  }
 }
 
 /* Cal embed column: no frame/card — the Cal widget renders its own styled card.
@@ -103,10 +89,19 @@
 }
 
 /* ── Aside ───────────────────────────────────────────────── */
+/* Stacked below calendar. Single column on mobile, 2-up on tablet+ so the
+   info cards sit side-by-side and the page doesn't grow too tall. */
 .aside {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  .aside {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+  }
 }
 
 .asideCard {
