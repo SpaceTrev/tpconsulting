@@ -183,6 +183,11 @@ html {
   font-size: 16px;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Guardrail: prevent any stray wide child (a nowrap label, an iframe,
+     an inline SVG that forgot its max-width) from producing horizontal
+     scroll on mobile. `clip` is preferred over `hidden` because it
+     doesn't create a scroll container, so position: sticky still works. */
+  overflow-x: clip;
 }
 
 body {
@@ -194,6 +199,10 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color var(--transition-base), color var(--transition-base);
+  /* Same guardrail on body for Safari, which historically had flaky
+     overflow propagation from html. */
+  overflow-x: clip;
+  width: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {

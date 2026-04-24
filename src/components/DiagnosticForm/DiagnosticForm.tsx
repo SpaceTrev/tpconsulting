@@ -3,7 +3,15 @@
 import { useState } from "react";
 import { getSupabase } from "@/lib/supabase";
 import styles from "./DiagnosticForm.module.css";
-import CalEmbed from "@/components/CalEmbed/CalEmbed";
+import CustomCalendar from "@/components/CustomCalendar/CustomCalendar";
+
+/* Cal.com event target. These must match NEXT_PUBLIC_CAL_LINK (username/slug).
+   If the env-based link is present we prefer it so the two components stay in
+   sync; otherwise we fall back to the canonical FAC event. */
+const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK ?? "flywheelautomation/15min";
+const [RAW_USER, RAW_SLUG] = CAL_LINK.split("/");
+const CAL_USERNAME = RAW_USER || "flywheelautomation";
+const CAL_EVENT_SLUG = RAW_SLUG || "15min";
 
 /* ── Types ─────────────────────────────────────────────────── */
 interface FormData {
@@ -192,6 +200,14 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
   };
 
   if (status === "success") {
+    // Compose a short "notes" string from the wizard answers so the call
+    // recipient has immediate context without us shipping the whole payload.
+    const prefillNotes = [
+      form.biggest_time_waste && `Mayor pérdida: ${form.biggest_time_waste}`,
+      form.one_thing_to_automate && `Automatizaría: ${form.one_thing_to_automate}`,
+      form.tier && `Plan: ${form.tier}`,
+    ].filter(Boolean).join(" · ");
+
     return (
       <div className={styles.success}>
         <span className={styles.successIcon} aria-hidden="true">✓</span>
@@ -202,13 +218,22 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
         </p>
         <p className={styles.successTier}>Plan seleccionado: <strong>{form.tier}</strong></p>
         <div style={{ marginTop: '32px', width: '100%' }}>
-          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-primary)', marginBottom: '12px' }}>
+          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--accent-primary)', marginBottom: '4px' }}>
             Paso siguiente — Agenda tu sesión
           </p>
-          <CalEmbed
-            mode="full"
-            title="Agenda tu sesión de diagnóstico"
-            subtitle="Reserva ahora para que te contactemos en el horario exacto que más te convenga."
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--fg-1)', margin: '0 0 6px', letterSpacing: '-0.01em' }}>
+            Elige el horario que más te convenga
+          </h3>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: '0.9375rem', color: 'var(--fg-2)', margin: '0 0 20px', lineHeight: 1.55 }}>
+            Toca un día con punto y selecciona un horario — lo confirmamos al instante.
+          </p>
+          <CustomCalendar
+            username={CAL_USERNAME}
+            eventTypeSlug={CAL_EVENT_SLUG}
+            prefillName={form.contact_name}
+            prefillEmail={form.contact_email}
+            prefillPhone={form.contact_whatsapp}
+            prefillNotes={prefillNotes}
           />
         </div>
       </div>

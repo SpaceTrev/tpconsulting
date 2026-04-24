@@ -1,5 +1,11 @@
 .wrapper {
   width: 100%;
+  /* Belt-and-suspenders: the wrapper lives inside .calColumn which already
+     has min-width: 0, but guarding here too ensures no inner element
+     (a nowrap label, a long placeholder) can push the form wider than its
+     grid cell and leak horizontal scroll to the page. */
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* ── Progress ──────────────────────────────────────────────── */
@@ -160,6 +166,26 @@
   color: var(--fg-muted);
   white-space: nowrap;
   text-align: center;
+}
+
+/* On narrow phones the nowrap labels ("Tu Mayor Dolor" in particular) sum
+   to more than the viewport width across four flex:1 steps, which forces
+   the whole form wider than the screen and produces the off-centering the
+   user reported. Below 420px we drop the font slightly and allow two-line
+   wrap so each step can live within its fair share of the row. */
+@media (max-width: 420px) {
+  .progressLabel {
+    font-size: 0.625rem;
+    white-space: normal;
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  /* Give the dots a little breathing room against wrapped labels. */
+  .progressStep {
+    gap: var(--space-1);
+  }
 }
 
 /* ── Stage headings ── */

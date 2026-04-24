@@ -4,8 +4,11 @@
 
 .button {
   position: fixed;
-  bottom: var(--space-6);
-  right: var(--space-6);
+  /* max() keeps the old 24px desktop offset while honoring the iOS home-indicator
+     safe area on notched phones — otherwise the FAB can sit underneath the
+     home-indicator hint on iPhone Pro devices. */
+  bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  right: max(var(--space-6), env(safe-area-inset-right));
   z-index: 50;
   display: flex;
   align-items: center;
@@ -19,6 +22,9 @@
   font-weight: 600;
   text-decoration: none;
   transition: transform var(--transition-fast), background-color var(--transition-fast);
+  /* A subtle shadow so the button stays readable when it floats over
+     varying surface colors (header bands, body, footer). */
+  box-shadow: var(--shadow-md);
 }
 
 .button:hover {
