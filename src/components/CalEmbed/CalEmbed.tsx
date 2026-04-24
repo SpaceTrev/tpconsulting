@@ -133,10 +133,8 @@ export default function CalEmbed({ mode = 'sidebar', title, subtitle }: CalEmbed
     );
   }
 
-  const minHeight = mode === 'full' ? '600px' : '500px';
-
   return (
-    <div style={{ borderRadius: 12, overflow: 'hidden', minHeight }}>
+    <div style={{ width: '100%' }}>
       {title && (
         <div style={{ paddingBottom: 16 }}>
           <p style={{ fontFamily: 'var(--font-display)', fontSize: mode === 'full' ? 24 : 18, fontWeight: 500, color: 'var(--fg-1)', margin: '0 0 4px' }}>
@@ -149,11 +147,17 @@ export default function CalEmbed({ mode = 'sidebar', title, subtitle }: CalEmbed
           )}
         </div>
       )}
+      {/*
+        Let the Cal iframe auto-resize to its content. @calcom/embed-react
+        posts the real content height back to the parent via postMessage, so
+        forcing a fixed height + overflow:scroll causes the double-scroll UX
+        we saw in early screenshots. Width 100% + no height = natural flow.
+      */}
       <Cal
         calLink={CAL_LINK}
-        style={{ width: '100%', height: minHeight, overflow: 'scroll' }}
+        style={{ width: '100%' }}
         config={{
-          layout: 'month_view',
+          layout: mode === 'full' ? 'month_view' : 'column_view',
           theme,
           brandColor: theme === 'dark' ? BRAND_COLOR_DARK : BRAND_COLOR_LIGHT,
         }}

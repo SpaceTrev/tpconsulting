@@ -72,12 +72,30 @@
   align-items: start;
 }
 
+/* Calendar gets max room; aside shrinks to only as wide as its content needs,
+   so on common desktops (1280–1440px) the Cal embed isn't cramped. */
 @media (min-width: 1024px) {
   .body .container {
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: var(--space-8);
   }
 }
 
+@media (min-width: 1280px) {
+  .body .container {
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: var(--space-10);
+  }
+}
+
+/* Cal embed column: no frame/card — the Cal widget renders its own styled card.
+   Keeping min-width: 0 so the grid cell can shrink and the iframe stays responsive. */
+.calColumn {
+  min-width: 0;
+}
+
+/* Legacy: keep .formWrapper around in case any other page references it, but
+   don't use it on /diagnostico anymore. */
 .formWrapper {
   background-color: var(--bg-raised);
   border-radius: var(--radius-md);

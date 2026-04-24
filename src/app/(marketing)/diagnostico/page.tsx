@@ -47,8 +47,8 @@ export default async function DiagnosticoPage({
 
       <div className={styles.body}>
         <div className={styles.container}>
-          {/* Primary: Calendar */}
-          <div className={styles.formWrapper}>
+          {/* Primary: Calendar — no formWrapper card; the Cal embed renders its own card */}
+          <div className={styles.calColumn}>
             <CalEmbed
               mode="full"
               title="Elige el horario que más te convenga"
