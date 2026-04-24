@@ -18,7 +18,6 @@ export default function ContactoPage() {
     <main className={styles.main}>
       <div className={styles.header}>
         <div className={styles.container}>
-          <span className={styles.eyebrow}>Contáctanos</span>
           <h1 className={styles.title}>Hablemos sobre tu negocio</h1>
           <p className={styles.subtitle}>
             ¿Tienes preguntas antes de hacer un diagnóstico? ¿Quieres explorar si somos el fit correcto? Escríbenos y te respondemos en menos de 24 horas.
@@ -38,7 +37,7 @@ export default function ContactoPage() {
               <div className={styles.sideCard}>
                 <h3 className={styles.sideTitle}>Canales de contacto</h3>
                 <p className={styles.sideText}>
-                  Respondemos todos los mensajes en menos de 24 horas hábiles. Normalmente somos mucho más rápidos.
+                  Respondemos todos los mensajes en menos de 24 horas hábiles.
                 </p>
                 <a
                   href="https://wa.me/13038299013?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20sus%20servicios%20de%20automatizaci%C3%B3n"
@@ -79,19 +78,10 @@ export default function ContactoPage() {
               <div className={styles.sideCard}>
                 <CalEmbed
                   title="Agenda una llamada exploratoria"
-                  subtitle="15 minutos, sin costo. Platicamos sobre tu operación y te decimos si podemos ayudarte."
+                  subtitle="30 minutos, sin costo. Platicamos sobre tu operación y te decimos cómo podemos ayudarte."
                 />
               </div>
 
-              <div className={styles.sideCard}>
-                <h3 className={styles.sideTitle}>¿Prefieres empezar con un diagnóstico?</h3>
-                <p className={styles.sideText}>
-                  Por $1,000 MXN te entregamos un mapa completo de oportunidades de automatización en 48 horas.
-                </p>
-                <a href="/diagnostico" className={styles.calendarLink}>
-                  Ir al diagnóstico →
-                </a>
-              </div>
             </aside>
           </div>
         </div>

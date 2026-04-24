@@ -75,7 +75,7 @@ const services = [
     icon: <IconGear />,
     name: "Automatización de Procesos",
     price: "A cotizar",
-    desc: "Implementación de flujos automatizados conectados a tus herramientas actuales. Usamos Make.com, n8n, Zapier y desarrollo custom según lo que más conviene.",
+    desc: "Implementación de flujos automatizados conectados a tus herramientas actuales.",
     deliverable: "Sistema automatizado en producción",
     features: [
       "Diseño y documentación del flujo automatizado",
@@ -178,10 +178,9 @@ export default function ServiciosPage() {
     <main className={styles.main}>
       <div className={styles.header}>
         <div className={styles.container}>
-          <span className={styles.eyebrow}>Catálogo de servicios</span>
           <h1 className={styles.title}>Todo lo que necesitas para automatizar tu negocio</h1>
           <p className={styles.subtitle}>
-            Desde un diagnóstico rápido hasta el desarrollo completo de software a medida. Cada servicio entrega un resultado tangible y medible.
+            Sin soluciones genéricas. Cada servicio se adapta a tu operación y se mide por sus resultados reales.
           </p>
         </div>
       </div>

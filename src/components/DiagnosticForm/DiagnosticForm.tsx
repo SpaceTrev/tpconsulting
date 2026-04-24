@@ -10,11 +10,9 @@ interface FormData {
   // Stage 1
   business_name: string;
   industry: string;
-  city: string;
   employees: string;
   business_age: string;
   // Stage 2
-  customer_channels: string[];
   first_contact_process: string;
   response_time: string;
   client_data_mgmt: string;
@@ -41,8 +39,8 @@ interface FormData {
 }
 
 const initial: FormData = {
-  business_name: "", industry: "", city: "", employees: "", business_age: "",
-  customer_channels: [], first_contact_process: "", response_time: "",
+  business_name: "", industry: "", employees: "", business_age: "",
+  first_contact_process: "", response_time: "",
   client_data_mgmt: "", cfdi_status: "", google_business: "",
   current_tools: [], current_tech_spend: "",
   biggest_time_waste: "", one_thing_to_automate: "", past_automation: "",
@@ -61,6 +59,87 @@ const TIER_OPTIONS = [
   { value: "ejecutivo", label: "Análisis Ejecutivo", price: "$15,000 MXN", desc: "Análisis ejecutivo con proyecciones, legal y roadmap de expansión" },
 ];
 
+/* ── Industry list (dropdown order, kept in sync with INDUSTRY_CONFIG keys) ── */
+const INDUSTRIES = [
+  "Manufactura",
+  "Retail / Comercio",
+  "E-commerce",
+  "Logística y distribución",
+  "Servicios profesionales",
+  "Construcción",
+  "Alimentos y bebidas",
+  "Salud",
+  "Educación",
+  "Inmobiliario",
+  "Content Creator",
+  "Otro",
+] as const;
+
+/* ── Industry-specific options ──────────────────────────────────
+   Stage 2 (current_tools) and Stage 3 (losing_customers_how) checkbox
+   grids shift based on form.industry so the options feel native to the
+   respondent's business. Unknown industry → BASE fallback. */
+type IndustryConfig = {
+  currentTools: string[];
+  losingCustomers: string[];
+};
+
+const BASE: IndustryConfig = {
+  currentTools: ["Excel / Google Sheets", "WhatsApp Business", "QuickBooks", "CONTPAQi", "Shopify", "Mercado Libre", "WordPress", "HubSpot", "Notion", "Slack", "Ninguna", "Otros"],
+  losingCustomers: ["Respondo muy tarde", "No doy seguimiento a prospectos", "Mi proceso de cotización es lento", "No tengo presencia en redes", "Errores en pedidos/entregas", "Clientes sin soporte post-venta", "No pido reseñas o referidos"],
+};
+
+const INDUSTRY_CONFIG: Record<string, IndustryConfig> = {
+  "Manufactura": {
+    currentTools: ["Excel / Google Sheets", "SAP / ERP", "CONTPAQi", "MRP / Inventario", "CAD / Ingeniería", "WhatsApp Business", "QuickBooks", "Odoo", "Ninguna", "Otros"],
+    losingCustomers: ["Cotizaciones lentas por cálculos manuales", "Tiempos de entrega largos", "Inventario descoordinado con ventas", "Sin seguimiento a prospectos B2B", "Errores en pedidos/entregas", "Sin presencia digital para compradores B2B"],
+  },
+  "Retail / Comercio": {
+    currentTools: ["Punto de venta (POS)", "Shopify", "Mercado Libre", "WhatsApp Business", "Excel / Google Sheets", "Clip / Stripe", "QuickBooks", "Instagram Shopping", "Ninguna", "Otros"],
+    losingCustomers: ["Sin inventario centralizado entre tienda física y online", "Carritos abandonados sin recovery", "No pido reseñas ni referidos", "Respondo muy tarde a DMs", "Sin promociones automatizadas", "Sin programa de lealtad"],
+  },
+  "E-commerce": {
+    currentTools: ["Shopify", "Mercado Libre", "Klaviyo / email marketing", "Stripe", "Google Analytics", "Meta Business", "WhatsApp Business API", "Zapier / Make", "Ninguna", "Otros"],
+    losingCustomers: ["Carritos abandonados sin recovery", "Sin flujos de email / SMS marketing", "Reviews sin automatizar", "ROAS bajo en ads", "Sin CRM para post-venta", "Atención al cliente sin chatbot"],
+  },
+  "Logística y distribución": {
+    currentTools: ["TMS (gestión de transporte)", "WMS (gestión de almacén)", "Excel / Google Sheets", "SAP / ERP", "WhatsApp Business", "QuickBooks / CONTPAQi", "Google Maps / ruteo", "Ninguna", "Otros"],
+    losingCustomers: ["Falta de visibilidad de envíos en tiempo real", "Incidencias sin tracking", "Cotizaciones manuales", "Sin portal de autoservicio para clientes", "Facturación lenta", "Comunicación fragmentada con choferes"],
+  },
+  "Servicios profesionales": {
+    currentTools: ["HubSpot / CRM", "Notion", "Slack", "Calendly / Cal.com", "Clockify / Harvest", "QuickBooks", "Google Workspace", "DocuSign", "Ninguna", "Otros"],
+    losingCustomers: ["Propuestas tardan mucho en salir", "Seguimiento inconsistente a prospectos", "Horas no registradas ni facturadas", "Facturación manual", "Sin newsletter ni contenido recurrente", "Sin sistema de referidos"],
+  },
+  "Construcción": {
+    currentTools: ["Excel / Google Sheets", "AutoCAD / Revit", "MS Project", "WhatsApp Business", "CONTPAQi", "Dropbox / Drive", "Planner / Trello", "Ninguna", "Otros"],
+    losingCustomers: ["Cotizaciones sin estandarizar", "Comunicación fragmentada entre proveedores", "Presupuestos sin tracking de cambios", "Avances sin reportes claros al cliente", "Sin seguimiento a prospectos", "Retrasos sin comunicación proactiva"],
+  },
+  "Alimentos y bebidas": {
+    currentTools: ["POS (Soft Point / Toast / Square)", "Dashboard UberEats / Rappi / Didi", "WhatsApp Business", "Excel / Google Sheets", "Sistema de inventario", "QuickBooks / CONTPAQi", "Instagram", "Ninguna", "Otros"],
+    losingCustomers: ["Pedidos tardíos en plataformas de delivery", "Inventario sin control (mermas)", "Sin programa de lealtad", "Reviews negativas sin respuesta", "Sin promociones por horario bajo", "Menú desactualizado en plataformas"],
+  },
+  "Salud": {
+    currentTools: ["Expediente clínico electrónico (ECE)", "Calendario / agenda", "Facturación médica", "WhatsApp Business", "Excel / Google Sheets", "Doctoralia", "Teleconsulta (Zoom/Meet)", "Ninguna", "Otros"],
+    losingCustomers: ["Citas canceladas sin reemplazo automático", "Recordatorios manuales por WhatsApp", "Seguimiento post-consulta inconsistente", "Sin portal de pacientes", "Sin gestión de reseñas", "Expediente fragmentado"],
+  },
+  "Educación": {
+    currentTools: ["LMS (Moodle / Google Classroom / Canvas)", "Zoom / Meet", "Excel / Google Sheets", "CRM educativo", "WhatsApp Business", "Sistema de pagos", "Instagram / Facebook", "Ninguna", "Otros"],
+    losingCustomers: ["Inscripciones dispersas en varios canales", "Seguimiento a prospectos lento", "Reportes manuales para padres", "Sin recordatorios de pagos", "Comunicación fragmentada entre profes y padres", "Sin tracking de deserción"],
+  },
+  "Inmobiliario": {
+    currentTools: ["CRM inmobiliario (EasyBroker / Wasi)", "Portales de listings", "WhatsApp Business", "Excel / Google Sheets", "Fotografía / tour 360", "Firma electrónica", "Google Workspace", "Ninguna", "Otros"],
+    losingCustomers: ["Leads sin seguimiento oportuno", "Visitas no agendadas o perdidas", "Contratos y papeleo manuales", "Sin nurture para prospectos fríos", "Sin alertas automáticas de nuevos listings", "Comunicación con clientes fragmentada"],
+  },
+  "Content Creator": {
+    currentTools: ["CapCut / Premiere / DaVinci", "Notion", "Beehiiv / Substack / ConvertKit", "Patreon / Gumroad / Stripe", "Linktree / Stan Store", "Calendly / Cal.com", "Buffer / Later", "Canva", "Ninguna", "Otros"],
+    losingCustomers: ["Respuestas lentas a DMs y comentarios", "Sin funnel de newsletter / email capture", "Brand deals sin tracking ni contratos", "Sin CRM para sponsors y managers", "Audiencia sin monetizar (no productos digitales)", "Community engagement bajo"],
+  },
+};
+
+function getIndustryConfig(industry: string): IndustryConfig {
+  return INDUSTRY_CONFIG[industry] ?? BASE;
+}
+
 /* ── Helpers ───────────────────────────────────────────────── */
 function toggleArray(arr: string[], val: string): string[] {
   return arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
@@ -70,6 +149,7 @@ function toggleArray(arr: string[], val: string): string[] {
 export default function DiagnosticForm({ initialTier = "" }: { initialTier?: string }) {
   const [stage, setStage] = useState(0);
   const [form, setForm] = useState<FormData>({ ...initial, tier: initialTier });
+  const [otherToolsText, setOtherToolsText] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -87,9 +167,14 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
     e.preventDefault();
     setStatus("loading");
     setErrorMsg("");
+    // Merge free-text "Otros" detail into current_tools so the Supabase schema stays untouched.
+    const mergedTools = form.current_tools.includes("Otros") && otherToolsText.trim()
+      ? form.current_tools.map((t) => (t === "Otros" ? `Otros: ${otherToolsText.trim()}` : t))
+      : form.current_tools;
+    const payload: FormData = { ...form, current_tools: mergedTools };
     const client = getSupabase();
     if (client) {
-      const { error } = await client.from("diagnostic_submissions").insert([form]);
+      const { error } = await client.from("diagnostic_submissions").insert([payload]);
       if (error) console.error("[DiagnosticForm] insert error:", error);
     }
     // Always show success — even if Supabase is unreachable, the booking (Cal embed) already captured the lead
@@ -154,22 +239,33 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
         {stage === 0 && (
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>Cuéntanos sobre tu negocio</legend>
-            <div className={styles.row}>
-              <div className={styles.field}>
-                <label className={styles.label}>Nombre de tu empresa</label>
-                <input className={styles.input} type="text" value={form.business_name} onChange={(e) => set("business_name", e.target.value)} placeholder="Ej: Distribuidora López S.A."/>
-              </div>
-              <div className={styles.field}>
-                <label className={styles.label}>Ciudad</label>
-                <input className={styles.input} type="text" value={form.city} onChange={(e) => set("city", e.target.value)} placeholder="Ej: Guadalajara, CDMX"/>
-              </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Nombre de tu empresa</label>
+              <input className={styles.input} type="text" value={form.business_name} onChange={(e) => set("business_name", e.target.value)} placeholder="Ej: Distribuidora López S.A."/>
             </div>
             <div className={styles.row}>
               <div className={styles.field}>
                 <label className={styles.label}>Industria</label>
-                <select className={styles.select} value={form.industry} onChange={(e) => set("industry", e.target.value)} required>
+                <select
+                  className={styles.select}
+                  value={form.industry}
+                  onChange={(e) => {
+                    // When the user changes industry we clear any previously-ticked
+                    // current_tools / losing_customers_how entries because the option
+                    // labels in the next stages are industry-specific and likely no
+                    // longer valid. Keeps the Supabase row clean.
+                    setForm((prev) => ({
+                      ...prev,
+                      industry: e.target.value,
+                      current_tools: [],
+                      losing_customers_how: [],
+                    }));
+                    setOtherToolsText("");
+                  }}
+                  required
+                >
                   <option value="">Selecciona tu industria</option>
-                  {["Manufactura","Retail / Comercio","Logística y distribución","Servicios profesionales","Construcción","Alimentos y bebidas","Salud","Educación","Inmobiliario","E-commerce","Otro"].map((opt) => (
+                  {INDUSTRIES.map((opt) => (
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
                 </select>
@@ -204,17 +300,6 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
         {stage === 1 && (
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>Cuéntanos cómo opera tu negocio</legend>
-            <div className={styles.field}>
-              <label className={styles.label}>¿Por dónde llegan tus clientes? (selecciona todos)</label>
-              <div className={styles.checkGrid}>
-                {["WhatsApp","Redes sociales (Instagram/Facebook)","Google","Referidos / boca a boca","Mercado Libre","Shopify / Tienda online","Llamada telefónica","Físico / tienda"].map((opt) => (
-                  <label key={opt} className={styles.checkLabel}>
-                    <input type="checkbox" checked={checked("customer_channels", opt)} onChange={() => setArr("customer_channels", opt)} className={styles.checkbox} />
-                    {opt}
-                  </label>
-                ))}
-              </div>
-            </div>
             <div className={styles.row}>
               <div className={styles.field}>
                 <label className={styles.label}>¿Cómo es tu primer contacto con un cliente nuevo?</label>
@@ -275,15 +360,25 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
               </div>
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>¿Qué herramientas digitales usas actualmente? (selecciona todos)</label>
+              <label className={styles.label}>¿Qué herramientas digitales usas actualmente? (selecciona todas las que apliquen)</label>
               <div className={styles.checkGrid}>
-                {["Excel / Google Sheets","WhatsApp Business","QuickBooks","CONTPAQi","Shopify","Mercado Libre","WordPress","HubSpot","Notion","Slack","Ninguna"].map((opt) => (
+                {getIndustryConfig(form.industry).currentTools.map((opt) => (
                   <label key={opt} className={styles.checkLabel}>
                     <input type="checkbox" checked={checked("current_tools", opt)} onChange={() => setArr("current_tools", opt)} className={styles.checkbox} />
                     {opt}
                   </label>
                 ))}
               </div>
+              {checked("current_tools", "Otros") && (
+                <input
+                  className={styles.input}
+                  type="text"
+                  value={otherToolsText}
+                  onChange={(e) => setOtherToolsText(e.target.value)}
+                  placeholder="Especifica qué herramientas (ej: Airtable, Pipedrive, software interno...)"
+                  style={{ marginTop: 8 }}
+                />
+              )}
             </div>
             <div className={styles.field}>
               <label className={styles.label}>¿Cuánto gastas mensualmente en software/tecnología?</label>
@@ -328,7 +423,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             <div className={styles.field}>
               <label className={styles.label}>¿Cómo estás perdiendo clientes hoy? (selecciona todos)</label>
               <div className={styles.checkGrid}>
-                {["Respondo muy tarde","No doy seguimiento a prospectos","Mi proceso de cotización es lento","No tengo presencia en redes","Errores en pedidos/entregas","Clientes sin soporte post-venta","No pido reseñas o referidos"].map((opt) => (
+                {getIndustryConfig(form.industry).losingCustomers.map((opt) => (
                   <label key={opt} className={styles.checkLabel}>
                     <input type="checkbox" checked={checked("losing_customers_how", opt)} onChange={() => setArr("losing_customers_how", opt)} className={styles.checkbox} />
                     {opt}
@@ -449,23 +544,43 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
           </fieldset>
         )}
 
-        {/* ── Navigation ── */}
+        {/* ── Navigation ──
+            Fix for the "stage 2 → Siguiente flashes stage 3 then jumps to
+            success" bug: before, both the Next and Submit buttons were
+            plain <button> elements at the same position in the same parent.
+            When the Next click caused a re-render to stage 3, React reused
+            the existing DOM node and flipped its type from "button" to
+            "submit" in place. The trailing `click` event (dispatched after
+            mouseup + the render flush) then landed on the now-type=submit
+            button, which submitted the form and jumped straight to the
+            success screen.
+
+            Adding distinct `key`s forces React to unmount the Next button
+            and mount a fresh Submit button — different DOM nodes, so the
+            stale click doesn't carry over. */}
         <div className={styles.navBtns}>
           {stage > 0 && (
-            <button type="button" className={styles.btnBack} onClick={() => setStage((s) => s - 1)}>
+            <button
+              key="back"
+              type="button"
+              className={styles.btnBack}
+              onClick={handleBack}
+            >
               ← Anterior
             </button>
           )}
           {stage < STAGES.length - 1 ? (
             <button
+              key="next"
               type="button"
               className={styles.btnNext}
-              onClick={() => setStage((s) => s + 1)}
+              onClick={handleNext}
             >
               Siguiente →
             </button>
           ) : (
             <button
+              key="submit"
               type="submit"
               className={styles.btnSubmit}
               disabled={status === "loading"}

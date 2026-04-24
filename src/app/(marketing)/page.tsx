@@ -24,14 +24,6 @@ function IconGear() {
     </svg>
   );
 }
-function IconLink() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
-      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
-    </svg>
-  );
-}
 function IconBot() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -49,14 +41,6 @@ function IconCode() {
     </svg>
   );
 }
-function IconBriefcase() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect width="20" height="14" x="2" y="7" rx="2"/>
-      <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-    </svg>
-  );
-}
 function IconScan() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -65,23 +49,8 @@ function IconScan() {
     </svg>
   );
 }
-function IconSupport() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-    </svg>
-  );
-}
 
 /* ── Solution icons ───────────────────────────────────────── */
-function IconInventory() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-      <polyline points="9 22 9 12 15 12 15 22"/>
-    </svg>
-  );
-}
 function IconCrm() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -102,35 +71,11 @@ function IconQuote() {
     </svg>
   );
 }
-function IconNomina() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect width="20" height="14" x="2" y="5" rx="2"/>
-      <line x1="2" y1="10" x2="22" y2="10"/>
-    </svg>
-  );
-}
 function IconChatbot() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       <path d="M8 10h.01M12 10h.01M16 10h.01"/>
-    </svg>
-  );
-}
-function IconSync() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"/>
-    </svg>
-  );
-}
-function IconChart() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <line x1="18" y1="20" x2="18" y2="10"/>
-      <line x1="12" y1="20" x2="12" y2="4"/>
-      <line x1="6" y1="20" x2="6" y2="14"/>
     </svg>
   );
 }
@@ -158,85 +103,38 @@ const services = [
   {
     icon: <IconScan />,
     title: "Diagnóstico Express",
-    description: "Escaneo completo de tus procesos operativos en 48 horas.",
-    price: "desde $1,000 MXN",
+    description: "Identificamos en 48 horas exactamente qué procesos te están costando tiempo y dinero.",
     tags: ["Diagnóstico", "48hrs"],
     href: "/servicios#diagnostico-express",
     deliverable: "Mapa de Oportunidades",
   },
   {
-    icon: <IconScan />,
-    title: "Diagnóstico Profundo",
-    description: "Análisis detallado con hoja de ruta tecnológica a 12 meses.",
-    price: "desde $5,000 MXN",
-    tags: ["Diagnóstico", "Roadmap"],
-    href: "/servicios#diagnostico-profundo",
-    deliverable: "Reporte + Roadmap",
-  },
-  {
     icon: <IconGear />,
     title: "Automatización de Procesos",
-    description: "Flujos automatizados conectados a tus herramientas actuales.",
-    price: "desde $15,000 MXN",
-    tags: ["Automatización", "Make", "n8n"],
+    description: "Flujos automáticos conectados a las herramientas que ya usas, sin reemplazarlas.",
+    tags: ["Automatización"],
     href: "/servicios#automatizacion",
     deliverable: "Sistema en Producción",
   },
   {
-    icon: <IconLink />,
-    title: "Integración de Sistemas",
-    description: "Conecta tu CRM, ERP, contabilidad y canales de venta.",
-    price: "desde $20,000 MXN",
-    tags: ["API", "Integración"],
-    href: "/servicios#integracion",
-    deliverable: "APIs + Documentación",
-  },
-  {
     icon: <IconBot />,
     title: "Agentes de IA",
-    description: "Asistentes inteligentes entrenados con el conocimiento de tu empresa.",
-    price: "desde $30,000 MXN",
-    tags: ["IA", "LLM", "ChatGPT"],
+    description: "Asistentes inteligentes entrenados con el conocimiento de tu empresa para atender, cotizar y operar.",
+    tags: ["IA", "LLM"],
     href: "/servicios#agentes-ia",
     deliverable: "Agente Desplegado",
   },
   {
     icon: <IconCode />,
     title: "Desarrollo a Medida",
-    description: "Software personalizado para procesos que no encuentras en el mercado.",
-    price: "desde $50,000 MXN",
+    description: "Software personalizado para los procesos que no encuentras en ningún producto del mercado.",
     tags: ["Software", "Full-stack"],
     href: "/servicios#desarrollo",
     deliverable: "Aplicación Completa",
   },
-  {
-    icon: <IconBriefcase />,
-    title: "Consultoría Estratégica",
-    description: "Sesiones de estrategia con nuestros especialistas.",
-    price: "$3,000 MXN/hr",
-    tags: ["Consultoría", "Estrategia"],
-    href: "/servicios#consultoria",
-    deliverable: "Plan de Acción",
-  },
-  {
-    icon: <IconSupport />,
-    title: "Soporte Técnico",
-    description: "Mantenimiento preventivo y reactivo de tus automatizaciones.",
-    price: "desde $5,000 MXN/mes",
-    tags: ["Soporte", "SLA 24hrs"],
-    href: "/servicios#soporte",
-    deliverable: "SLA 24hrs",
-  },
 ];
 
 const solutions = [
-  {
-    icon: <IconInventory />,
-    title: "Gestión Inteligente de Inventario",
-    description: "Sincroniza stock en tiempo real entre tiendas físicas y plataformas digitales.",
-    outcomes: ["-40% roturas de stock", "Ahorro 8hrs/semana en conteos"],
-    href: "/soluciones#inventario",
-  },
   {
     icon: <IconCrm />,
     title: "CRM Automatizado",
@@ -247,37 +145,16 @@ const solutions = [
   {
     icon: <IconQuote />,
     title: "Pipeline de Cotizaciones",
-    description: "Genera cotizaciones profesionales desde WhatsApp en minutos.",
+    description: "Genera cotizaciones profesionales desde WhatsApp en menos de 5 minutos.",
     outcomes: ["Cotización lista en <5 min", "+35% tasa de cierre"],
     href: "/soluciones#cotizaciones",
   },
   {
-    icon: <IconNomina />,
-    title: "Automatización de Nómina",
-    description: "Calcula, timbra y paga nómina de forma automática con validaciones IMSS.",
-    outcomes: ["0 errores de cálculo", "-6hrs por quincena"],
-    href: "/soluciones#nomina",
-  },
-  {
     icon: <IconChatbot />,
     title: "Chatbot de Atención",
-    description: "Responde preguntas frecuentes, toma pedidos y agenda citas 24/7.",
+    description: "Responde preguntas frecuentes, toma pedidos y agenda citas las 24 horas.",
     outcomes: ["80% consultas resueltas sin agente", "+15% ventas nocturnas"],
     href: "/soluciones#chatbot",
-  },
-  {
-    icon: <IconSync />,
-    title: "Sincronización Multi-canal",
-    description: "Unifica pedidos de Mercado Libre, Shopify y tienda propia en un panel.",
-    outcomes: ["0 ventas duplicadas", "-3hrs/día en gestión de pedidos"],
-    href: "/soluciones#multicanal",
-  },
-  {
-    icon: <IconChart />,
-    title: "Reportes Automáticos de Negocio",
-    description: "Recibe tu dashboard semanal por email con métricas clave de tu operación.",
-    outcomes: ["Decisiones en <10 min", "Visibilidad 360° del negocio"],
-    href: "/soluciones#reportes",
   },
   {
     icon: <IconCalendar />,
@@ -367,15 +244,15 @@ export default function HomePage() {
           <div className={styles.heroInner}>
             <span className={styles.eyebrow}>Automatización Enterprise para PyMEs</span>
             <h1 className={styles.heroTitle}>
-              Lo que las grandes empresas usan para operar,{" "}
-              <em>ahora para tu negocio</em>
+              La tecnología que impulsa a las grandes empresas,{" "}
+              <em>a la medida de tu negocio</em>
             </h1>
             <p className={styles.heroSubtitle}>
-              Implementamos los mismos sistemas de automatización que usan Starbucks, Discover y empresas Fortune 500 — adaptados para tu negocio, a fracción del costo.
+              La tecnología que mueve a Amazon, Starbucks y al Fortune 500, ahora al alcance de tu operación — a una fracción del costo.
             </p>
             <div className={styles.heroCtas}>
               <Link href="/diagnostico" className={styles.ctaPrimary}>
-                Diagnóstico desde $1,000 MXN
+                Programa una consulta sin costo
               </Link>
               <Link href="/soluciones" className={styles.ctaSecondary}>
                 Ver soluciones <IconArrow />
@@ -413,7 +290,6 @@ export default function HomePage() {
       <section className={styles.howItWorks}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <span className={styles.eyebrow}>El proceso</span>
             <h2 className={styles.sectionTitle}>Cómo funciona</h2>
             <p className={styles.sectionSubtitle}>
               Tres etapas claras para llevar tu operación del caos manual a la automatización inteligente.
@@ -452,8 +328,7 @@ export default function HomePage() {
       <section className={styles.servicesSection}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <span className={styles.eyebrow}>Servicios</span>
-            <h2 className={styles.sectionTitle}>Todo lo que necesitas para automatizar</h2>
+            <h2 className={styles.sectionTitle}>Construimos todo lo que necesitas para automatizar</h2>
             <p className={styles.sectionSubtitle}>
               Desde un diagnóstico exprés hasta el desarrollo completo de software a medida.
             </p>
@@ -470,7 +345,6 @@ export default function HomePage() {
       <section className={styles.marketplaceSection}>
         <div className={styles.container}>
           <div className={styles.sectionHeader}>
-            <span className={styles.eyebrow}>Soluciones listas</span>
             <h2 className={styles.sectionTitle}>Automatizaciones preconfiguradas para tu industria</h2>
             <p className={styles.sectionSubtitle}>
               Soluciones probadas que puedes activar en días, no meses. Sin curva de aprendizaje para tu equipo.
@@ -495,9 +369,8 @@ export default function HomePage() {
           <div className={styles.manifestoInner}>
             <blockquote className={styles.manifestoQuote}>
               <p className={styles.manifestoText}>
-                "No venimos a venderte automatización por vender automatización. Venimos a encontrar dónde se te está yendo el tiempo y el dinero, atacar eso primero, medir el resultado, y solo entonces construir lo siguiente. Así sabemos que cada peso que inviertes tiene un retorno claro — no solo funciones bonitas que nadie usa."
+                "Automatización estratégica, impulsada por IA — diseñada para proteger tu tiempo y dinero, y dejar crecer el potencial de tu negocio."
               </p>
-              <span className={styles.manifestoAttribution}>— La filosofía detrás de cada proyecto</span>
             </blockquote>
           </div>
         </div>
@@ -521,60 +394,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Enterprise strip ── */}
-      <div className={styles.enterpriseStrip}>
-        <div className={styles.container}>
-          <div className={styles.enterpriseInner}>
-            <p className={styles.enterpriseText}>
-              ¿Empresa grande o corporativo? También trabajamos con organizaciones de mayor escala — soluciones enterprise a la medida.
-            </p>
-            <Link href="/contacto" className={styles.enterpriseLink}>
-              Contactar para enterprise →
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* ── Automation potential ── */}
-      <section className={styles.caseStudySection}>
-        <div className={styles.container}>
-          <div className={styles.sectionHeader}>
-            <span className={styles.eyebrow}>¿Por qué automatizar?</span>
-            <h2 className={styles.sectionTitle}>El potencial de la automatización</h2>
-            <p className={styles.sectionSubtitle}>
-              Datos reales sobre lo que la automatización hace en negocios como el tuyo.
-            </p>
-          </div>
-          <div className={styles.caseStudyResults}>
-            <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>72%</span>
-              <span className={styles.resultLabel}>De las PyMEs en México siguen operando de forma 100% manual</span>
-            </div>
-            <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>100×</span>
-              <span className={styles.resultLabel}>Más rápido responde un negocio que automatiza su primer contacto vs. uno manual — Harvard Business Review</span>
-            </div>
-            <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>40–60%</span>
-              <span className={styles.resultLabel}>Reducción en citas perdidas con un sistema de recordatorios por WhatsApp</span>
-            </div>
-            <div className={styles.resultCard}>
-              <span className={styles.resultNumber}>3–5×</span>
-              <span className={styles.resultLabel}>Crecimiento compuesto en 12 meses para empresas que combinan outbound + inbound digital</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── CTA ── */}
       <section className={styles.ctaSection}>
         <div className={styles.container}>
           <div className={styles.ctaSectionInner}>
             <h2 className={styles.ctaSectionTitle}>
-              ¿Listo para automatizar tu negocio?
+              ¿Listo para transformar tu operación?
             </h2>
             <p className={styles.ctaSectionText}>
-              Comienza con un diagnóstico desde $1,000 MXN y descubre exactamente qué automatizar para generar el mayor impacto en tu operación.
+              Cuéntanos qué proceso te está costando más tiempo o dinero — y en 48 horas te decimos exactamente cómo resolverlo.
             </p>
             <div className={styles.ctaSectionBtns}>
               <Link href="/diagnostico" className={styles.ctaPrimary}>

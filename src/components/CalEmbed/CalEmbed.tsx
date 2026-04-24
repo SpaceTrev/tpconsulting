@@ -86,7 +86,7 @@ export default function CalEmbed({ mode = 'sidebar', title, subtitle }: CalEmbed
           color: 'var(--fg-2)', margin: '0 0 32px', lineHeight: 1.6,
           maxWidth: 380,
         }}>
-          Escríbenos y te confirmamos horario en menos de 24 h. La llamada es de 15 minutos, sin costo y sin compromiso.
+          Escríbenos y te confirmamos horario en menos de 24 h. La llamada es de 30 minutos, sin costo y sin compromiso.
         </p>
 
         <a
