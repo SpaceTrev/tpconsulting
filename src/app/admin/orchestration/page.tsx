@@ -605,6 +605,7 @@ export default function OrchestrationPage() {
           </div>
         </div>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+          <Link href="/admin/orchestration/workflows" style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 600, padding: '6px 12px', borderRadius: 6, background: 'var(--accent-primary)', color: 'var(--fg-on-accent)', textDecoration: 'none' }}>Workflows</Link>
           <Link href="/admin/orchestration/memory" style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 600, padding: '6px 12px', borderRadius: 6, background: 'var(--bg-raised)', color: 'var(--fg-1)', textDecoration: 'none' }}>Memory</Link>
           <Link href="/admin/orchestration/skills" style={{ fontFamily: 'var(--font-ui)', fontSize: 12, fontWeight: 600, padding: '6px 12px', borderRadius: 6, background: 'var(--bg-raised)', color: 'var(--fg-1)', textDecoration: 'none' }}>Skills</Link>
         </div>

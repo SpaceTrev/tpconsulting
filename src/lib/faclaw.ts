@@ -364,6 +364,82 @@ export const faclaw = {
   usageSummary: (days = 7) =>
     api<{ rows: FaclawTokenUsage[] }>(`/api/usage/summary?days=${days}`).then((r) => r.rows),
 
+  // workflows
+  listWorkflows: () =>
+    api<{ rows: FaclawWorkflow[] }>('/api/workflows').then((r) => r.rows),
+  runWorkflow: (slug: string, userId: string, inputs: Record<string, unknown>, clientId?: string | null) =>
+    api<{ run_id: string }>(`/api/workflows/${encodeURIComponent(slug)}/run`, {
+      method: 'POST', userId, body: { inputs, client_id: clientId ?? null },
+    }),
+  listRuns: (status?: string, limit = 50) => {
+    const p = new URLSearchParams();
+    if (status) p.set('status', status);
+    p.set('limit', String(limit));
+    return api<{ rows: FaclawWorkflowRun[] }>(`/api/workflows/runs?${p}`).then((r) => r.rows);
+  },
+  getRun: (id: string) =>
+    api<{ run: FaclawWorkflowRun & { workflow_definition: unknown }; steps: FaclawWorkflowStep[] }>(`/api/workflows/runs/${id}`),
+
+  // prompts
+  listPrompts: () => api<{ rows: string[] }>('/api/prompts').then((r) => r.rows),
+  getPrompt: async (ref: string): Promise<string> => {
+    if (!TOKEN) throw new FaclawError('NEXT_PUBLIC_FACLAW_TOKEN not set');
+    const url = new globalThis.URL('/api/prompts/' + ref.replace(/^prompts\//, ''), URL);
+    url.searchParams.set('token', TOKEN);
+    const res = await fetch(url);
+    if (!res.ok) throw new FaclawError(`HTTP ${res.status}`, res.status);
+    return await res.text();
+  },
+
   // SSE stream URL — caller wraps in EventSource
   eventStreamUrl: () => `${URL}/api/events?token=${encodeURIComponent(TOKEN)}`,
 };
+
+// ─── workflow types ───────────────────────────────────────────────────────
+
+export interface FaclawWorkflow {
+  id: string;
+  slug: string;
+  name: string;
+  description: string | null;
+  version: number;
+  enabled: boolean;
+  created_at: string;
+}
+
+export interface FaclawWorkflowRun {
+  id: string;
+  workflow_id: string;
+  workflow_slug?: string;
+  workflow_name?: string;
+  status: 'pending' | 'running' | 'awaiting_approval' | 'completed' | 'failed' | 'cancelled' | 'paused';
+  current_step_id: string | null;
+  client_id: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  triggered_by_user_id: string | null;
+  trigger_kind: string;
+  error: string | null;
+  created_at: string;
+}
+
+export interface FaclawWorkflowStep {
+  id: string;
+  run_id: string;
+  step_id: string;
+  name: string;
+  agent_id: string | null;
+  prompt_ref: string | null;
+  status: 'pending' | 'running' | 'awaiting_approval' | 'approved' | 'rejected' | 'skipped' | 'completed' | 'failed';
+  approval_required: boolean;
+  approval_reply: string | null;
+  approved_at: string | null;
+  input: Record<string, unknown>;
+  output: Record<string, unknown>;
+  agent_session_id: string | null;
+  cost_usd: string | null;
+  duration_ms: number | null;
+  error: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+}
