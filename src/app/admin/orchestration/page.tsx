@@ -97,12 +97,13 @@ function AgentConsole({ me, agents }: { me: FaclawMe; agents: FaclawAgent[] }) {
   const [agentId, setAgentId] = useState<string>('main');
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState<string | null>(null);
   const [entries, setEntries] = useState<ChatEntry[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [entries.length]);
+  }, [entries.length, progress]);
 
   const send = async () => {
     const text = input.trim();
@@ -111,13 +112,40 @@ function AgentConsole({ me, agents }: { me: FaclawMe; agents: FaclawAgent[] }) {
     setEntries((es) => [...es, userEntry]);
     setInput('');
     setBusy(true);
+    setProgress('starting…');
     try {
-      const res: FaclawTurnResult = await faclaw.fireTurn({
-        userId: me.id,
-        agentId,
-        message: text,
-        sessionKey: `dashboard:${me.id}:${agentId}`,
-      });
+      const res: FaclawTurnResult = await faclaw.fireTurn(
+        {
+          userId: me.id,
+          agentId,
+          message: text,
+          sessionKey: `dashboard:${me.id}:${agentId}`,
+        },
+        (ev) => {
+          const sec = (ev.elapsed_ms / 1000).toFixed(1);
+          if (ev.kind === 'begin') {
+            setProgress(`starting · ${sec}s`);
+            return;
+          }
+          if (ev.kind !== 'progress') return;
+          const inner = ev['event'] as { kind: string; sessionId?: string; resumed?: boolean; hits?: number; tool?: string; event_type?: string; chars?: number } | undefined;
+          if (!inner) { setProgress(`thinking · ${sec}s`); return; }
+          switch (inner.kind) {
+            case 'session_init':
+              setProgress(`${inner.resumed ? 'resumed' : 'new'} session · ${sec}s`); break;
+            case 'memory_retrieved':
+              setProgress(`retrieved ${inner.hits ?? 0} memories · ${sec}s`); break;
+            case 'tool_use':
+              setProgress(`using tool: ${inner.tool} · ${sec}s`); break;
+            case 'agent_event':
+              setProgress(`${inner.event_type ?? 'thinking'} · ${sec}s`); break;
+            case 'final':
+              setProgress(`finalizing · ${sec}s`); break;
+            default:
+              setProgress(`thinking · ${sec}s`);
+          }
+        },
+      );
       setEntries((es) => [...es, {
         id: crypto.randomUUID(),
         who: agentId,
@@ -132,6 +160,7 @@ function AgentConsole({ me, agents }: { me: FaclawMe; agents: FaclawAgent[] }) {
       }]);
     } finally {
       setBusy(false);
+      setProgress(null);
     }
   };
 
@@ -172,7 +201,12 @@ function AgentConsole({ me, agents }: { me: FaclawMe; agents: FaclawAgent[] }) {
             {e.meta && <div style={{ marginTop: 4, fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)' }}>{e.meta}</div>}
           </div>
         ))}
-        {busy && <div style={{ alignSelf: 'flex-start', fontFamily: 'var(--font-ui)', fontSize: 12, color: 'var(--fg-3)' }}>thinking…</div>}
+        {busy && (
+          <div style={{ alignSelf: 'flex-start', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--fg-3)' }}>
+            <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: 'var(--accent-primary)', animation: 'fac-pulse 1.2s ease-in-out infinite' }} />
+            {progress ?? 'thinking…'}
+          </div>
+        )}
       </div>
       <div style={{ padding: '12px 20px', borderTop: '1px solid var(--bg-inset)', display: 'flex', gap: 8 }}>
         <textarea value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={onKeyDown}

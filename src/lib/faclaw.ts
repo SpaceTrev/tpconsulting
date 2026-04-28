@@ -184,24 +184,78 @@ export const faclaw = {
   // agents
   listAgents: () => api<{ rows: FaclawAgent[] }>('/api/agents').then((r) => r.rows),
 
-  // turn (fire ad-hoc agent run)
-  fireTurn: (input: {
-    userId: string;
-    agentId: string;
-    message: string;
-    sessionKey?: string;
-    clientId?: string | null;
-  }) =>
-    api<FaclawTurnResult>('/api/turn', {
+  // turn (fire ad-hoc agent run; streaming SSE)
+  // Calls onProgress for each intermediate event; resolves with the final
+  // FaclawTurnResult. Throws FaclawError on non-200 or stream error.
+  fireTurn: async (
+    input: {
+      userId: string;
+      agentId: string;
+      message: string;
+      sessionKey?: string;
+      clientId?: string | null;
+    },
+    onProgress?: (ev: { kind: string; elapsed_ms: number; [k: string]: unknown }) => void,
+    signal?: AbortSignal,
+  ): Promise<FaclawTurnResult> => {
+    if (!TOKEN) throw new FaclawError('NEXT_PUBLIC_FACLAW_TOKEN not set');
+    const url = new globalThis.URL('/api/turn', URL);
+    url.searchParams.set('token', TOKEN);
+    const res = await fetch(url, {
       method: 'POST',
-      userId: input.userId,
-      body: {
+      headers: { 'content-type': 'application/json', 'x-user-id': input.userId },
+      body: JSON.stringify({
         agent_id: input.agentId,
         message: input.message,
         session_key: input.sessionKey,
         client_id: input.clientId ?? null,
-      },
-    }),
+      }),
+      signal,
+    });
+    if (!res.ok || !res.body) {
+      const text = await res.text().catch(() => '');
+      let parsed: { error?: string };
+      try { parsed = JSON.parse(text); } catch { parsed = {}; }
+      throw new FaclawError(parsed.error || `HTTP ${res.status}`, res.status);
+    }
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+    let final: FaclawTurnResult | null = null;
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      // Split on newline; keep incomplete tail in buf
+      const lines = buf.split('\n');
+      buf = lines.pop() ?? '';
+      for (const raw of lines) {
+        const line = raw.startsWith('data: ') ? raw.slice(6) : raw;
+        if (!line.trim()) continue;
+        let ev: { kind: string; elapsed_ms?: number; [k: string]: unknown };
+        try { ev = JSON.parse(line); } catch { continue; }
+        if (ev.kind === 'result') {
+          final = {
+            reply: ev.reply as string,
+            session_id: ev.session_id as string,
+            cost_usd: ev.cost_usd as number,
+            turns: ev.turns as number,
+            input_tokens: ev.input_tokens as number,
+            output_tokens: ev.output_tokens as number,
+            is_error: ev.is_error as boolean,
+            memory_hits: ev.memory_hits as number,
+            nudged: ev.nudged as boolean,
+          };
+        } else if (ev.kind === 'error') {
+          throw new FaclawError((ev.message as string) ?? 'turn failed');
+        } else {
+          onProgress?.(ev as { kind: string; elapsed_ms: number; [k: string]: unknown });
+        }
+      }
+    }
+    if (!final) throw new FaclawError('stream ended without result');
+    return final;
+  },
 
   // missions
   listMissions: (status?: FaclawMission['status']) => {
