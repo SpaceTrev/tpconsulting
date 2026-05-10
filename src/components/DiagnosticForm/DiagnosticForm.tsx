@@ -153,6 +153,45 @@ function toggleArray(arr: string[], val: string): string[] {
   return arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
 }
 
+/* Loose email regex — good enough to catch typos; the real validator is
+   the booking endpoint which will reject malformed addresses upstream. */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+/* Accepts +52 33 1234 5678, 5533123456, 33-1234-5678, etc. Strip non-digits
+   and require at least 8 digits so we catch obvious typos without rejecting
+   international formats we don't think to allow. */
+function isPhoneish(value: string): boolean {
+  const digits = value.replace(/\D/g, "");
+  return digits.length >= 8;
+}
+
+type FormErrors = Partial<Record<keyof FormData, string>>;
+
+function validateStage(stage: number, form: FormData): FormErrors {
+  const errors: FormErrors = {};
+  if (stage === 0) {
+    if (!form.industry) errors.industry = "Selecciona tu industria.";
+  }
+  if (stage === 2) {
+    if (!form.biggest_time_waste.trim())
+      errors.biggest_time_waste = "Cuéntanos qué es lo que más te quita tiempo.";
+    if (!form.one_thing_to_automate.trim())
+      errors.one_thing_to_automate = "Comparte la cosa que más te gustaría automatizar.";
+  }
+  if (stage === 3) {
+    if (!form.tier) errors.tier = "Elige un plan para continuar.";
+    if (!form.contact_name.trim()) errors.contact_name = "Tu nombre es requerido.";
+    if (!form.contact_email.trim()) {
+      errors.contact_email = "Tu correo es requerido.";
+    } else if (!EMAIL_RE.test(form.contact_email.trim())) {
+      errors.contact_email = "Ingresa un correo válido.";
+    }
+    if (form.contact_whatsapp.trim() && !isPhoneish(form.contact_whatsapp)) {
+      errors.contact_whatsapp = "Ingresa un número de WhatsApp válido.";
+    }
+  }
+  return errors;
+}
+
 /* ── Component ─────────────────────────────────────────────── */
 export default function DiagnosticForm({ initialTier = "" }: { initialTier?: string }) {
   const [stage, setStage] = useState(0);
@@ -160,9 +199,18 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
   const [otherToolsText, setOtherToolsText] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [errors, setErrors] = useState<FormErrors>({});
 
   function set(field: keyof FormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }));
+    // Clear the inline error for this field as soon as the user edits it,
+    // so they don't see a "fix me" hint while actively correcting it.
+    if (errors[field]) {
+      setErrors((prev) => {
+        const { [field]: _omit, ...rest } = prev;
+        return rest;
+      });
+    }
   }
   function setArr(field: keyof FormData, value: string) {
     setForm((prev) => ({ ...prev, [field]: toggleArray(prev[field] as string[], value) }));
@@ -173,6 +221,11 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const v = validateStage(3, form);
+    if (Object.keys(v).length > 0) {
+      setErrors(v);
+      return;
+    }
     setStatus("loading");
     setErrorMsg("");
     // Merge free-text "Otros" detail into current_tools so the Supabase schema stays untouched.
@@ -190,11 +243,18 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
   }
 
   const handleNext = () => {
+    const v = validateStage(stage, form);
+    if (Object.keys(v).length > 0) {
+      setErrors(v);
+      return;
+    }
+    setErrors({});
     setStage((prev) => prev + 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleBack = () => {
+    setErrors({});
     setStage((prev) => prev - 1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -270,7 +330,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             </div>
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Industria</label>
+                <label className={styles.label}>Industria <span className={styles.required}>*</span></label>
                 <select
                   className={styles.select}
                   value={form.industry}
@@ -286,7 +346,14 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
                       losing_customers_how: [],
                     }));
                     setOtherToolsText("");
+                    if (errors.industry) {
+                      setErrors((prev) => {
+                        const { industry: _omit, ...rest } = prev;
+                        return rest;
+                      });
+                    }
                   }}
+                  aria-invalid={!!errors.industry}
                   required
                 >
                   <option value="">Selecciona tu industria</option>
@@ -294,6 +361,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
                 </select>
+                {errors.industry && <span className={styles.fieldError}>{errors.industry}</span>}
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>¿Cuántos empleados tiene tu empresa?</label>
@@ -424,26 +492,34 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
           <fieldset className={styles.fieldset}>
             <legend className={styles.legend}>¿Qué te está costando más tiempo y dinero?</legend>
             <div className={styles.field}>
-              <label className={styles.label}>¿Cuál es tu mayor pérdida de tiempo operativa?</label>
+              <label className={styles.label}>¿Cuál es tu mayor pérdida de tiempo operativa? <span className={styles.required}>*</span></label>
               <textarea
                 className={styles.textarea}
                 value={form.biggest_time_waste}
                 onChange={(e) => set("biggest_time_waste", e.target.value)}
                 rows={3}
                 placeholder="Ej: Responder los mismos mensajes de WhatsApp 20 veces al día..."
+                aria-invalid={!!errors.biggest_time_waste}
                 required
               />
+              {errors.biggest_time_waste && (
+                <span className={styles.fieldError}>{errors.biggest_time_waste}</span>
+              )}
             </div>
             <div className={styles.field}>
-              <label className={styles.label}>Si pudieras automatizar UNA sola cosa en tu negocio, ¿qué sería?</label>
+              <label className={styles.label}>Si pudieras automatizar UNA sola cosa en tu negocio, ¿qué sería? <span className={styles.required}>*</span></label>
               <textarea
                 className={styles.textarea}
                 value={form.one_thing_to_automate}
                 onChange={(e) => set("one_thing_to_automate", e.target.value)}
                 rows={3}
                 placeholder="Ej: El seguimiento de cotizaciones que se quedan sin respuesta..."
+                aria-invalid={!!errors.one_thing_to_automate}
                 required
               />
+              {errors.one_thing_to_automate && (
+                <span className={styles.fieldError}>{errors.one_thing_to_automate}</span>
+              )}
             </div>
             <div className={styles.field}>
               <label className={styles.label}>¿Cómo estás perdiendo clientes hoy? (selecciona todos)</label>
@@ -520,7 +596,7 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Selecciona tu plan</label>
+              <label className={styles.label}>Selecciona tu plan <span className={styles.required}>*</span></label>
               <div className={styles.tierGrid}>
                 {TIER_OPTIONS.map((t) => (
                   <button
@@ -537,22 +613,49 @@ export default function DiagnosticForm({ initialTier = "" }: { initialTier?: str
                   </button>
                 ))}
               </div>
+              {errors.tier && <span className={styles.fieldError}>{errors.tier}</span>}
             </div>
 
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Nombre completo</label>
-                <input className={styles.input} type="text" value={form.contact_name} onChange={(e) => set("contact_name", e.target.value)} placeholder="Ana García"/>
+                <label className={styles.label}>Nombre completo <span className={styles.required}>*</span></label>
+                <input
+                  className={styles.input}
+                  type="text"
+                  value={form.contact_name}
+                  onChange={(e) => set("contact_name", e.target.value)}
+                  placeholder="Ana García"
+                  aria-invalid={!!errors.contact_name}
+                />
+                {errors.contact_name && <span className={styles.fieldError}>{errors.contact_name}</span>}
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>WhatsApp</label>
-                <input className={styles.input} type="tel" value={form.contact_whatsapp} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+52 33 1234 5678"/>
+                <input
+                  className={styles.input}
+                  type="tel"
+                  value={form.contact_whatsapp}
+                  onChange={(e) => set("contact_whatsapp", e.target.value)}
+                  placeholder="+52 33 1234 5678"
+                  aria-invalid={!!errors.contact_whatsapp}
+                />
+                {errors.contact_whatsapp && (
+                  <span className={styles.fieldError}>{errors.contact_whatsapp}</span>
+                )}
               </div>
             </div>
             <div className={styles.row}>
               <div className={styles.field}>
-                <label className={styles.label}>Correo electrónico</label>
-                <input className={styles.input} type="email" value={form.contact_email} onChange={(e) => set("contact_email", e.target.value)} placeholder="ana@miempresa.com"/>
+                <label className={styles.label}>Correo electrónico <span className={styles.required}>*</span></label>
+                <input
+                  className={styles.input}
+                  type="email"
+                  value={form.contact_email}
+                  onChange={(e) => set("contact_email", e.target.value)}
+                  placeholder="ana@miempresa.com"
+                  aria-invalid={!!errors.contact_email}
+                />
+                {errors.contact_email && <span className={styles.fieldError}>{errors.contact_email}</span>}
               </div>
               <div className={styles.field}>
                 <label className={styles.label}>¿Cómo prefieres que te contactemos?</label>

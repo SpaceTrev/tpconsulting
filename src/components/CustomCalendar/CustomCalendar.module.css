@@ -35,6 +35,15 @@
   min-width: 0;
 }
 
+/* Tight mobile padding: the 7-column day grid is the widest content in
+   this card, and at ≤360px screens the default 20px padding leaves too
+   little room per column for the day numbers to render without clipping. */
+@media (max-width: 480px) {
+  .calendarCard {
+    padding: var(--space-3);
+  }
+}
+
 .calHeader {
   display: flex;
   align-items: center;
@@ -154,6 +163,7 @@
   transition: background var(--transition-fast), color var(--transition-fast);
   padding: 0;
   min-height: 40px;
+  min-width: 0;
 }
 
 .dayCell:disabled {
@@ -242,6 +252,13 @@
   flex-direction: column;
   gap: var(--space-3);
   min-width: 0;
+}
+
+@media (max-width: 480px) {
+  .slotPanel,
+  .contactCard {
+    padding: var(--space-3);
+  }
 }
 
 .slotHeader {

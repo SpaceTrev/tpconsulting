@@ -301,6 +301,26 @@
   border-color: var(--accent-primary);
 }
 
+.input[aria-invalid="true"],
+.select[aria-invalid="true"],
+.textarea[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.input[aria-invalid="true"]:focus,
+.select[aria-invalid="true"]:focus,
+.textarea[aria-invalid="true"]:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent);
+}
+
+.fieldError {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  color: var(--danger);
+  margin-top: calc(var(--space-1) * -1);
+}
+
 .textarea {
   resize: vertical;
   min-height: 80px;
@@ -384,10 +404,6 @@
 }
 
 .tierBadge {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
   font-family: var(--font-ui);
   font-size: 0.6875rem;
   font-weight: 700;
@@ -680,6 +696,10 @@
 }
 
 .tierBadge {
+  /* Inline chip that sits as the first flex child of the card so it
+     stacks above the title rather than overlapping it. align-self keeps
+     it left-aligned and its own width regardless of card width. */
+  align-self: flex-start;
   display: inline-block;
   color: var(--accent-primary);
   font-family: var(--font-ui);
@@ -690,9 +710,6 @@
   background-color: color-mix(in srgb, var(--accent-primary) 12%, transparent);
   border-radius: var(--radius-sm);
   padding: var(--space-1) var(--space-2);
-  position: absolute;
-  top: var(--space-3);
-  right: var(--space-3);
 }
 
 .tierName {
